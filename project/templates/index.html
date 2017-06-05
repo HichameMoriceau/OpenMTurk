@@ -1,0 +1,31 @@
+<html>
+<head>
+	<title>Ad hoc labelling tool</title>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script type=text/javascript>
+	  $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+	</script>
+	<script type="text/javascript" src="{{ main_js }}"></script>
+</head>
+<body>
+
+<div align="center">
+	<h2 id='ex_img_name'></h2>
+
+	<img 
+	id="ex_img"
+	src="../static/notes_photos/IMG_20170604_100551.jpg"
+	alt="Picture of a note to be annotated" 
+	style="display: block;margin: auto; width:30%;">
+
+	<h1>jQuery Example</h1>
+	<p><input type=text size=5 name=a> +
+	   <input type=text size=5 name=b> =
+	   <span id=result>?</span></p>
+	<p><a href=# id=calculate>calculate server side</a></p>
+
+</div>
+
+</body>
+</html>
