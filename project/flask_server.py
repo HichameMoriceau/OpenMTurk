@@ -15,10 +15,14 @@ from flask import Flask, jsonify, render_template, request
 import os
 import glob
 
-
 def get_js_version(dir_path):
 
-	files = sorted(glob.glob(dir_path))
+	considered_files = glob.glob(dir_path)
+	considered_files = list(filter(lambda x : len(x.split('.'))==3, 
+								   considered_files))
+
+	fn = lambda x: int(x.split('.')[1])
+	files = sorted(considered_files, key=fn)
 	
 	for f in files:
 
@@ -48,5 +52,7 @@ def add_numbers():
 def index():
 	js_version = get_js_version('static/scripts/*')
 	main_js = 'static/scripts/main.{}.js'.format(js_version)
+
+	print('Using main.js version {}'.format(js_version))
 
 	return render_template('index.html', main_js=main_js)

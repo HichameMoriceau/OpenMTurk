@@ -12,7 +12,12 @@ import time
 
 def get_js_version(dir_path):
 
-	files = sorted(glob.glob(dir_path))
+	considered_files = glob.glob(dir_path)
+	considered_files = list(filter(lambda x : len(x.split('.'))==3, 
+								   considered_files))
+
+	fn = lambda x: int(x.split('.')[1])
+	files = sorted(considered_files, key=fn)
 	
 	for f in files:
 
