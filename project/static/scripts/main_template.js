@@ -1,34 +1,9 @@
 //
-// main
+// main js function:
 //
-
-
-// example AJAX call
-
-// $(function() {
-//   $('a#calculate').bind('click', function() {
-//     $.getJSON('../../_add_numbers', {
-//       a: $('input[name="a"]').val(),
-//       b: $('input[name="b"]').val()
-//     }, function(data) {
-//       $("#result").text(data.result);
-//     });
-//     return false;
-//   });
-// });
-
-// $(function() {
-//   $('img').bind('click', function() {
-//     $.getJSON('../../_add_numbers', {
-//       a: $('input[name="a"]').val(),
-//       b: $('input[name="b"]').val()
-//     }, function(data) {
-//       $("#result").text(data.result);
-//     });
-//     return false;
-//   });
-// });
-
+// What it does:
+// 1) Capture user interaction
+// 2) send label to back-end (`flask_server.label()`)
 
 $(document).ready(function(){
 
@@ -98,6 +73,22 @@ $(document).ready(function(){
 			$("li:eq(3)").css("color", "red")
         break;
 
+        case 13: // enter
+        	var json_obj = {
+        		"img_path": images[counter],
+        		"orientation": orientation
+        	}
+
+        	$.ajax({
+			    type : "POST",
+			    url : '/label',
+			    data: JSON.stringify(json_obj, null, '\t'),
+			    contentType: 'application/json;charset=UTF-8',
+			    success: function(result) {
+			        console.log(result);
+			    }
+			});
+        break;
 
         default: return; // exit this handler for other keys
     }
@@ -106,15 +97,4 @@ $(document).ready(function(){
 });
 });
 
-
-
-
-// for (i = 0; i < images.length; ++i) {
-//     console.log(images[i]);
-// }
-
-
-// document.getElementById(ex_img_id).src=ex_img_path;
-
-// document.getElementById("ex_img_name").innerHTML="ex_img_path";
 

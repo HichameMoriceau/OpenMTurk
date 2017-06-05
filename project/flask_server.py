@@ -12,8 +12,9 @@
 """
 
 from flask import Flask, jsonify, render_template, request
-import os
 import glob
+import copy
+import os
 
 def get_js_version(dir_path):
 
@@ -23,7 +24,7 @@ def get_js_version(dir_path):
 
 	fn = lambda x: int(x.split('.')[1])
 	files = sorted(considered_files, key=fn)
-	
+
 	for f in files:
 
 		first_part = f.split('.')[0].split('/')[-1]
@@ -37,8 +38,17 @@ def get_js_version(dir_path):
 	return version
 
 
+def persist_label(label_dict):
+
+	values = [str(x) for x in label_dict.values()]
+
+	with open("labels.csv", "a") as f:
+		f.write(','.join(values))
+
+
 app = Flask(__name__) # __name__
 app.config.update(TEMPLATES_AUTO_RELOAD=True)
+
 
 @app.route('/_add_numbers')
 def add_numbers():
@@ -46,6 +56,18 @@ def add_numbers():
     b = request.args.get('b', 0, type=int)
     
     return jsonify(result=a + b)
+
+
+@app.route('/label', methods=['POST'])
+def label():
+	print(request.json)
+	print('server received: ', request.json['img_path'])
+
+	single_label = copy.copy(request.json)
+	print(type(single_label))
+	
+	persist_label(single_label)
+	return jsonify(result=1)
 
 
 @app.route('/')
