@@ -11,27 +11,28 @@
 </head>
 <body style="background-color: #839cc4;">
 
-<div align="center">
-	<h2 id='ex_img_name'></h2>
+	<div id="main_div" style="margin: 3% 3% 3% 3%; width:50%;border:1px solid black;">
+		
+		<h2 id='ex_img_name'></h2>
 
-<!-- 	<img 
-	id="ex_img"
-	src="../static/notes_photos/IMG_20170604_100551.jpg"
-	alt="Picture of a note to be annotated" >
- -->
-	<h3>Orientation</h3>
-	<ul id="orientation">
-		<li>1: (0 rad)</li>
-		<li>2: (pi/2 rad)</li>
-		<li>3: (pi rad)</li>
-		<li>4: (3*pi/2 rad)</li>
-	</ul>
+	 	<div style="float:left;border:1px solid red;">
+			<canvas id="ex_canvas" width="25%">
+		        Sorry. Your browser does not support HTML5 canvas element.
+		    </canvas>
+	 	</div>
 
-	<canvas id="ex_canvas" width="300">
-        Sorry. Your browser does not support HTML5 canvas element.
-    </canvas>
+	    <div id="legend" style="float:right;border:1px solid blue;">
+			
+			<h3>Orientation</h3>
+			<ul id="orientation">
+				<li>1: (0 rad)</li>
+				<li>2: (pi/2 rad)</li>
+				<li>3: (pi rad)</li>
+				<li>4: (3*pi/2 rad)</li>
+			</ul>
+	    </div>
 
-</div>
+	</div>
 
 </body>
 </html>

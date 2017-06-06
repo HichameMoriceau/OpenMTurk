@@ -12,6 +12,7 @@ $(document).ready(function(){
 	var images = {{ images }};
 	var counter = 0;
 	var orientation = -1;
+	var bounding_boxes = [];
 
 	var canvas = document.getElementById('ex_canvas')
     var ctx = canvas.getContext("2d");
@@ -22,9 +23,9 @@ $(document).ready(function(){
 	// img.width = "300";
 	
 	img.onload = function () {
-	 	var img_ratio = img.width / img.height
-	 	var new_width = 300
-	 	var new_height = 300 / img_ratio
+	 	var img_ratio = img.width / img.height;
+	 	var new_width = 500;
+	 	var new_height = new_width / img_ratio;
 		canvas.width = new_width;
 	    canvas.height = new_height;
 	    ctx.drawImage(img,0,0,img.width,img.height,0,0,new_width,new_height);
@@ -51,25 +52,35 @@ $(document).ready(function(){
 
 	    // Put your mousedown stuff here
 	    if (isDrawing) {
-	    	console.log('done')
+	    	console.log('x1, y1')
 	    	console.log(mouseX - startX, mouseY - startY)
+
+	    	bb = {
+	    		"point_0": [startX, startY],
+	    		"point_1": [mouseX - startX, mouseY - startY],
+	    	}
+        	bounding_boxes.push(bb)
+
 	        isDrawing = false;
 	        ctx.beginPath();
-	        ctx.rect(startX, startY, mouseX - startX, mouseY - startY);
-	        ctx.fill();
+	        ctx.strokeRect(startX, startY, mouseX - startX, mouseY - startY);
+	        // ctx.fill();
 	        canvas.style.cursor = "default";
 	    } else {
-	    	console.log('bbing')
+	    	console.log('x0, y0')
+	    	console.log(mouseX, mouseY)
 	        isDrawing = true;
 	        startX = mouseX;
 	        startY = mouseY;
-	    	console.log(startX, startY)
 	        canvas.style.cursor = "crosshair";
 	    }
 
 	}
 
 	$("#ex_canvas").mousedown(function (e) {
+		handleMouseDown(e)
+	});
+	$("#ex_canvas").mouseover(function (e) {
 		handleMouseDown(e)
 	});
     $(document).keydown(function(e) {
@@ -85,6 +96,7 @@ $(document).ready(function(){
 	        if (counter != 0){
 				counter--;
 			}
+			img.src = images[counter];
 			console.log('left');
         break;
 
@@ -92,6 +104,7 @@ $(document).ready(function(){
 	        if (counter < images.length){
 				counter++;
 			}
+			img.src = images[counter];
 			console.log('right');
         break;
 
@@ -137,7 +150,8 @@ $(document).ready(function(){
         case 13: // enter
         	var json_obj = {
         		"img_path": images[counter],
-        		"orientation": orientation
+        		"orientation": orientation,
+        		"bounding_boxes": bounding_boxes
         	}
 
         	$.ajax({
@@ -152,13 +166,12 @@ $(document).ready(function(){
 			if (counter < images.length){
 				counter++;
 			}
+			img.src = images[counter];
         break;
 
         default: return; // exit this handler for other keys
     }
 
-    // document.getElementById('ex_img').src=images[counter];
-    img.src = images[counter];
 });
 });
 
