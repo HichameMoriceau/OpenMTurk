@@ -50,14 +50,6 @@ app = Flask(__name__) # __name__
 app.config.update(TEMPLATES_AUTO_RELOAD=True)
 
 
-@app.route('/_add_numbers')
-def add_numbers():
-    a = request.args.get('a', 0, type=int)
-    b = request.args.get('b', 0, type=int)
-    
-    return jsonify(result=a + b)
-
-
 @app.route('/label', methods=['POST'])
 def label():
 	print(request.json)

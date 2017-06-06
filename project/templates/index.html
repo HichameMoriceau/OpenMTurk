@@ -7,18 +7,18 @@
 	  $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
 	</script>
 	<script type="text/javascript" src="{{ main_js }}"></script>
+	<script type="text/javascript" src="static/scripts/sketch.js"></script>
 </head>
-<body>
+<body style="background-color: #839cc4;">
 
 <div align="center">
 	<h2 id='ex_img_name'></h2>
 
-	<img 
+<!-- 	<img 
 	id="ex_img"
 	src="../static/notes_photos/IMG_20170604_100551.jpg"
-	alt="Picture of a note to be annotated" 
-	style="display: block;margin: auto; width:30%;">
-
+	alt="Picture of a note to be annotated" >
+ -->
 	<h3>Orientation</h3>
 	<ul id="orientation">
 		<li>1: (0 rad)</li>
@@ -27,11 +27,9 @@
 		<li>4: (3*pi/2 rad)</li>
 	</ul>
 
-	<h1>jQuery Example</h1>
-	<p><input type=text size=5 name=a> +
-	   <input type=text size=5 name=b> =
-	   <span id=result>?</span></p>
-	<p><a href=# id=calculate>calculate server side</a></p>
+	<canvas id="ex_canvas" width="300">
+        Sorry. Your browser does not support HTML5 canvas element.
+    </canvas>
 
 </div>
 

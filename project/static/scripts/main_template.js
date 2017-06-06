@@ -5,12 +5,73 @@
 // 1) Capture user interaction
 // 2) send label to back-end (`flask_server.label()`)
 
+
+
 $(document).ready(function(){
 
 	var images = {{ images }};
 	var counter = 0;
 	var orientation = -1;
 
+	var canvas = document.getElementById('ex_canvas')
+    var ctx = canvas.getContext("2d");
+	
+
+	var img = new Image(); //document.getElementById('ex_img');
+	// style="display: block;margin: auto; width:30%;"
+	// img.width = "300";
+	
+	img.onload = function () {
+	 	var img_ratio = img.width / img.height
+	 	var new_width = 300
+	 	var new_height = 300 / img_ratio
+		canvas.width = new_width;
+	    canvas.height = new_height;
+	    ctx.drawImage(img,0,0,img.width,img.height,0,0,new_width,new_height);
+	}
+
+	img.src = '../static/notes_photos/IMG_20170604_100551.jpg';
+	
+	var isDrawing=false;
+	var startX;
+	var startY;
+
+	var canvasOffset = $("#ex_canvas").offset();
+	var offsetX = canvasOffset.left;
+	var offsetY = canvasOffset.top;
+
+	function handleMouseDown(e) {
+		console.log('offset:')
+		console.log(offsetX, offsetY)
+		console.log('e.client:')
+		console.log(e.clientX, e.clientY)
+	    mouseX = parseInt(e.clientX - offsetX);
+	    mouseY = parseInt(e.clientY - offsetY); 
+	    $("#downlog").html("Down: " + mouseX + " / " + mouseY);
+
+	    // Put your mousedown stuff here
+	    if (isDrawing) {
+	    	console.log('done')
+	    	console.log(mouseX - startX, mouseY - startY)
+	        isDrawing = false;
+	        ctx.beginPath();
+	        ctx.rect(startX, startY, mouseX - startX, mouseY - startY);
+	        ctx.fill();
+	        canvas.style.cursor = "default";
+	    } else {
+	    	console.log('bbing')
+	        isDrawing = true;
+	        startX = mouseX;
+	        startY = mouseY;
+	    	console.log(startX, startY)
+	        canvas.style.cursor = "crosshair";
+	    }
+
+	}
+
+	$("#ex_canvas").mousedown(function (e) {
+		handleMouseDown(e)
+	});
     $(document).keydown(function(e) {
 	console.log('keydown event!!');
 
@@ -88,12 +149,16 @@ $(document).ready(function(){
 			        console.log(result);
 			    }
 			});
+			if (counter < images.length){
+				counter++;
+			}
         break;
 
         default: return; // exit this handler for other keys
     }
 
-    document.getElementById('ex_img').src=images[counter];
+    // document.getElementById('ex_img').src=images[counter];
+    img.src = images[counter];
 });
 });
 
