@@ -5,22 +5,45 @@
 // 1) Capture user interaction
 // 2) send label to back-end (`flask_server.label()`)
 
+function select_orientation(o){
 
+	$('#orientation li').eq(0).css("color", "black");
+	$('#orientation li').eq(1).css("color", "black");
+	$('#orientation li').eq(2).css("color", "black");
+	$('#orientation li').eq(3).css("color", "black");
+	$('#orientation li').eq(o).css("color", "red");
+}
+
+function select_document_type(doc_types, dt){
+
+	$.each(doc_types, function(i){
+		$('#document_type li').eq(i).css("color", "black");
+		
+		if (doc_types[i] == dt){
+			$('#document_type li').eq(i).css("color", "red");
+		}
+	})
+}
 
 $(document).ready(function(){
 
 	var images = {{ images }};
 	var counter = 0;
-	var orientation = -1;
 	var selected_bb = -1;
 	var bounding_boxes = [];
+	var document_type = -1;
+	
+	// default orientation: up
+	var orientation = 0;
 
 	var canvas = document.getElementById('ex_canvas');
     var ctx = canvas.getContext("2d");
-	
+
 	var bbs_names = ['text_region', 'drawing', 'formula'];
 	var bbs_colors = ['red', 'green', 'yellow'];
 	var bbs_legend = document.getElementById('bounding_box_colors');
+    ctx.strokeStyle=bbs_colors[0];
+
 
 	$.each(bbs_names, function(i){
 		var li = $('<li/>')
@@ -37,6 +60,29 @@ $(document).ready(function(){
 
 	})
 
+	var doc_types = ['Notebook', 'Form', 'Receipt', 'Letter'];
+	var doc_type_legend = document.getElementById('document_type');
+
+	$.each(doc_types, function(i){
+		var key_value = i+1;
+		var li = $('<li/>')
+			.text(doc_types[i] + ' (key: ' + key_value + ')')
+			.appendTo(doc_type_legend);
+	})
+	select_document_type(doc_types, doc_types[0]);
+
+	var orientations = ['up', 'right', 'down', 'left'];
+	var orientation_legend = document.getElementById('orientation');
+
+	$.each(orientations, function(i){
+		var key_value = doc_types.length+i+1;	
+		var li = $('<li/>')
+			.text(orientations[i] + ' (key: ' + key_value + ')')
+			.css('margin-bottom', '1%')
+			.appendTo(orientation_legend);
+	})
+	select_orientation(0);
+
 	var img = new Image(); 
 	img.onload = function () {
 	 	var img_ratio = img.width / img.height;
@@ -45,10 +91,13 @@ $(document).ready(function(){
 		canvas.width = new_width;
 	    canvas.height = new_height;
 	    ctx.drawImage(img,0,0,img.width,img.height,0,0,new_width,new_height);
+		ctx.strokeStyle=bbs_colors[0];
+		ctx.lineWidth=6;
 	}
 
 	img.src = '../static/notes_photos/IMG_20170604_100551.jpg';
 	
+
 	var isDrawing=false;
 	var startX;
 	var startY;
@@ -98,6 +147,18 @@ $(document).ready(function(){
 		handleMouseDown(e)
 	});
 
+
+	$.each(bbs_colors, function(i){
+		console.log('test');
+		$("#bounding_box_colors li").eq(i).mousedown(function (e) {
+
+			console.log('new color!');
+			ctx.strokeStyle=bbs_colors[i];
+
+		});
+	})
+
+
     $(document).keydown(function(e) {
 	console.log('keydown event!!');
 
@@ -123,44 +184,66 @@ $(document).ready(function(){
 			console.log('right');
         break;
 
-        // 
-        // ORIENTATION: using [0, 3] digits
         //
-		case 49: 
+        // DOCUMENT TYPE [0 .. N] digits
+        //
+
+		case 49: // 1
+			document_type = doc_types[0];
+			select_document_type(doc_types, document_type);
+			console.log('document type: ', document_type);
+        break;
+
+		case 50: // 2
+			document_type = doc_types[1];
+			select_document_type(doc_types, document_type);
+			console.log('document type: ', document_type);
+        break;
+
+		case 51: // 3
+			document_type = doc_types[2];
+			select_document_type(doc_types, document_type);
+			console.log('document type: ', document_type);
+        break;
+
+		case 52: // 4
+			document_type = doc_types[3];
+			select_document_type(doc_types, document_type);
+			console.log('document type: ', document_type);
+        break;
+
+
+
+        // 
+        // ORIENTATION: using [5, 8] digits
+        //
+		case 53: // 5
 	        orientation = 0;
 			console.log('orientation: ', orientation);
-			$("li:eq(0)").css("color", "red")
-			$("li:eq(1)").css("color", "black")
-			$("li:eq(2)").css("color", "black")
-			$("li:eq(3)").css("color", "black")
+			select_orientation(0);
         break;
 
-		case 50: 
+		case 54: // 6
 	        orientation = 1;
 			console.log('orientation: ', orientation);
-			$("li:eq(0)").css("color", "black")
-			$("li:eq(1)").css("color", "red")
-			$("li:eq(2)").css("color", "black")
-			$("li:eq(3)").css("color", "black")
+			select_orientation(1);
         break;
 
-		case 51: 
+		case 55: // 7
 	        orientation = 2;
 			console.log('orientation: ', orientation);
-			$("li:eq(0)").css("color", "black")
-			$("li:eq(1)").css("color", "black")
-			$("li:eq(2)").css("color", "red")
-			$("li:eq(3)").css("color", "black")
+			select_orientation(2);
         break;
 
-		case 52: 
+		case 56: // 8
 	        orientation = 3;
 			console.log('orientation: ', orientation);
-			$("li:eq(0)").css("color", "black")
-			$("li:eq(1)").css("color", "black")
-			$("li:eq(2)").css("color", "black")
-			$("li:eq(3)").css("color", "red")
+			select_orientation(3);
         break;
+
+        //
+        // ENTER: sends annotations to back-end
+        //
 
         case 13: // enter
         	var json_obj = {

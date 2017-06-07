@@ -1,6 +1,6 @@
 <html>
 <head>
-	<title>Ad hoc labelling tool</title>
+	<title>Image annotation tool</title>
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script type=text/javascript>
@@ -13,7 +13,7 @@
 
 	<div id="main_div" style="margin: 3% 3% 3% 3%; width:80%;border:1px solid black;">
 		
-		<h2 id='ex_img_name'></h2>
+<!-- 		<h2 id='ex_img_name'></h2> -->
 
 	 	<div style="float:left;border:1px solid red;">
 			<canvas id="ex_canvas">
@@ -22,20 +22,27 @@
 	 	</div>
 
 	    <div id="legend" style="float:right; width:30%; border:1px solid blue;">
-	    	<div style="margin: 1% 1% 1% 1%;">
-	    		<h3>Bounding boxes:</h3>
-	    		<div id="bounding_box_colors">
-	    			<div id="region" style="width:20; height:20; background-color: red; border:3px solid black;"></div>
-	    		</div>
-	    	</div>
+	    	
+	    	<h2>Annotations:</h2>
 			
-			<h3>Orientation</h3>
-			<ul id="orientation">
-				<li>1: (0 rad)</li>
-				<li>2: (pi/2 rad)</li>
-				<li>3: (pi rad)</li>
-				<li>4: (3*pi/2 rad)</li>
-			</ul>
+	    	<div style="margin: 1% 1% 1% 1%;">
+				<h3>Document type:</h3>
+				<ul id="document_type">
+				</ul>
+	    	</div>
+
+	    	<div style="margin: 1% 1% 1% 1%;">
+				<h3>Document orientation: </h3>
+				<ul id="orientation">
+				</ul>
+			</div>
+
+	    	<div style="margin: 1% 1% 1% 1%;">
+	    		<h3>Rectangle color:</h3>
+	    		<ul id="bounding_box_colors">
+	    		</ul>
+	    	</div>
+
 	    </div>
 
 	</div>

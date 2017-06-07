@@ -15,6 +15,7 @@ from flask import Flask, jsonify, render_template, request
 import glob
 import copy
 import os
+import csv
 
 def get_js_version(dir_path):
 
@@ -39,11 +40,12 @@ def get_js_version(dir_path):
 
 
 def persist_label(label_dict):
-
 	values = [str(x) for x in label_dict.values()]
+	
+	with open('labels.csv', 'a') as f:
 
-	with open("labels.csv", "a") as f:
-		f.write(','.join(values))
+	    writer = csv.writer(f)
+	    writer.writerow(values)
 
 
 app = Flask(__name__) # __name__
