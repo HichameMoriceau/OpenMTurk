@@ -40,9 +40,26 @@ $(document).ready(function(){
 
 	var doc_types = ['Notebook', 'Form', 'Receipt', 'Letter'];
 	var orientations = ['up', 'right', 'down', 'left'];
-	var bbs_names = ['text_region', 'drawing', 'formula'];
+	var bbs_names = ['document', 
+					 'title', 
+					 'subtitle', 
+					 'text_region', 
+					 'list', 
+					 'table', 
+					 'drawing/diagram', 
+					 'formula', 
+					 'separation-line / structure'];
 	
-	var bbs_colors = ['red', 'green', 'yellow'];
+	var bbs_colors = ['white', 
+					  'orange', 
+					  'pink', 
+					  'red', 
+					  'brown', 
+					  'gray', 
+					  'green', 
+					  'yellow', 
+					  'purple'];
+	
 	var bbs_legend = document.getElementById('bounding_box_colors');
 
 	$.each(bbs_names, function(i){
