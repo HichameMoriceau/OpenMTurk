@@ -12,16 +12,32 @@ $(document).ready(function(){
 	var images = {{ images }};
 	var counter = 0;
 	var orientation = -1;
+	var selected_bb = -1;
 	var bounding_boxes = [];
 
-	var canvas = document.getElementById('ex_canvas')
+	var canvas = document.getElementById('ex_canvas');
     var ctx = canvas.getContext("2d");
 	
+	var bbs_names = ['text_region', 'drawing', 'formula'];
+	var bbs_colors = ['red', 'green', 'yellow'];
+	var bbs_legend = document.getElementById('bounding_box_colors');
 
-	var img = new Image(); //document.getElementById('ex_img');
-	// style="display: block;margin: auto; width:30%;"
-	// img.width = "300";
-	
+	$.each(bbs_names, function(i){
+		var li = $('<li/>')
+			.text(bbs_names[i])
+			.css("background-color", bbs_colors[i])
+			.css("border", "3px solid black")
+			.css("margin-top", "1%")
+			.appendTo(bbs_legend);
+
+		li.mousedown(function (e) {
+			console.log('click on ' + bbs_names[i])
+			selected_bb = bbs_names[i];
+		});
+
+	})
+
+	var img = new Image(); 
 	img.onload = function () {
 	 	var img_ratio = img.width / img.height;
 	 	var new_width = 500;
@@ -56,6 +72,7 @@ $(document).ready(function(){
 	    	console.log(mouseX - startX, mouseY - startY)
 
 	    	bb = {
+	    		"label": selected_bb,
 	    		"point_0": [startX, startY],
 	    		"point_1": [mouseX - startX, mouseY - startY],
 	    	}
@@ -80,9 +97,7 @@ $(document).ready(function(){
 	$("#ex_canvas").mousedown(function (e) {
 		handleMouseDown(e)
 	});
-	$("#ex_canvas").mouseover(function (e) {
-		handleMouseDown(e)
-	});
+
     $(document).keydown(function(e) {
 	console.log('keydown event!!');
 

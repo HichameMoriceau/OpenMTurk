@@ -11,17 +11,23 @@
 </head>
 <body style="background-color: #839cc4;">
 
-	<div id="main_div" style="margin: 3% 3% 3% 3%; width:50%;border:1px solid black;">
+	<div id="main_div" style="margin: 3% 3% 3% 3%; width:80%;border:1px solid black;">
 		
 		<h2 id='ex_img_name'></h2>
 
 	 	<div style="float:left;border:1px solid red;">
-			<canvas id="ex_canvas" width="25%">
+			<canvas id="ex_canvas">
 		        Sorry. Your browser does not support HTML5 canvas element.
 		    </canvas>
 	 	</div>
 
-	    <div id="legend" style="float:right;border:1px solid blue;">
+	    <div id="legend" style="float:right; width:30%; border:1px solid blue;">
+	    	<div style="margin: 1% 1% 1% 1%;">
+	    		<h3>Bounding boxes:</h3>
+	    		<div id="bounding_box_colors">
+	    			<div id="region" style="width:20; height:20; background-color: red; border:3px solid black;"></div>
+	    		</div>
+	    	</div>
 			
 			<h3>Orientation</h3>
 			<ul id="orientation">
