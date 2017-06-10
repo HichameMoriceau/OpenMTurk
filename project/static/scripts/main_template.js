@@ -102,6 +102,12 @@ $(document).ready(function(){
 			.css("border", "3px solid black")
 			.text(doc_types[i] + ' (key: ' + key_value + ')')
 			.appendTo(doc_type_legend);
+
+
+		li.mousedown(function (e) {
+			document_type = i;
+			select_document_type(doc_types, doc_types[i]);
+		});
 	})
 
 
@@ -117,6 +123,13 @@ $(document).ready(function(){
 			.text(orientations[i] + ' (key: ' + key_value + ')')
 			.css('margin-bottom', '1%')
 			.appendTo(orientation_legend);
+
+		li.mousedown(function (e) {
+			console.log('click on ' + bbs_names[i])
+			orientation = i;
+			select_orientation(orientation);
+		});
+
 	})
 
 	$.each(bbs_names, function(i){
