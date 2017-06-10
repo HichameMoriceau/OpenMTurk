@@ -1,5 +1,5 @@
 """
-	Python server of labelling tool.
+	Python back-end (flask server) of labelling tool.
 
 	Project structure:
 	- static/ contains `notes_photos/` and `scripts/`
@@ -8,14 +8,20 @@
 	#
 	# Remember to set the environment variable:
 	# $ export FLASK_APP=flask_server.py
+	# Then run using:
+	# $ flask run
 	#
 """
 
 from flask import Flask, jsonify, render_template, request
+from pymongo import MongoClient
 import glob
-import copy
-import os
-import csv
+
+app = Flask(__name__)
+app.config.update(TEMPLATES_AUTO_RELOAD=True)
+
+client = MongoClient()
+db = client['labels_db'] # use existing database
 
 def get_js_version(dir_path):
 
@@ -39,29 +45,16 @@ def get_js_version(dir_path):
 	return version
 
 
-def persist_label(label_dict):
-	values = [str(x) for x in label_dict.values()]
-	
-	with open('labels.csv', 'a') as f:
-
-	    writer = csv.writer(f)
-	    writer.writerow(values)
-
-
-app = Flask(__name__) # __name__
-app.config.update(TEMPLATES_AUTO_RELOAD=True)
-
+def insert_label_to_mongodb(data):
+	db.labels_db.insert_one(data)
 
 @app.route('/label', methods=['POST'])
 def label():
-	print(request.json)
-	print('server received: ', request.json['img_path'])
-
-	single_label = copy.copy(request.json)
-	print(type(single_label))
-	
-	persist_label(single_label)
-	return jsonify(result=1)
+	try:
+		insert_label_to_mongodb(request.json)
+		return jsonify(result=200)
+	except Exception as e:
+		return jsonify(result=300)
 
 
 @app.route('/')

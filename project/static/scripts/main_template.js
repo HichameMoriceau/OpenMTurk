@@ -84,7 +84,7 @@ $(document).ready(function(){
 	var bbs_colors = ['white', 
 					  'orange', 
 					  'pink', 
-					  'red', 
+					  'blue', 
 					  'brown', 
 					  'gray', 
 					  'green', 
@@ -125,7 +125,6 @@ $(document).ready(function(){
 			.appendTo(orientation_legend);
 
 		li.mousedown(function (e) {
-			console.log('click on ' + bbs_names[i])
 			orientation = i;
 			select_orientation(orientation);
 		});
@@ -145,7 +144,6 @@ $(document).ready(function(){
 			.appendTo(bbs_legend);
 
 		li.mousedown(function (e) {
-			console.log('click on ' + bbs_names[i])
 			selected_bb = i;
 			select_bb(bbs_names, i);
 		});
@@ -157,22 +155,40 @@ $(document).ready(function(){
 	select_orientation(0);
 	select_bb(bbs_names, 0);
 
+	var img_ratio = 0;
+	var scale_x = 0;
+	var scale_y = 0;
 
 	var img = new Image(); 
 	img.onload = function () {
 
 		// resize image but maintain original ratio
-	 	var img_ratio = img.width / img.height;
+	 	img_ratio = img.width / img.height;
+
 	 	var new_width = 500;
 	 	var new_height = new_width / img_ratio;
 		
+		scale_x = img.width / new_width;
+		scale_y = img.height / new_height;
+
+	 	console.log('Reshaped image as: (' 
+	 				+ new_width + ', ' + new_height + ')')
+
+	 	console.log('scale_x, scale_y')
+	 	console.log(scale_x, scale_y)
+
 		canvas.width = new_width;
 	    canvas.height = new_height;
 	    
-	    ctx.drawImage(img,0,0,img.width,img.height,0,0,new_width,new_height);
+	    ctx.drawImage(img,
+	    			  0,0,img.width,img.height,
+	    			  0,0,new_width,new_height);
+
 		ctx.strokeStyle=bbs_colors[0];
 		ctx.lineWidth=6;
 	}
+
+	console.log('img_ratio = ' + img_ratio)
 
 	img.src = '../static/notes_photos/IMG_20170604_100551.jpg';
 	
@@ -186,28 +202,34 @@ $(document).ready(function(){
 
 	function handleMouseDown(e) {
 
-	    mouseX = parseInt(e.clientX - offsetX);
-	    mouseY = parseInt(e.clientY - offsetY); 
+	    mouseX = parseInt(e.pageX - offsetX);
+	    mouseY = parseInt(e.pageY - offsetY); 
 	    
 	    $("#downlog").html("Down: " + mouseX + " / " + mouseY);
 
-	    // Put your mousedown stuff here
 	    if (isDrawing) {
 
 	    	bb = {
 	    		"label": bbs_names[selected_bb],
-	    		"point_0": [startX, startY],
-	    		"point_1": [mouseX - startX, mouseY - startY],
+	    		"offset": [offsetX, offsetY],
+	    		
+	    		"point_0": [startX*scale_x,
+	    					startY*scale_y],
+	    		
+	    		"point_1": [(e.pageX - offsetX)*scale_x, 
+	    					(e.pageY - offsetY)*scale_y],
 	    	}
         	bounding_boxes.push(bb)
 
 	        isDrawing = false;
 	        ctx.beginPath();
-	        ctx.strokeRect(startX, startY, mouseX - startX, mouseY - startY);
-	        // ctx.fill();
+	        ctx.strokeRect(startX, startY, 
+	        			   mouseX - startX, mouseY - startY);
 	        canvas.style.cursor = "default";
 	    
 	    } else {
+	    	console.log('first click: ' 
+	    				+ mouseX + ', ' + mouseY)
 	        isDrawing = true;
 	        startX = mouseX;
 	        startY = mouseY;
@@ -354,7 +376,8 @@ $(document).ready(function(){
 			img.src = images[image_idx];
         break;
 
-        default: return; // exit this handler for other keys
+        default: 
+        	return; // exit this handler for other keys
     }
 
 });
