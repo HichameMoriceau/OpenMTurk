@@ -69,27 +69,54 @@ $(document).ready(function(){
 	var canvas = document.getElementById('ex_canvas');
     var ctx = canvas.getContext("2d");
 
-	var doc_types = ['Notebook', 'Form', 'Receipt', 'Letter'];
-	var orientations = ['Up', 'Right', 'Down', 'Left'];
+	var doc_types = ['Note',
+					 'Receipt',
+					 'Page', 
+					 'Form', 
+					 'Business card',
+					 'CV',
+					 'Letter'];
+
+	// north, east, south, west
+	var orientations = ['up', 'left', 'down', 'right'];
 	var bbs_names = ['Document', 
+					 'Image',
+					 'Text region', 
+					 'Drawing',
+					 'Diagram',
 					 'Title', 
 					 'Subtitle', 
-					 'Text region', 
+					 'Underlined text',
+					 'Separation-line / Structure',
 					 'List', 
 					 'Table', 
-					 'Drawing/diagram', 
-					 'Formula', 
-					 'Separation-line / Structure'];
+					 'Formula',
+					 'Contact',
+					 'Signature',
+					 'Checkbox',
+					 'Form text entry',
+					 'Form letter entry',
+					 'Plot',
+					 'other'];
 	
 	var bbs_colors = ['white', 
 					  'orange', 
 					  'pink', 
+					  'salmon',
 					  'blue', 
 					  'brown', 
 					  'gray', 
+					  'lime',
+					  'Maroon',
 					  'green', 
-					  'yellow', 
-					  'purple'];
+					  'DarkGreen',
+					  'LightSlateGrey',
+					  'yellow',
+					  'beige',
+					  'purple',
+					  'DeepPink',
+					  'DarkTurquoise',
+					  'chocolate'];
 
 	$.each(doc_types, function(i){
 
@@ -114,14 +141,26 @@ $(document).ready(function(){
 	$.each(orientations, function(i){
 		
 		var orientation_legend = document.getElementById('orientation');
-		var key_value = doc_types.length+i+1;	
-		
+		var key_value = doc_types.length+i+1;
+
+		var p = $('<p/>')
+			.text(' (key : ' + key_value + ')')
+			.css("font-size", "10px")
+			.css("font-weight", "normal");
+
+
+		var div = $('<div/>')
+			.attr("class", "icon-arrow-"+orientations[i]+"-circle")
+			.css("font-weight", "bold")
+			.css("font-size", "20px");
+
 		var li = $('<li/>')
 			.attr("class", "btn btn-a btn-sm smooth")
 			.css("background-color", 'white')
 			.css("border", "3px solid black")
-			.text(orientations[i] + ' (key: ' + key_value + ')')
 			.css('margin-bottom', '1%')
+			.append(div)
+			.append(p)
 			.appendTo(orientation_legend);
 
 		li.mousedown(function (e) {
@@ -254,8 +293,12 @@ $(document).ready(function(){
 
 
     $(document).keydown(function(e) {
+    
+    var e_which = e.which
+	var c = String.fromCharCode(e_which)
+    console.log('test ' + c);
 
-    switch(e.which) {
+    switch(e_which) {
 
 		//
 		// NAVIGATION between images
@@ -317,33 +360,33 @@ $(document).ready(function(){
 			console.log('document type: ', document_type);
         break;
 
-
-
-        // 
-        // ORIENTATION: using [5, 8] digits
-        //
 		case 53: // 5
-	        orientation = 0;
-			console.log('orientation: ', orientation);
-			select_orientation(0);
+			document_type = doc_types[4];
+			select_document_type(doc_types, document_type);
+			console.log('document type: ', document_type);
         break;
 
 		case 54: // 6
-	        orientation = 1;
-			console.log('orientation: ', orientation);
-			select_orientation(1);
+			document_type = doc_types[5];
+			select_document_type(doc_types, document_type);
+			console.log('document type: ', document_type);
         break;
 
 		case 55: // 7
-	        orientation = 2;
-			console.log('orientation: ', orientation);
-			select_orientation(2);
+			document_type = doc_types[6];
+			select_document_type(doc_types, document_type);
+			console.log('document type: ', document_type);
         break;
 
 		case 56: // 8
-	        orientation = 3;
-			console.log('orientation: ', orientation);
-			select_orientation(3);
+			document_type = doc_types[7];
+			select_document_type(doc_types, document_type);
+			console.log('document type: ', document_type);
+
+		case 57: // 9
+			document_type = doc_types[8];
+			select_document_type(doc_types, document_type);
+			console.log('document type: ', document_type);
         break;
 
         //
@@ -352,8 +395,6 @@ $(document).ready(function(){
 
         case 13: // enter
 
-        	console.log(orientation);
-        	console.log(orientations);
         	var json_obj = {
         		"img_path": images[image_idx],
         		"document_type": doc_types[document_type],
@@ -370,17 +411,44 @@ $(document).ready(function(){
 			        console.log(result);
 			    }
 			});
+
 			if (image_idx < images.length){
 				image_idx++;
 			}
 			img.src = images[image_idx];
         break;
-
-        default: 
-        	return; // exit this handler for other keys
     }
 
-});
+    switch(c){
+    	//
+        case 'Q': // 5
+
+	        orientation = 0;
+			console.log('orientation: ', orientation);
+			select_orientation(0);
+        break;
+
+		case 'W': // 6
+	        orientation = 1;
+			console.log('orientation: ', orientation);
+			select_orientation(1);
+        break;
+
+		case 'E': // 7
+	        orientation = 2;
+			console.log('orientation: ', orientation);
+			select_orientation(2);
+        break;
+
+		case 'R': // 8
+	        orientation = 3;
+			console.log('orientation: ', orientation);
+			select_orientation(3);
+		break;
+
+        default: 
+			return; // exit this handler for other keys
+    }});
 });
 
 
