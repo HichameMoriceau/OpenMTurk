@@ -151,7 +151,8 @@ $(document).ready(function(){
 		});
 
 	})
-	
+
+	// set default values
 	select_document_type(doc_types, doc_types[0]);
 	select_orientation(0);
 	select_bb(bbs_names, 0);
@@ -243,7 +244,13 @@ $(document).ready(function(){
 				image_idx--;
 			}
 			img.src = images[image_idx];
-			console.log('left');
+
+			// set default values
+			select_document_type(doc_types, doc_types[0]);
+			select_orientation(0);
+			select_bb(bbs_names, 0);
+
+			console.log('previous image');
         break;
 
         case 39: // right
@@ -251,7 +258,13 @@ $(document).ready(function(){
 				image_idx++;
 			}
 			img.src = images[image_idx];
-			console.log('right');
+
+			// set default values
+			select_document_type(doc_types, doc_types[0]);
+			select_orientation(0);
+			select_bb(bbs_names, 0);
+
+			console.log('next image');
         break;
 
         //
