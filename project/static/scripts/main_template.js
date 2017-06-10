@@ -7,23 +7,54 @@
 
 function select_orientation(o){
 
-	$('#orientation li').eq(0).css("color", "black");
-	$('#orientation li').eq(1).css("color", "black");
-	$('#orientation li').eq(2).css("color", "black");
-	$('#orientation li').eq(3).css("color", "black");
-	$('#orientation li').eq(o).css("color", "red");
+	$('#orientation li').eq(0)
+		.css("color", "black")
+		.css("font-weight", "normal");
+	$('#orientation li').eq(1)
+		.css("color", "black")
+		.css("font-weight", "normal");
+	$('#orientation li').eq(2)
+		.css("color", "black")
+		.css("font-weight", "normal");
+	$('#orientation li').eq(3)
+		.css("color", "black")
+		.css("font-weight", "normal");
+	$('#orientation li').eq(o)
+		.css("color", "red")
+		.css("font-weight", "bold");
 }
 
 function select_document_type(doc_types, dt){
 
 	$.each(doc_types, function(i){
-		$('#document_type li').eq(i).css("color", "black");
+		$('#document_type li').eq(i)
+			.css("color", "black")
+			.css("font-weight", "normal");
 		
 		if (doc_types[i] == dt){
-			$('#document_type li').eq(i).css("color", "red");
+			$('#document_type li').eq(i)
+			.css("color", "red")
+			.css("font-weight", "bold")
 		}
 	})
 }
+
+function select_bb(bbs_names, bb_idx){
+
+	$.each(bbs_names, function(i){
+		$('#bounding_box_colors li').eq(i)
+			.css("color", "black")
+			.css("font-weight", "normal");
+		
+		if (i == bb_idx){
+			$('#bounding_box_colors li').eq(i)
+				.css("color", "red")
+			.	css("font-weight", "bold");
+		}
+	})
+}
+
+
 
 $(document).ready(function(){
 
@@ -39,16 +70,16 @@ $(document).ready(function(){
     var ctx = canvas.getContext("2d");
 
 	var doc_types = ['Notebook', 'Form', 'Receipt', 'Letter'];
-	var orientations = ['up', 'right', 'down', 'left'];
-	var bbs_names = ['document', 
-					 'title', 
-					 'subtitle', 
-					 'text_region', 
-					 'list', 
-					 'table', 
-					 'drawing/diagram', 
-					 'formula', 
-					 'separation-line / structure'];
+	var orientations = ['Up', 'Right', 'Down', 'Left'];
+	var bbs_names = ['Document', 
+					 'Title', 
+					 'Subtitle', 
+					 'Text region', 
+					 'List', 
+					 'Table', 
+					 'Drawing/diagram', 
+					 'Formula', 
+					 'Separation-line / Structure'];
 	
 	var bbs_colors = ['white', 
 					  'orange', 
@@ -59,24 +90,6 @@ $(document).ready(function(){
 					  'green', 
 					  'yellow', 
 					  'purple'];
-	
-	var bbs_legend = document.getElementById('bounding_box_colors');
-
-	$.each(bbs_names, function(i){
-
-		var li = $('<li/>')
-			.text(bbs_names[i])
-			.css("background-color", bbs_colors[i])
-			.css("border", "3px solid black")
-			.css("margin-top", "1%")
-			.appendTo(bbs_legend);
-
-		li.mousedown(function (e) {
-			console.log('click on ' + bbs_names[i])
-			selected_bb = i;
-		});
-
-	})
 
 	$.each(doc_types, function(i){
 
@@ -84,6 +97,9 @@ $(document).ready(function(){
 		var key_value = i+1;
 		
 		var li = $('<li/>')
+			.attr("class", "btn btn-a btn-sm smooth")
+			.css("background-color", 'white')
+			.css("border", "3px solid black")
 			.text(doc_types[i] + ' (key: ' + key_value + ')')
 			.appendTo(doc_type_legend);
 	})
@@ -95,13 +111,38 @@ $(document).ready(function(){
 		var key_value = doc_types.length+i+1;	
 		
 		var li = $('<li/>')
+			.attr("class", "btn btn-a btn-sm smooth")
+			.css("background-color", 'white')
+			.css("border", "3px solid black")
 			.text(orientations[i] + ' (key: ' + key_value + ')')
 			.css('margin-bottom', '1%')
 			.appendTo(orientation_legend);
 	})
 
+	$.each(bbs_names, function(i){
+		var bbs_legend = document.getElementById('bounding_box_colors');
+
+		var li = $('<li/>')
+			.attr("class", "btn btn-a btn-sm smooth")
+			.text(bbs_names[i])
+			.css("background-color", bbs_colors[i])
+			.css("color", 'black')
+			.css("border", "3px solid black")
+			.css("margin-top", "1%")
+			.appendTo(bbs_legend);
+
+		li.mousedown(function (e) {
+			console.log('click on ' + bbs_names[i])
+			selected_bb = i;
+			select_bb(bbs_names, i);
+		});
+
+	})
+	
 	select_document_type(doc_types, doc_types[0]);
 	select_orientation(0);
+	select_bb(bbs_names, 0);
+
 
 	var img = new Image(); 
 	img.onload = function () {
@@ -157,6 +198,7 @@ $(document).ready(function(){
 	        startX = mouseX;
 	        startY = mouseY;
 	        canvas.style.cursor = "crosshair";
+
 	    }
 
 	}
