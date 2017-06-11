@@ -1,18 +1,19 @@
+
 body {
 	background-color: #839cc4;
 }
 
+ul {
+	list-style-type: none;
+}
+
 #main_div {
-	background-color: red;
+	margin: 1% 0% 3% 3%; 
+	width:95%;
 }
 
 #img_div {
 	float:left;
-}
-
-
-ul {
-	list-style-type: none;
 }
 
 #legend_div div {
@@ -20,14 +21,27 @@ ul {
 }
 
 #legend_div {
-	float:right; 
-	width:30%; 
+	float:left; 
+	width:60%; 
 	margin: 1% 1% 1% 1%; 
 	border: 3px solid black;
 }
 
-#main_div {
-	margin: 1% 0% 3% 3%; 
-	width:95%;
+#legend_col_1 div {
+	margin: 1% 1% 1% 1%;
 }
+
+#legend_col_1 {
+	float:left; 
+	width:30%; 
+	margin: 1% 1% 1% 1%; 
+	border: 5px solid blue;
+}
+
+#legend_col_2 {
+	float:left;
+	width:30%;
+	border: 5px solid red;
+}
+
 

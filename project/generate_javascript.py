@@ -10,7 +10,7 @@ from jinja2 import Template
 import glob
 import time
 
-def get_js_version(dir_path):
+def get_style_version(dir_path):
 
 	considered_files = glob.glob(dir_path)
 	considered_files = list(filter(lambda x : len(x.split('.'))==3, 
@@ -36,7 +36,7 @@ def main():
 	main_js_path = 'static/scripts/main_template.js'
 	images_dir = 'static/notes_photos/*'
 
-	version_nb = get_js_version('static/scripts/*')
+	version_nb = get_style_version('static/scripts/*')
 	new_version = int(version_nb)+1
 	print('previous main.js version {}'.format(version_nb))
 	print('new      main.js version {}'.format(new_version))
@@ -53,6 +53,15 @@ def main():
 	    f.write(template.render(images=images_dir))
 	
 	print('{} HTML was generated from template'.format(html_index_path))
+
+
+	with open('static/scripts/css/style.css', 'r') as f:
+	    css_sheet = f.read()
+	
+	main_css = 'static/scripts/css/style.{}.css'.format(new_version)
+	
+	with open(main_css, "w") as f:
+	    f.write(css_sheet)
 
 
 if __name__ == "__main__":

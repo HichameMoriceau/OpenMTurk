@@ -23,7 +23,7 @@ app.config.update(TEMPLATES_AUTO_RELOAD=True)
 client = MongoClient()
 db = client['labels_db'] # use existing database
 
-def get_js_version(dir_path):
+def get_style_version(dir_path):
 
 	considered_files = glob.glob(dir_path)
 	considered_files = list(filter(lambda x : len(x.split('.'))==3, 
@@ -59,9 +59,12 @@ def label():
 
 @app.route('/')
 def index():
-	js_version = get_js_version('static/scripts/*')
-	main_js = 'static/scripts/main.{}.js'.format(js_version)
+	style_version = get_style_version('static/scripts/*')
+	main_js = 'static/scripts/main.{}.js'.format(style_version)
+	main_css = 'static/scripts/css/style.{}.css'.format(style_version)
+	
+	print('Using main.js version {}'.format(style_version))
 
-	print('Using main.js version {}'.format(js_version))
-
-	return render_template('index.html', main_js=main_js)
+	return render_template('index.html', 
+						   main_js=main_js,
+						   main_css=main_css)
