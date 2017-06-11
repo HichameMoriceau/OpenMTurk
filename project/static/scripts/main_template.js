@@ -41,20 +41,7 @@ function select_document_type(doc_types, dt){
 }
 
 
-function select_bb(bbs_names, bb_idx){
 
-	$.each(bbs_names , function(i){
-		$('#bounding_boxes li').eq(i)
-			.css("color", "black")
-			.css("font-weight", "normal");
-		
-		if (i == bb_idx){
-			$('#bounding_boxes li').eq(i)
-				.css("color", "red")
-				.css("font-weight", "bold");
-		}
-	})
-}
 
 
 $(document).ready(function(){
@@ -75,6 +62,8 @@ $(document).ready(function(){
 
 
 	var isDrawing=false;
+	var isRect = true;
+	var isLine = false;
 	var startX;
 	var startY;
 
@@ -116,7 +105,31 @@ $(document).ready(function(){
 
 	img.src = images[0]+"?t="+ new Date().getTime();
 	
-	
+	function select_bb(bbs_names, bb_idx){
+
+		$.each(bbs_names , function(i){
+			$('#bounding_boxes li').eq(i)
+				.css("color", "black")
+				.css("font-weight", "normal");
+			
+			if (i == bb_idx){
+				$('#bounding_boxes li').eq(i)
+					.css("color", "red")
+					.css("font-weight", "bold");
+
+				if (bb_names[i] == 'Line'){
+					isLine = true;
+					isRect = false;
+				}else{
+					isLine = false;
+					isRect = true;
+				}
+
+			}
+		})
+	}	
+
+
 	$.each(doc_types , function(i){
 
 		var doc_type_legend = document.getElementById('document_type');
@@ -222,31 +235,52 @@ $(document).ready(function(){
 
 	    if (isDrawing) {
 
-	    	bb = {
-	    		"label": bb_names[selected_bb],
-	    		"offset": [offsetX, offsetY],
-	    		
-	    		"point_0": [startX*scale_x,
-	    					startY*scale_y],
-	    		
-	    		"point_1": [(e.pageX - offsetX)*scale_x,
-	    					(e.pageY - offsetY)*scale_y]
-	    	}
-        	bounding_boxes.push(bb)
-
 	        isDrawing = false;
 	        ctx.beginPath();
-	        ctx.strokeRect(startX, startY,
-	        			   mouseX - startX, mouseY - startY);
+
+	        if (isRect){
+	        	bb = {
+		    		"label": bb_names[selected_bb],
+		    		"offset": [offsetX, offsetY],
+		    		
+		    		"point_0": [startX*scale_x,
+		    					startY*scale_y],
+		    		
+		    		"point_1": [(e.pageX - offsetX)*scale_x,
+		    					(e.pageY - offsetY)*scale_y]
+		    	}
+	        	bounding_boxes.push(bb);
+
+		        ctx.strokeRect(startX, startY,
+		        			   mouseX - startX, mouseY - startY);
+	        }else if(isLine){
+	        	console.log('tracing line');
+
+				bb = {
+		    		"label": bb_names[selected_bb],
+		    		"offset": [offsetX, offsetY],
+		    		
+		    		"point_0": [startX*scale_x,
+		    					startY*scale_y],
+		    		
+		    		"point_1": [mouseX*scale_x,
+		    					mouseY*scale_y]
+		    	}
+	        	bounding_boxes.push(bb);
+
+	        	ctx.moveTo(startX, startY);
+      			ctx.lineTo(mouseX, mouseY);
+      			ctx.stroke();
+	        }
+
 	        canvas.style.cursor = "default";
 	    
 	    } else {
-	    	
+
 	    	isDrawing = true;
 	        startX = mouseX;
 	        startY = mouseY;
 	        canvas.style.cursor = "crosshair";
-
 	    }
 
 	}
@@ -289,7 +323,8 @@ $(document).ready(function(){
 			select_document_type(doc_types, doc_types[0]);
 			select_orientation(0);
 			select_bb(bb_names, 0);
-
+			isDrawing = false
+			
 			console.log('next image:');
         break;
 
