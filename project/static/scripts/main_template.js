@@ -71,7 +71,7 @@ $(document).ready(function(){
 	var orientation = 0;
 	var selected_bb = 0;
 
-	var canvas = document.getElementById('ex_canvas');
+	var canvas = document.getElementById('img_canvas');
     var ctx = canvas.getContext("2d");
 
 	var doc_types = ['Note',
@@ -197,7 +197,7 @@ $(document).ready(function(){
 
 
 	$.each(bb_lists, function(i){
-		var bbs_legend = document.getElementById('bounding_box_colors');
+		var bbs_legend = document.getElementById('bounding_boxes');
 		var ul = $('<ul/>');
 
 		$.each(bb_lists[i], function(j){
@@ -220,7 +220,8 @@ $(document).ready(function(){
 
 			ul.append(li);
 		})
-		ul.appendTo(bbs_legend);
+		ul.css('margin-left', '-3%')
+		  .appendTo(bbs_legend);
 	})
 
 	// set default values
@@ -261,7 +262,7 @@ $(document).ready(function(){
 	var startX;
 	var startY;
 
-	var canvasOffset = $("#ex_canvas").offset();
+	var canvasOffset = $("#img_canvas").offset();
 	var offsetX = canvasOffset.left;
 	var offsetY = canvasOffset.top;
 
@@ -304,7 +305,7 @@ $(document).ready(function(){
 
 	}
 
-	$("#ex_canvas").mousedown(function (e) {
+	$("#img_canvas").mousedown(function (e) {
 		handleMouseDown(e)
 	});
 
@@ -312,7 +313,7 @@ $(document).ready(function(){
 	$.each(bbs_colors, function(i){
 
 		$.each(bbs_colors[i], function(j){
-			$("#bounding_box_colors ul li").eq(i).mousedown(function (e) {
+			$("#bounding_boxes ul li").eq(i).mousedown(function (e) {
 
 				ctx.strokeStyle = bbs_colors[i][j];
 			});

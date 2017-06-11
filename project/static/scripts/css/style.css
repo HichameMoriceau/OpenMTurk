@@ -1,0 +1,33 @@
+body {
+	background-color: #839cc4;
+}
+
+#main_div {
+	background-color: red;
+}
+
+#img_div {
+	float:left;
+}
+
+
+ul {
+	list-style-type: none;
+}
+
+#legend_div div {
+	margin: 1% 1% 1% 1%;
+}
+
+#legend_div {
+	float:right; 
+	width:30%; 
+	margin: 1% 1% 1% 1%; 
+	border: 3px solid black;
+}
+
+#main_div {
+	margin: 1% 0% 3% 3%; 
+	width:95%;
+}
+
