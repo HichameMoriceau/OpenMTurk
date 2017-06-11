@@ -33,15 +33,22 @@ ul {
 
 #legend_col_1 {
 	float:left; 
-	width:30%; 
+	width:45%; 
 	margin: 1% 1% 1% 1%; 
 	border: 5px solid blue;
 }
 
 #legend_col_2 {
 	float:left;
-	width:30%;
+	width:45%;
 	border: 5px solid red;
 }
 
+#legend_col_2 div {
+	margin-top: -1%;
+}
 
+
+#bounding_boxes ul{
+	margin-left: -10%; 
+}

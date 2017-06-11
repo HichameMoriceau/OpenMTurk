@@ -39,23 +39,39 @@ function select_document_type(doc_types, dt){
 	})
 }
 
-function select_bb(bb_lists, bb_i, bb_j){
+	// // add text input to legend 1
+	// $('<textarea/>').appendTo($('#legend_col_1'));
+// function select_bb(bb_names, idx){
 
-	$.each(bb_lists, function(i){
+// 	$.each(bb_names, function(i){
 
-		$.each(bb_lists[i], function(j){
+// 			var li = $('#bb_'+i+'_'+j);
 
-			var li = $('#bb_'+i+'_'+j);
-
-			li.css("color", "black")
-			  .css("font-weight", "normal");
+// 			li.css("color", "black")
+// 			  .css("font-weight", "normal");
 		
-			if (i == bb_i && j == bb_j){
-				li.css("color", "red")
-				  .css("font-weight", "bold");
-			}
+// 			if (i == bb_i && j == bb_j){
+// 				li.css("color", "red")
+// 				  .css("font-weight", "bold");
+// 			}
 
-		})
+// 		})
+// 	})
+// }
+
+
+function select_bb(bbs_names, bb_idx){
+
+	$.each(bbs_names, function(i){
+		$('#bounding_boxes li').eq(i)
+			.css("color", "black")
+			.css("font-weight", "normal");
+		
+		if (i == bb_idx){
+			$('#bounding_boxes li').eq(i)
+				.css("color", "red")
+			.	css("font-weight", "bold");
+		}
 	})
 }
 
@@ -85,15 +101,13 @@ $(document).ready(function(){
 	// north, east, south, west
 	var orientations = ['up', 'left', 'down', 'right'];
 
-	var bb_lists = [['Document'], 
-					
-					['Image',
-					 'Text region', 
+	var bb_names = ['Document',
+					 'Image',
+					 'Text', 
 					 'Table', 
 					 'Drawing',
-					 'Diagram'],
-					
-					['Title', 
+					 'Diagram',
+					 'Title', 
 					 'Subtitle', 
 					 'Underlined text',
 					 'Separation-line / Structure',
@@ -107,17 +121,15 @@ $(document).ready(function(){
 					 
 					 'Plot',
 					 'Signature',
-					 'other']];
+					 'other'];
 	
-	var bbs_colors = [['white'], 
-
-					  ['orange', 
+	var bbs_colors = ['white', 
+					   'orange', 
    					   'pink', 
    					   'salmon',
   					   'blue', 
-  					   'brown'], 
-
-					  ['gray', 
+  					   'brown',
+  					   'gray', 
 					   'lime',
 					   'Maroon',
 					   'green', 
@@ -131,14 +143,15 @@ $(document).ready(function(){
 					  
 					   'DarkTurquoise',
 					   'chocolate',
-					   'papayawhip']];
+					   'papayawhip'];
+	
 
 	$.each(doc_types, function(i){
 
 		var doc_type_legend = document.getElementById('document_type');
 		var key_value = i+1;
 		
-		var p = $('<p/>')
+		var span = $('<span/>')
 			.text(' (key : ' + key_value + ')')
 			.css("font-size", "10px")
 			.css("font-weight", "normal");
@@ -151,7 +164,7 @@ $(document).ready(function(){
 			.css("background-color", 'white')
 			.css("border", "3px solid black")
 			.append(div)
-			.append(p)
+			.append(span)
 			.appendTo(doc_type_legend);
 
 
@@ -168,7 +181,7 @@ $(document).ready(function(){
 		
 		var orientation_legend = document.getElementById('orientation');
 
-		var p = $('<p/>')
+		var span = $('<span/>')
 			.text(' (key : ' + key_values[i] + ')')
 			.css("font-size", "10px")
 			.css("font-weight", "normal");
@@ -185,7 +198,7 @@ $(document).ready(function(){
 			.css("border", "3px solid black")
 			.css('margin-bottom', '1%')
 			.append(div)
-			.append(p)
+			.append(span)
 			.appendTo(orientation_legend);
 
 		li.mousedown(function (e) {
@@ -196,38 +209,32 @@ $(document).ready(function(){
 	})
 
 
-	$.each(bb_lists, function(i){
+	$.each(bb_names, function(i){
 		var bbs_legend = document.getElementById('bounding_boxes');
-		var ul = $('<ul/>');
-
-		$.each(bb_lists[i], function(j){
-			
-			var li = $('<li/>')
-				.attr("class", "btn btn-a btn-sm smooth")
-				.attr("id", 'bb_'+i+'_'+j)
-				.text(bb_lists[i][j])
-				.css("background-color", bbs_colors[i][j])
-				.css("color", 'black')
-				.css("border", "3px solid black")
-				.css("margin-top", "1%");
+		// var ul = $('<ul/>');
+		
+		var li = $('<li/>')
+			.attr("class", "btn btn-a btn-sm smooth")
+			.text(bb_names[i])
+			.css("background-color", bbs_colors[i])
+			.css("color", 'black')
+			.css("border", "3px solid black")
+			.css("margin-top", "1%");
 
 
-			li.mousedown(function (e) {
-				selected_bb = [i, j];
-				select_bb(bb_lists, i, j);
-			});
+		li.mousedown(function (e) {
+			selected_bb = i;
+			select_bb(bb_names, i);
+		});
 
-
-			ul.append(li);
-		})
-		ul.css('margin-left', '-3%')
-		  .appendTo(bbs_legend);
+		// ul.append(li);
+		li.appendTo(bbs_legend);
 	})
 
 	// set default values
 	select_document_type(doc_types, doc_types[0]);
 	select_orientation(0);
-	select_bb(bb_lists, 0, 0);
+	select_bb(bb_names, 0);
 
 	var img_ratio = 0;
 	var scale_x = 0;
@@ -252,8 +259,8 @@ $(document).ready(function(){
 	    			  0,0,img.width,img.height,
 	    			  0,0,new_width,new_height);
 
-		ctx.strokeStyle=bbs_colors[0][0];
-		ctx.lineWidth=6;
+		ctx.strokeStyle=bbs_colors[0];
+		ctx.lineWidth=4;
 	}
 
 	img.src = '../static/notes_photos/IMG_20170604_100551.jpg';
@@ -276,8 +283,7 @@ $(document).ready(function(){
 	    if (isDrawing) {
 
 	    	bb = {
-	    		"label": bb_lists[selected_bb[0],
-	    						  selected_bb[1]],
+	    		"label": bb_names[selected_bb],
 	    		"offset": [offsetX, offsetY],
 	    		
 	    		"point_0": [startX*scale_x,
@@ -312,12 +318,10 @@ $(document).ready(function(){
 
 	$.each(bbs_colors, function(i){
 
-		$.each(bbs_colors[i], function(j){
-			$("#bounding_boxes ul li").eq(i).mousedown(function (e) {
+		$("#bounding_boxes li").eq(i).mousedown(function (e) {
 
-				ctx.strokeStyle = bbs_colors[i][j];
-			});
-		})
+			ctx.strokeStyle = bbs_colors[i];
+		});
 	})
 
 
@@ -341,7 +345,7 @@ $(document).ready(function(){
 			// set default values
 			select_document_type(doc_types, doc_types[0]);
 			select_orientation(0);
-			select_bb(bb_lists, 0, 0);
+			select_bb(bb_names, 0);
 
 			console.log('previous image');
         break;
@@ -355,7 +359,7 @@ $(document).ready(function(){
 			// set default values
 			select_document_type(doc_types, doc_types[0]);
 			select_orientation(0);
-			select_bb(bb_lists, 0, 0);
+			select_bb(bb_names, 0);
 
 			console.log('next image');
         break;
