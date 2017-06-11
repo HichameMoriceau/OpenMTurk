@@ -16,14 +16,14 @@ ul {
 	float:left;
 }
 
-#legend_div div {
-	margin: 1% 1% 1% 1%;
+/*#legend_div {
+	margin: 0% 1% 1% 1%;
 }
-
+*/
 #legend_div {
 	float:left; 
 	width:60%; 
-	margin: 1% 1% 1% 1%; 
+	margin: 0% 1% 1% 1%; 
 	border: 3px solid black;
 }
 
@@ -51,4 +51,10 @@ ul {
 
 #bounding_boxes ul{
 	margin-left: -10%; 
+}
+
+#bb_small_text {
+	font-size: 11px;
+	font-style: italic;
+	color: white;
 }

@@ -24,6 +24,7 @@ function select_orientation(o){
 		.css("font-weight", "bold");
 }
 
+
 function select_document_type(doc_types, dt){
 
 	$.each(doc_types , function(i){
@@ -33,8 +34,8 @@ function select_document_type(doc_types, dt){
 		
 		if (doc_types[i] == dt){
 			$('#document_type li').eq(i)
-			.css("color", "red")
-			.css("font-weight", "bold")
+				.css("color", "red")
+				.css("font-weight", "bold");
 		}
 	})
 }
@@ -50,15 +51,15 @@ function select_bb(bbs_names, bb_idx){
 		if (i == bb_idx){
 			$('#bounding_boxes li').eq(i)
 				.css("color", "red")
-			.	css("font-weight", "bold");
+				.css("font-weight", "bold");
 		}
 	})
 }
 
 
-
 $(document).ready(function(){
 
+	
 	var images = {{ images }};
 	var doc_types = {{ doc_types }};
 	var orientations = {{ orientations }};
@@ -71,10 +72,51 @@ $(document).ready(function(){
 	var orientation = 0;
 	var selected_bb = 0;
 
+
+
+	var isDrawing=false;
+	var startX;
+	var startY;
+
+	var canvasOffset = $("#img_canvas").offset();
+	var offsetX = canvasOffset.left;
+	var offsetY = canvasOffset.top;	
+
 	var canvas = document.getElementById('img_canvas');
-    var ctx = canvas.getContext("2d");
+	var ctx = canvas.getContext("2d");
+	var img = new Image();
 
+	var img_ratio = 0;
+	var scale_x = 0;
+	var scale_y = 0;
 
+	img.onload = function () {
+		console.log('onload -	 image');
+
+		// resize image but maintain original ratio
+	 	img_ratio = img.width / img.height;
+
+	 	var new_width = 500;
+	 	var new_height = new_width / img_ratio;
+		
+		scale_x = img.width / new_width;
+		scale_y = img.height / new_height;
+
+		canvas.width = new_width;
+	    canvas.height = new_height;
+	    
+	    console.log('calling drawImage');
+	    ctx.drawImage(img,
+	    			  0, 0, img.width, img.height,
+	    			  0, 0, new_width, new_height);
+
+		ctx.strokeStyle = bbs_colors[0];
+		ctx.lineWidth = 4;
+	}
+
+	img.src = images[0]+"?t="+ new Date().getTime();
+	
+	
 	$.each(doc_types , function(i){
 
 		var doc_type_legend = document.getElementById('document_type');
@@ -162,44 +204,16 @@ $(document).ready(function(){
 	select_orientation(0);
 	select_bb(bb_names, 0);
 
-	var img_ratio = 0;
-	var scale_x = 0;
-	var scale_y = 0;
 
-	var img = new Image(); 
-	img.onload = function () {
+	$.each(bbs_colors , function(i){
+		$("#bounding_boxes li").eq(i).mousedown(function (e) {
+			ctx.strokeStyle = bbs_colors[i];
+		});
+	})
 
-		// resize image but maintain original ratio
-	 	img_ratio = img.width / img.height;
-
-	 	var new_width = 500;
-	 	var new_height = new_width / img_ratio;
-		
-		scale_x = img.width / new_width;
-		scale_y = img.height / new_height;
-
-		canvas.width = new_width;
-	    canvas.height = new_height;
-	    
-	    ctx.drawImage(img,
-	    			  0, 0, img.width, img.height,
-	    			  0, 0, new_width, new_height);
-
-		ctx.strokeStyle = bbs_colors[0];
-		ctx.lineWidth = 4;
-	}
-
-	img.src = '../static/notes_photos/IMG_20170604_100551.jpg';
-	
-	var isDrawing=false;
-	var startX;
-	var startY;
-
-	var canvasOffset = $("#img_canvas").offset();
-	var offsetX = canvasOffset.left;
-	var offsetY = canvasOffset.top;
 
 	function handleMouseDown(e) {
+		console.log('handleMouseDown');
 
 	    mouseX = parseInt(e.pageX - offsetX);
 	    mouseY = parseInt(e.pageY - offsetY); 
@@ -242,31 +256,18 @@ $(document).ready(function(){
 	});
 
 
-	$.each(bbs_colors , function(i){
-
-		$("#bounding_boxes li").eq(i).mousedown(function (e) {
-
-			ctx.strokeStyle = bbs_colors[i];
-		});
-	})
-
-
     $(document).keydown(function(e) {
     
-    var e_which = e.which
-	var c = String.fromCharCode(e_which)
-    
-    switch(e_which) {
-
+    switch(e.which) {
 		//
-		// NAVIGATION between images
+		// ARROWS:
 		//
 
         case 37: // left
 	        if (image_idx != 0){
 				image_idx--;
 			}
-			img.src = images[image_idx];
+			img.src = images[image_idx]+"?t="+ new Date().getTime();
 
 			// set default values
 			select_document_type(doc_types, doc_types[0]);
@@ -280,18 +281,20 @@ $(document).ready(function(){
 	        if (image_idx < images.length){
 				image_idx++;
 			}
-			img.src = images[image_idx];
+
+			console.log('trying to render: ' + images[image_idx] + ', index ' + image_idx);
+			img.src = images[image_idx]+"?t="+ new Date().getTime();
 
 			// set default values
 			select_document_type(doc_types, doc_types[0]);
 			select_orientation(0);
 			select_bb(bb_names, 0);
 
-			console.log('next image');
+			console.log('next image:');
         break;
 
         //
-        // DOCUMENT TYPE [0 .. N] digits
+        // DIGITS:
         //
 
 		case 49: // 1
@@ -340,12 +343,43 @@ $(document).ready(function(){
 			document_type = doc_types[7];
 			select_document_type(doc_types, document_type);
 			console.log('document type: ', document_type);
+		break;
 
 		case 57: // 9
 			document_type = doc_types[8];
 			select_document_type(doc_types, document_type);
 			console.log('document type: ', document_type);
         break;
+
+        //
+        // LETTERS:
+        //
+
+        case 81: // Q
+
+	        orientation = 0;
+			console.log('orientation: ', orientation);
+			select_orientation(0);
+        break;
+
+		case 87: // W
+	        orientation = 1;
+			console.log('orientation: ', orientation);
+			select_orientation(1);
+        break;
+
+		case 69: // E
+	        orientation = 2;
+			console.log('orientation: ', orientation);
+			select_orientation(2);
+        break;
+
+		case 82: // R
+	        orientation = 3;
+			console.log('orientation: ', orientation);
+			select_orientation(3);
+		break;
+
 
         //
         // ENTER: sends annotations to back-end
@@ -373,40 +407,12 @@ $(document).ready(function(){
 			if (image_idx < images.length){
 				image_idx++;
 			}
-			img.src = images[image_idx];
+
+			img.src = images[image_idx]+'?#'+new Date().getTime();
         break;
+
+        default: return; // exit this handler for other keys
     }
 
-    switch(c){
-    	//
-        case 'Q': // 5
-
-	        orientation = 0;
-			console.log('orientation: ', orientation);
-			select_orientation(0);
-        break;
-
-		case 'W': // 6
-	        orientation = 1;
-			console.log('orientation: ', orientation);
-			select_orientation(1);
-        break;
-
-		case 'E': // 7
-	        orientation = 2;
-			console.log('orientation: ', orientation);
-			select_orientation(2);
-        break;
-
-		case 'R': // 8
-	        orientation = 3;
-			console.log('orientation: ', orientation);
-			select_orientation(3);
-		break;
-
-        default: 
-			return; // exit this handler for other keys
-    }});
 });
-
-
+});
