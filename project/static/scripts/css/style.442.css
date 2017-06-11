@@ -7,6 +7,11 @@ ul {
 	list-style-type: none;
 }
 
+textarea{
+	width: 100%;
+	border: 2px solid black;
+}
+
 #main_div {
 	margin: 1% 0% 3% 3%; 
 	width:95%;

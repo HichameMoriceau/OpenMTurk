@@ -1,11 +1,12 @@
 doc_types:
-- Note
+- Form
 - Receipt
 - Page
-- Form
+- Note
+- Invoice
+- Letter
 - Business card
 - CV
-- Letter
 
 orientations:
 - up
@@ -17,6 +18,7 @@ bb_names:
 - Document
 - Image
 - Text
+- Striked-out
 - Table
 - Drawing
 - Diagram
@@ -44,6 +46,7 @@ bbs_colors:
 - Maroon
 - green
 - DarkGreen
+- indigo
 - LightSlateGrey
 - yellow
 - beige

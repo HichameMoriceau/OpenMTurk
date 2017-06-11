@@ -64,6 +64,9 @@ $(document).ready(function(){
 	var isDrawing=false;
 	var isRect = true;
 	var isLine = false;
+	// var textarea_alive = false;
+	var textarea;
+
 	var startX;
 	var startY;
 
@@ -249,10 +252,46 @@ $(document).ready(function(){
 		    		"point_1": [(e.pageX - offsetX)*scale_x,
 		    					(e.pageY - offsetY)*scale_y]
 		    	}
-	        	bounding_boxes.push(bb);
 
 		        ctx.strokeRect(startX, startY,
 		        			   mouseX - startX, mouseY - startY);
+
+		        console.log('here:');
+		        console.log(selected_bb);
+		        console.log(bb_names[selected_bb]);
+
+		        if (bb_names[selected_bb] == 'Text'){
+		        	var div = $('<div/>');
+		        	textarea = $('<textarea/>')
+		        						.attr('rows', '3')
+		        						.attr('class', 'smooth')
+		        						.appendTo(div);
+		        						
+		        	// make textarea appear
+		        	div.appendTo($('#legend_col_1'));
+		        	// textarea_alive = true;
+		        	// disable all events
+		        	$(document).on('keydown', handleKeyDown);
+		        	$(document).off('keydown click');
+		        	$(textarea).on();
+		        	
+		        	$(textarea).keypress(function(e) {
+						if(e.which == 13) {
+							
+							bb["text"] = textarea.val();
+							console.log('ENTER TEXTAREA MOUSEDOWN');
+	        	
+							$(document).on('keydown', handleKeyDown);
+							// make textarea disappear
+							textarea.remove();
+
+							
+						}
+					});
+		        }
+
+	        	bounding_boxes.push(bb);
+
 	        }else if(isLine){
 	        	console.log('tracing line');
 
@@ -285,169 +324,192 @@ $(document).ready(function(){
 
 	}
 
+
+	function handleKeyDown(e){
+
+	    switch(e.which) {
+			//
+			// ARROWS:
+			//
+
+	        case 37: // left
+		        if (image_idx != 0){
+					image_idx--;
+				}
+				img.src = images[image_idx]+"?t="+ new Date().getTime();
+
+				// set default values
+				select_document_type(doc_types, doc_types[0]);
+				select_orientation(0);
+				select_bb(bb_names, 0);
+
+				console.log('previous image');
+	        break;
+
+	        case 39: // right
+		        if (image_idx < images.length){
+					image_idx++;
+				}
+
+				console.log('trying to render: ' + images[image_idx] + ', index ' + image_idx);
+				img.src = images[image_idx]+"?t="+ new Date().getTime();
+
+				// set default values
+				select_document_type(doc_types, doc_types[0]);
+				select_orientation(0);
+				select_bb(bb_names, 0);
+				isDrawing = false
+				
+				console.log('next image:');
+	        break;
+
+	        //
+	        // DIGITS:
+	        //
+
+			case 49: // 1
+				document_type = doc_types[0];
+				select_document_type(doc_types, document_type);
+				console.log('document type: ', document_type);
+	        break;
+
+			case 50: // 2
+				document_type = doc_types[1];
+				select_document_type(doc_types, document_type);
+				console.log('document type: ', document_type);
+	        break;
+
+			case 51: // 3
+				document_type = doc_types[2];
+				select_document_type(doc_types, document_type);
+				console.log('document type: ', document_type);
+	        break;
+
+			case 52: // 4
+				document_type = doc_types[3];
+				select_document_type(doc_types, document_type);
+				console.log('document type: ', document_type);
+	        break;
+
+			case 53: // 5
+				document_type = doc_types[4];
+				select_document_type(doc_types, document_type);
+				console.log('document type: ', document_type);
+	        break;
+
+			case 54: // 6
+				document_type = doc_types[5];
+				select_document_type(doc_types, document_type);
+				console.log('document type: ', document_type);
+	        break;
+
+			case 55: // 7
+				document_type = doc_types[6];
+				select_document_type(doc_types, document_type);
+				console.log('document type: ', document_type);
+	        break;
+
+			case 56: // 8
+				document_type = doc_types[7];
+				select_document_type(doc_types, document_type);
+				console.log('document type: ', document_type);
+			break;
+
+			case 57: // 9
+				document_type = doc_types[8];
+				select_document_type(doc_types, document_type);
+				console.log('document type: ', document_type);
+	        break;
+
+	        //
+	        // LETTERS:
+	        //
+
+	        case 81: // Q
+
+		        orientation = 0;
+				console.log('orientation: ', orientation);
+				select_orientation(0);
+	        break;
+
+			case 87: // W
+		        orientation = 1;
+				console.log('orientation: ', orientation);
+				select_orientation(1);
+	        break;
+
+			case 69: // E
+		        orientation = 2;
+				console.log('orientation: ', orientation);
+				select_orientation(2);
+	        break;
+
+			case 82: // R
+		        orientation = 3;
+				console.log('orientation: ', orientation);
+				select_orientation(3);
+			break;
+
+
+	        //
+	        // ENTER: sends annotations to back-end
+	        //
+
+	        case 13: // enter
+		        console.log('FINAL ENTER');
+
+	        	// if (textarea_alive){
+	        	// 	console.log('textarea_alive ' + textarea_alive);
+		        // 	bb["text"] = textarea.val();
+		        // 	console.log(bb["text"]);
+
+		        // 	// make textarea disappear
+		        // 	textarea.remove();
+		        // 	textarea_alive = false;
+
+		        // 	return;
+	        	// }
+
+	        	var json_obj = {
+	        		"img_path": images[image_idx],
+	        		"document_type": doc_types[document_type],
+	        		"orientation": orientations[orientation],
+	        		"bounding_boxes": bounding_boxes
+	        	}
+
+	        	$.ajax({
+				    type : "POST",
+				    url : '/label',
+				    data: JSON.stringify(json_obj, null, '\t'),
+				    contentType: 'application/json;charset=UTF-8',
+				    success: function(result) {
+				        console.log(result);
+				    }
+				});
+
+				if (image_idx < images.length){
+					image_idx++;
+				}
+				img.src = images[image_idx]+'?#'+new Date().getTime();
+
+				// set default values
+				selected_bb = 0;
+				select_document_type(doc_types, doc_types[0]);
+				select_orientation(0);
+				select_bb(bb_names, 0);
+	        break;
+
+	        default: return; // exit this handler for other keys
+	    }
+	}
+
+
 	$("#img_canvas").mousedown(function (e) {
-		handleMouseDown(e)
+		handleMouseDown(e);
 	});
 
 
     $(document).keydown(function(e) {
-    
-    switch(e.which) {
-		//
-		// ARROWS:
-		//
-
-        case 37: // left
-	        if (image_idx != 0){
-				image_idx--;
-			}
-			img.src = images[image_idx]+"?t="+ new Date().getTime();
-
-			// set default values
-			select_document_type(doc_types, doc_types[0]);
-			select_orientation(0);
-			select_bb(bb_names, 0);
-
-			console.log('previous image');
-        break;
-
-        case 39: // right
-	        if (image_idx < images.length){
-				image_idx++;
-			}
-
-			console.log('trying to render: ' + images[image_idx] + ', index ' + image_idx);
-			img.src = images[image_idx]+"?t="+ new Date().getTime();
-
-			// set default values
-			select_document_type(doc_types, doc_types[0]);
-			select_orientation(0);
-			select_bb(bb_names, 0);
-			isDrawing = false
-			
-			console.log('next image:');
-        break;
-
-        //
-        // DIGITS:
-        //
-
-		case 49: // 1
-			document_type = doc_types[0];
-			select_document_type(doc_types, document_type);
-			console.log('document type: ', document_type);
-        break;
-
-		case 50: // 2
-			document_type = doc_types[1];
-			select_document_type(doc_types, document_type);
-			console.log('document type: ', document_type);
-        break;
-
-		case 51: // 3
-			document_type = doc_types[2];
-			select_document_type(doc_types, document_type);
-			console.log('document type: ', document_type);
-        break;
-
-		case 52: // 4
-			document_type = doc_types[3];
-			select_document_type(doc_types, document_type);
-			console.log('document type: ', document_type);
-        break;
-
-		case 53: // 5
-			document_type = doc_types[4];
-			select_document_type(doc_types, document_type);
-			console.log('document type: ', document_type);
-        break;
-
-		case 54: // 6
-			document_type = doc_types[5];
-			select_document_type(doc_types, document_type);
-			console.log('document type: ', document_type);
-        break;
-
-		case 55: // 7
-			document_type = doc_types[6];
-			select_document_type(doc_types, document_type);
-			console.log('document type: ', document_type);
-        break;
-
-		case 56: // 8
-			document_type = doc_types[7];
-			select_document_type(doc_types, document_type);
-			console.log('document type: ', document_type);
-		break;
-
-		case 57: // 9
-			document_type = doc_types[8];
-			select_document_type(doc_types, document_type);
-			console.log('document type: ', document_type);
-        break;
-
-        //
-        // LETTERS:
-        //
-
-        case 81: // Q
-
-	        orientation = 0;
-			console.log('orientation: ', orientation);
-			select_orientation(0);
-        break;
-
-		case 87: // W
-	        orientation = 1;
-			console.log('orientation: ', orientation);
-			select_orientation(1);
-        break;
-
-		case 69: // E
-	        orientation = 2;
-			console.log('orientation: ', orientation);
-			select_orientation(2);
-        break;
-
-		case 82: // R
-	        orientation = 3;
-			console.log('orientation: ', orientation);
-			select_orientation(3);
-		break;
-
-
-        //
-        // ENTER: sends annotations to back-end
-        //
-
-        case 13: // enter
-
-        	var json_obj = {
-        		"img_path": images[image_idx],
-        		"document_type": doc_types[document_type],
-        		"orientation": orientations[orientation],
-        		"bounding_boxes": bounding_boxes
-        	}
-
-        	$.ajax({
-			    type : "POST",
-			    url : '/label',
-			    data: JSON.stringify(json_obj, null, '\t'),
-			    contentType: 'application/json;charset=UTF-8',
-			    success: function(result) {
-			        console.log(result);
-			    }
-			});
-
-			if (image_idx < images.length){
-				image_idx++;
-			}
-
-			img.src = images[image_idx]+'?#'+new Date().getTime();
-        break;
-
-        default: return; // exit this handler for other keys
-    }
-
-});
+    	handleKeyDown(e);
+	});
 });
