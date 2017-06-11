@@ -7,8 +7,11 @@
 """
 
 from jinja2 import Template
+from shutil import copyfile
 import glob
 import time
+import yaml
+
 
 def get_style_version(dir_path):
 
@@ -29,17 +32,18 @@ def get_style_version(dir_path):
 			
 			version = f.split('.')[1]
 
-	return version
+	return int(version)
 
 
-def main():
-	main_js_path = 'static/scripts/main_template.js'
-	images_dir = 'static/notes_photos/*'
+def load_labels(labels_filename):
 
-	version_nb = get_style_version('static/scripts/*')
-	new_version = int(version_nb)+1
-	print('previous main.js version {}'.format(version_nb))
-	print('new      main.js version {}'.format(new_version))
+	with open(labels_filename, 'r') as f:
+		labels_dict = yaml.load(f)
+
+	return labels_dict
+
+
+def generate_js(main_js_path, new_version, images_dir, labels_filename):
 
 	html_index_path = 'static/scripts/main.{}.js'.format(new_version)
 
@@ -47,21 +51,32 @@ def main():
 	    html_template = f.read()
 
 	template = Template(html_template)
-	images_dir = sorted(glob.glob(images_dir))
+	images = sorted(glob.glob(images_dir))
+
+	labels = load_labels(labels_filename)
+	labels['images'] = images
 
 	with open(html_index_path, "w") as f:
-	    f.write(template.render(images=images_dir))
-	
+	    f.write(template.render(**labels))
+
 	print('{} HTML was generated from template'.format(html_index_path))
 
+def generate_css(main_css, new_version):
 
-	with open('static/scripts/css/style.css', 'r') as f:
-	    css_sheet = f.read()
-	
-	main_css = 'static/scripts/css/style.{}.css'.format(new_version)
-	
-	with open(main_css, "w") as f:
-	    f.write(css_sheet)
+	main_css_new_version = 'static/scripts/css/style.{}.css'.format(new_version)
+	copyfile(main_css, main_css_new_version)
+
+
+def main():
+	main_js_path = 'static/scripts/main_template.js'
+	main_css = 'static/scripts/css/style.css'
+	images_dir = 'static/notes_photos/*'
+	labels_filename = 'labels.yaml'
+
+	new_version_num = get_style_version('static/scripts/*')+1
+
+	generate_js(main_js_path, new_version_num, images_dir, labels_filename)
+	generate_css(main_css, new_version_num)
 
 
 if __name__ == "__main__":

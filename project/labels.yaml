@@ -1,0 +1,54 @@
+doc_types:
+- Note
+- Receipt
+- Page
+- Form
+- Business card
+- CV
+- Letter
+
+orientations:
+- up
+- left
+- down
+- right
+
+bb_names:
+- Document
+- Image
+- Text
+- Table
+- Drawing
+- Diagram
+- Title
+- Subtitle
+- Underlined text
+- Separation-line / Structure
+- Checkbox
+- Form text entry
+- List
+- Math
+- Contact
+- Plot
+- Signature
+- Other
+
+bbs_colors:
+- white
+- orange
+- pink
+- salmon
+- blue
+- brown
+- lime
+- Maroon
+- green
+- DarkGreen
+- LightSlateGrey
+- yellow
+- beige
+- purple
+- DeepPink
+- DarkTurquoise
+- chocolate
+- papayawhip

@@ -16,6 +16,7 @@
 from flask import Flask, jsonify, render_template, request
 from pymongo import MongoClient
 import glob
+import os
 
 app = Flask(__name__)
 app.config.update(TEMPLATES_AUTO_RELOAD=True)
@@ -42,7 +43,7 @@ def get_style_version(dir_path):
 			
 			version = f.split('.')[1]
 
-	return version
+	return int(version)
 
 
 def insert_label_to_mongodb(data):
@@ -60,10 +61,12 @@ def label():
 @app.route('/')
 def index():
 	style_version = get_style_version('static/scripts/*')
+	
 	main_js = 'static/scripts/main.{}.js'.format(style_version)
 	main_css = 'static/scripts/css/style.{}.css'.format(style_version)
 	
-	print('Using main.js version {}'.format(style_version))
+	print('Using scripts: {}, {}'.format(os.path.basename(main_css), 
+								   os.path.basename(main_js)))
 
 	return render_template('index.html', 
 						   main_js=main_js,

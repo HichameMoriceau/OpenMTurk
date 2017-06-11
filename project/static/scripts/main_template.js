@@ -26,7 +26,7 @@ function select_orientation(o){
 
 function select_document_type(doc_types, dt){
 
-	$.each(doc_types, function(i){
+	$.each(doc_types , function(i){
 		$('#document_type li').eq(i)
 			.css("color", "black")
 			.css("font-weight", "normal");
@@ -39,30 +39,10 @@ function select_document_type(doc_types, dt){
 	})
 }
 
-	// // add text input to legend 1
-	// $('<textarea/>').appendTo($('#legend_col_1'));
-// function select_bb(bb_names, idx){
-
-// 	$.each(bb_names, function(i){
-
-// 			var li = $('#bb_'+i+'_'+j);
-
-// 			li.css("color", "black")
-// 			  .css("font-weight", "normal");
-		
-// 			if (i == bb_i && j == bb_j){
-// 				li.css("color", "red")
-// 				  .css("font-weight", "bold");
-// 			}
-
-// 		})
-// 	})
-// }
-
 
 function select_bb(bbs_names, bb_idx){
 
-	$.each(bbs_names, function(i){
+	$.each(bbs_names , function(i){
 		$('#bounding_boxes li').eq(i)
 			.css("color", "black")
 			.css("font-weight", "normal");
@@ -80,8 +60,12 @@ function select_bb(bbs_names, bb_idx){
 $(document).ready(function(){
 
 	var images = {{ images }};
-	var image_idx = 0;
+	var doc_types = {{ doc_types }};
+	var orientations = {{ orientations }};
+	var bb_names = {{ bb_names }};
+	var bbs_colors = {{ bbs_colors }};
 	
+	var image_idx = 0;
 	var bounding_boxes = [];
 	var document_type = 0;
 	var orientation = 0;
@@ -90,63 +74,8 @@ $(document).ready(function(){
 	var canvas = document.getElementById('img_canvas');
     var ctx = canvas.getContext("2d");
 
-	var doc_types = ['Note',
-					 'Receipt',
-					 'Page', 
-					 'Form', 
-					 'Business card',
-					 'CV',
-					 'Letter'];
 
-	// north, east, south, west
-	var orientations = ['up', 'left', 'down', 'right'];
-
-	var bb_names = ['Document',
-					 'Image',
-					 'Text', 
-					 'Table', 
-					 'Drawing',
-					 'Diagram',
-					 'Title', 
-					 'Subtitle', 
-					 'Underlined text',
-					 'Separation-line / Structure',
-					 'Checkbox',
-
-					 'Form text entry',
-					 'Form letter entry',
-					 'List',
-					 'Formula',
-					 'Contact',
-					 
-					 'Plot',
-					 'Signature',
-					 'other'];
-	
-	var bbs_colors = ['white', 
-					   'orange', 
-   					   'pink', 
-   					   'salmon',
-  					   'blue', 
-  					   'brown',
-  					   'gray', 
-					   'lime',
-					   'Maroon',
-					   'green', 
-					   'DarkGreen',
-
-					   'LightSlateGrey',
-					   'yellow',
-					   'beige',
-					   'purple',
-					   'DeepPink',
-					  
-					   'DarkTurquoise',
-					   'chocolate',
-					   'papayawhip'];
-	
-
-	$.each(doc_types, function(i){
+	$.each(doc_types , function(i){
 
 		var doc_type_legend = document.getElementById('document_type');
 		var key_value = i+1;
@@ -209,9 +138,8 @@ $(document).ready(function(){
 	})
 
 
-	$.each(bb_names, function(i){
+	$.each(bb_names , function(i){
 		var bbs_legend = document.getElementById('bounding_boxes');
-		// var ul = $('<ul/>');
 		
 		var li = $('<li/>')
 			.attr("class", "btn btn-a btn-sm smooth")
@@ -221,13 +149,11 @@ $(document).ready(function(){
 			.css("border", "3px solid black")
 			.css("margin-top", "1%");
 
-
 		li.mousedown(function (e) {
 			selected_bb = i;
 			select_bb(bb_names, i);
 		});
 
-		// ul.append(li);
 		li.appendTo(bbs_legend);
 	})
 
@@ -256,11 +182,11 @@ $(document).ready(function(){
 	    canvas.height = new_height;
 	    
 	    ctx.drawImage(img,
-	    			  0,0,img.width,img.height,
-	    			  0,0,new_width,new_height);
+	    			  0, 0, img.width, img.height,
+	    			  0, 0, new_width, new_height);
 
-		ctx.strokeStyle=bbs_colors[0];
-		ctx.lineWidth=4;
+		ctx.strokeStyle = bbs_colors[0];
+		ctx.lineWidth = 4;
 	}
 
 	img.src = '../static/notes_photos/IMG_20170604_100551.jpg';
@@ -289,14 +215,14 @@ $(document).ready(function(){
 	    		"point_0": [startX*scale_x,
 	    					startY*scale_y],
 	    		
-	    		"point_1": [(e.pageX - offsetX)*scale_x, 
-	    					(e.pageY - offsetY)*scale_y],
+	    		"point_1": [(e.pageX - offsetX)*scale_x,
+	    					(e.pageY - offsetY)*scale_y]
 	    	}
         	bounding_boxes.push(bb)
 
 	        isDrawing = false;
 	        ctx.beginPath();
-	        ctx.strokeRect(startX, startY, 
+	        ctx.strokeRect(startX, startY,
 	        			   mouseX - startX, mouseY - startY);
 	        canvas.style.cursor = "default";
 	    
@@ -316,7 +242,7 @@ $(document).ready(function(){
 	});
 
 
-	$.each(bbs_colors, function(i){
+	$.each(bbs_colors , function(i){
 
 		$("#bounding_boxes li").eq(i).mousedown(function (e) {
 
