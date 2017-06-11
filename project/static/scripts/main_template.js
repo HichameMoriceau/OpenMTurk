@@ -39,18 +39,23 @@ function select_document_type(doc_types, dt){
 	})
 }
 
-function select_bb(bbs_names, bb_idx){
+function select_bb(bb_lists, bb_i, bb_j){
 
-	$.each(bbs_names, function(i){
-		$('#bounding_box_colors li').eq(i)
-			.css("color", "black")
-			.css("font-weight", "normal");
+	$.each(bb_lists, function(i){
+
+		$.each(bb_lists[i], function(j){
+
+			var li = $('#bb_'+i+'_'+j);
+
+			li.css("color", "black")
+			  .css("font-weight", "normal");
 		
-		if (i == bb_idx){
-			$('#bounding_box_colors li').eq(i)
-				.css("color", "red")
-			.	css("font-weight", "bold");
-		}
+			if (i == bb_i && j == bb_j){
+				li.css("color", "red")
+				  .css("font-weight", "bold");
+			}
+
+		})
 	})
 }
 
@@ -79,56 +84,76 @@ $(document).ready(function(){
 
 	// north, east, south, west
 	var orientations = ['up', 'left', 'down', 'right'];
-	var bbs_names = ['Document', 
-					 'Image',
+
+	var bb_lists = [['Document'], 
+					
+					['Image',
 					 'Text region', 
+					 'Table', 
 					 'Drawing',
-					 'Diagram',
-					 'Title', 
+					 'Diagram'],
+					
+					['Title', 
 					 'Subtitle', 
 					 'Underlined text',
 					 'Separation-line / Structure',
-					 'List', 
-					 'Table', 
-					 'Formula',
-					 'Contact',
-					 'Signature',
 					 'Checkbox',
+
 					 'Form text entry',
 					 'Form letter entry',
+					 'List',
+					 'Formula',
+					 'Contact',
+					 
 					 'Plot',
-					 'other'];
+					 'Signature',
+					 'other']];
 	
-	var bbs_colors = ['white', 
-					  'orange', 
-					  'pink', 
-					  'salmon',
-					  'blue', 
-					  'brown', 
-					  'gray', 
-					  'lime',
-					  'Maroon',
-					  'green', 
-					  'DarkGreen',
-					  'LightSlateGrey',
-					  'yellow',
-					  'beige',
-					  'purple',
-					  'DeepPink',
-					  'DarkTurquoise',
-					  'chocolate'];
+	var bbs_colors = [['white'], 
+
+					  ['orange', 
+   					   'pink', 
+   					   'salmon',
+  					   'blue', 
+  					   'brown'], 
+
+					  ['gray', 
+					   'lime',
+					   'Maroon',
+					   'green', 
+					   'DarkGreen',
+
+					   'LightSlateGrey',
+					   'yellow',
+					   'beige',
+					   'purple',
+					   'DeepPink',
+					  
+					   'DarkTurquoise',
+					   'chocolate',
+					   'papayawhip']];
 
 	$.each(doc_types, function(i){
 
 		var doc_type_legend = document.getElementById('document_type');
 		var key_value = i+1;
 		
+		var p = $('<p/>')
+			.text(' (key : ' + key_value + ')')
+			.css("font-size", "10px")
+			.css("font-weight", "normal");
+
+		var div = $('<div/>')
+			.text(doc_types[i])
+
 		var li = $('<li/>')
 			.attr("class", "btn btn-a btn-sm smooth")
 			.css("background-color", 'white')
 			.css("border", "3px solid black")
-			.text(doc_types[i] + ' (key: ' + key_value + ')')
+			.append(div)
+			.append(p)
 			.appendTo(doc_type_legend);
+
 
 
 		li.mousedown(function (e) {
@@ -138,13 +163,13 @@ $(document).ready(function(){
 	})
 
 
+	var key_values = ['q', 'w', 'e', 'r'];
 	$.each(orientations, function(i){
 		
 		var orientation_legend = document.getElementById('orientation');
-		var key_value = doc_types.length+i+1;
 
 		var p = $('<p/>')
-			.text(' (key : ' + key_value + ')')
+			.text(' (key : ' + key_values[i] + ')')
 			.css("font-size", "10px")
 			.css("font-weight", "normal");
 
@@ -170,29 +195,38 @@ $(document).ready(function(){
 
 	})
 
-	$.each(bbs_names, function(i){
+
+	$.each(bb_lists, function(i){
 		var bbs_legend = document.getElementById('bounding_box_colors');
+		var ul = $('<ul/>');
 
-		var li = $('<li/>')
-			.attr("class", "btn btn-a btn-sm smooth")
-			.text(bbs_names[i])
-			.css("background-color", bbs_colors[i])
-			.css("color", 'black')
-			.css("border", "3px solid black")
-			.css("margin-top", "1%")
-			.appendTo(bbs_legend);
+		$.each(bb_lists[i], function(j){
+			
+			var li = $('<li/>')
+				.attr("class", "btn btn-a btn-sm smooth")
+				.attr("id", 'bb_'+i+'_'+j)
+				.text(bb_lists[i][j])
+				.css("background-color", bbs_colors[i][j])
+				.css("color", 'black')
+				.css("border", "3px solid black")
+				.css("margin-top", "1%");
 
-		li.mousedown(function (e) {
-			selected_bb = i;
-			select_bb(bbs_names, i);
-		});
 
+			li.mousedown(function (e) {
+				selected_bb = [i, j];
+				select_bb(bb_lists, i, j);
+			});
+
+
+			ul.append(li);
+		})
+		ul.appendTo(bbs_legend);
 	})
 
 	// set default values
 	select_document_type(doc_types, doc_types[0]);
 	select_orientation(0);
-	select_bb(bbs_names, 0);
+	select_bb(bb_lists, 0, 0);
 
 	var img_ratio = 0;
 	var scale_x = 0;
@@ -210,12 +244,6 @@ $(document).ready(function(){
 		scale_x = img.width / new_width;
 		scale_y = img.height / new_height;
 
-	 	console.log('Reshaped image as: (' 
-	 				+ new_width + ', ' + new_height + ')')
-
-	 	console.log('scale_x, scale_y')
-	 	console.log(scale_x, scale_y)
-
 		canvas.width = new_width;
 	    canvas.height = new_height;
 	    
@@ -223,11 +251,9 @@ $(document).ready(function(){
 	    			  0,0,img.width,img.height,
 	    			  0,0,new_width,new_height);
 
-		ctx.strokeStyle=bbs_colors[0];
+		ctx.strokeStyle=bbs_colors[0][0];
 		ctx.lineWidth=6;
 	}
-
-	console.log('img_ratio = ' + img_ratio)
 
 	img.src = '../static/notes_photos/IMG_20170604_100551.jpg';
 	
@@ -249,7 +275,8 @@ $(document).ready(function(){
 	    if (isDrawing) {
 
 	    	bb = {
-	    		"label": bbs_names[selected_bb],
+	    		"label": bb_lists[selected_bb[0],
+	    						  selected_bb[1]],
 	    		"offset": [offsetX, offsetY],
 	    		
 	    		"point_0": [startX*scale_x,
@@ -267,9 +294,8 @@ $(document).ready(function(){
 	        canvas.style.cursor = "default";
 	    
 	    } else {
-	    	console.log('first click: ' 
-	    				+ mouseX + ', ' + mouseY)
-	        isDrawing = true;
+	    	
+	    	isDrawing = true;
 	        startX = mouseX;
 	        startY = mouseY;
 	        canvas.style.cursor = "crosshair";
@@ -284,11 +310,13 @@ $(document).ready(function(){
 
 
 	$.each(bbs_colors, function(i){
-		console.log('test');
-		$("#bounding_box_colors li").eq(i).mousedown(function (e) {
 
-			ctx.strokeStyle = bbs_colors[i];
-		});
+		$.each(bbs_colors[i], function(j){
+			$("#bounding_box_colors ul li").eq(i).mousedown(function (e) {
+
+				ctx.strokeStyle = bbs_colors[i][j];
+			});
+		})
 	})
 
 
@@ -296,8 +324,7 @@ $(document).ready(function(){
     
     var e_which = e.which
 	var c = String.fromCharCode(e_which)
-    console.log('test ' + c);
-
+    
     switch(e_which) {
 
 		//
@@ -313,7 +340,7 @@ $(document).ready(function(){
 			// set default values
 			select_document_type(doc_types, doc_types[0]);
 			select_orientation(0);
-			select_bb(bbs_names, 0);
+			select_bb(bb_lists, 0, 0);
 
 			console.log('previous image');
         break;
@@ -327,7 +354,7 @@ $(document).ready(function(){
 			// set default values
 			select_document_type(doc_types, doc_types[0]);
 			select_orientation(0);
-			select_bb(bbs_names, 0);
+			select_bb(bb_lists, 0, 0);
 
 			console.log('next image');
         break;

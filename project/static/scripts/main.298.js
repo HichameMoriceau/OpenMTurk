@@ -39,18 +39,33 @@ function select_document_type(doc_types, dt){
 	})
 }
 
-function select_bb(bbs_names, bb_idx){
+function select_bb(bb_lists, bb_i, bb_j){
 
-	$.each(bbs_names, function(i){
-		$('#bounding_box_colors li').eq(i)
-			.css("color", "black")
-			.css("font-weight", "normal");
+	$.each(bb_lists, function(i){
+		// var ul = $('#bounding_box_colors ul').get(i);
+
+		// console.log('ul:');
+		// console.log(ul);
+
+		$.each(bb_lists[i], function(j){
+			console.log('i, j');
+			console.log(i, j);
+
+			var li = $('#bb_'+i+'_'+j);
+
+			li.css("color", "black")
+			  .css("font-weight", "normal");
 		
-		if (i == bb_idx){
-			$('#bounding_box_colors li').eq(i)
-				.css("color", "red")
-			.	css("font-weight", "bold");
-		}
+			if (i == bb_i && j == bb_j){
+				console.log('set as red');
+
+				li.css("color", "red")
+				  .css("font-weight", "bold");
+			}
+			else{
+				console.log('still not bb_i, bb_j: ' + bb_i +", " +bb_j);
+			}
+		})
 	})
 }
 
@@ -69,39 +84,105 @@ $(document).ready(function(){
 	var canvas = document.getElementById('ex_canvas');
     var ctx = canvas.getContext("2d");
 
-	var doc_types = ['Notebook', 'Form', 'Receipt', 'Letter'];
-	var orientations = ['Up', 'Right', 'Down', 'Left'];
-	var bbs_names = ['Document', 
-					 'Title', 
-					 'Subtitle', 
+	var doc_types = ['Note',
+					 'Receipt',
+					 'Page', 
+					 'Form', 
+					 'Business card',
+					 'CV',
+					 'Letter'];
+
+	// north, east, south, west
+	var orientations = ['up', 'left', 'down', 'right'];
+	// var bbs_names = ['Document', 
+	// 				 'Image',
+	// 				 'Text region', 
+	// 				 'Drawing',
+	// 				 'Diagram',
+	// 				 'Title', 
+	// 				 'Subtitle', 
+	// 				 'Underlined text',
+	// 				 'Separation-line / Structure',
+	// 				 'List', 
+	// 				 'Table', 
+	// 				 'Formula',
+	// 				 'Contact',
+	// 				 'Signature',
+	// 				 'Checkbox',
+	// 				 'Form text entry',
+	// 				 'Form letter entry',
+	// 				 'Plot',
+	// 				 'other'];
+
+	var bb_lists = [['Document'], 
+					
+					['Image',
 					 'Text region', 
-					 'List', 
 					 'Table', 
-					 'Drawing/diagram', 
-					 'Formula', 
-					 'Separation-line / Structure'];
+					 'Drawing',
+					 'Diagram'],
+					
+					['Title', 
+					 'Subtitle', 
+					 'Underlined text',
+					 'Separation-line / Structure',
+					 'Checkbox',
+
+					 'Form text entry',
+					 'Form letter entry',
+					 'List',
+					 'Formula',
+					 'Contact',
+					 
+					 'Plot',
+					 'Signature',
+					 'other']];
 	
-	var bbs_colors = ['white', 
-					  'orange', 
-					  'pink', 
-					  'blue', 
-					  'brown', 
-					  'gray', 
-					  'green', 
-					  'yellow', 
-					  'purple'];
+	var bbs_colors = [['white'], 
+
+					  ['orange', 
+   					   'pink', 
+   					   'salmon',
+  					   'blue', 
+  					   'brown'], 
+
+					  ['gray', 
+					   'lime',
+					   'Maroon',
+					   'green', 
+					   'DarkGreen',
+
+					   'LightSlateGrey',
+					   'yellow',
+					   'beige',
+					   'purple',
+					   'DeepPink',
+					  
+					   'DarkTurquoise',
+					   'chocolate',
+					   'papayawhip']];
 
 	$.each(doc_types, function(i){
 
 		var doc_type_legend = document.getElementById('document_type');
 		var key_value = i+1;
 		
+		var p = $('<p/>')
+			.text(' (key : ' + key_value + ')')
+			.css("font-size", "10px")
+			.css("font-weight", "normal");
+
+		var div = $('<div/>')
+			.text(doc_types[i])
+
 		var li = $('<li/>')
 			.attr("class", "btn btn-a btn-sm smooth")
 			.css("background-color", 'white')
 			.css("border", "3px solid black")
-			.text(doc_types[i] + ' (key: ' + key_value + ')')
+			.append(div)
+			.append(p)
 			.appendTo(doc_type_legend);
+
 
 
 		li.mousedown(function (e) {
@@ -111,17 +192,29 @@ $(document).ready(function(){
 	})
 
 
+	var key_values = ['q', 'w', 'e', 'r'];
 	$.each(orientations, function(i){
 		
 		var orientation_legend = document.getElementById('orientation');
-		var key_value = doc_types.length+i+1;	
-		
+
+		var p = $('<p/>')
+			.text(' (key : ' + key_values[i] + ')')
+			.css("font-size", "10px")
+			.css("font-weight", "normal");
+
+
+		var div = $('<div/>')
+			.attr("class", "icon-arrow-"+orientations[i]+"-circle")
+			.css("font-weight", "bold")
+			.css("font-size", "20px");
+
 		var li = $('<li/>')
 			.attr("class", "btn btn-a btn-sm smooth")
 			.css("background-color", 'white')
 			.css("border", "3px solid black")
-			.text(orientations[i] + ' (key: ' + key_value + ')')
 			.css('margin-bottom', '1%')
+			.append(div)
+			.append(p)
 			.appendTo(orientation_legend);
 
 		li.mousedown(function (e) {
@@ -131,29 +224,57 @@ $(document).ready(function(){
 
 	})
 
-	$.each(bbs_names, function(i){
+	// $.each(bbs_names, function(i){
+	// 	var bbs_legend = document.getElementById('bounding_box_colors');
+
+	// 	var li = $('<li/>')
+	// 		.attr("class", "btn btn-a btn-sm smooth")
+	// 		.attr("id", bbs_names[i].replace(' ', '_'))
+	// 		.text(bbs_names[i])
+	// 		.css("background-color", bbs_colors[i])
+	// 		.css("color", 'black')
+	// 		.css("border", "3px solid black")
+	// 		.css("margin-top", "1%");
+	// 		// .appendTo(bbs_legend);
+
+		// li.mousedown(function (e) {
+		// 	selected_bb = i;
+		// 	select_bb(bbs_names, i);
+		// });
+	// })
+
+
+	$.each(bb_lists, function(i){
 		var bbs_legend = document.getElementById('bounding_box_colors');
+		var ul = $('<ul/>');
 
-		var li = $('<li/>')
-			.attr("class", "btn btn-a btn-sm smooth")
-			.text(bbs_names[i])
-			.css("background-color", bbs_colors[i])
-			.css("color", 'black')
-			.css("border", "3px solid black")
-			.css("margin-top", "1%")
-			.appendTo(bbs_legend);
+		$.each(bb_lists[i], function(j){
+			
+			var li = $('<li/>')
+				.attr("class", "btn btn-a btn-sm smooth")
+				.attr("id", 'bb_'+i+'_'+j)
+				.text(bb_lists[i][j])
+				.css("background-color", bbs_colors[i][j])
+				.css("color", 'black')
+				.css("border", "3px solid black")
+				.css("margin-top", "1%");
 
-		li.mousedown(function (e) {
-			selected_bb = i;
-			select_bb(bbs_names, i);
-		});
 
+			li.mousedown(function (e) {
+				selected_bb = [i, j];
+				select_bb(bb_lists, i, j);
+			});
+
+
+			ul.append(li);
+		})
+		ul.appendTo(bbs_legend);
 	})
 
 	// set default values
 	select_document_type(doc_types, doc_types[0]);
 	select_orientation(0);
-	select_bb(bbs_names, 0);
+	select_bb(bb_lists, 0, 0);
 
 	var img_ratio = 0;
 	var scale_x = 0;
@@ -171,12 +292,6 @@ $(document).ready(function(){
 		scale_x = img.width / new_width;
 		scale_y = img.height / new_height;
 
-	 	console.log('Reshaped image as: (' 
-	 				+ new_width + ', ' + new_height + ')')
-
-	 	console.log('scale_x, scale_y')
-	 	console.log(scale_x, scale_y)
-
 		canvas.width = new_width;
 	    canvas.height = new_height;
 	    
@@ -184,11 +299,9 @@ $(document).ready(function(){
 	    			  0,0,img.width,img.height,
 	    			  0,0,new_width,new_height);
 
-		ctx.strokeStyle=bbs_colors[0];
+		ctx.strokeStyle=bbs_colors[0][0];
 		ctx.lineWidth=6;
 	}
-
-	console.log('img_ratio = ' + img_ratio)
 
 	img.src = '../static/notes_photos/IMG_20170604_100551.jpg';
 	
@@ -207,11 +320,10 @@ $(document).ready(function(){
 	    
 	    $("#downlog").html("Down: " + mouseX + " / " + mouseY);
 
-	    // Put your mousedown stuff here
 	    if (isDrawing) {
 
 	    	bb = {
-	    		"label": bbs_names[selected_bb],
+	    		"label": bb_lists[selected_bb],
 	    		"offset": [offsetX, offsetY],
 	    		
 	    		"point_0": [startX*scale_x,
@@ -229,9 +341,8 @@ $(document).ready(function(){
 	        canvas.style.cursor = "default";
 	    
 	    } else {
-	    	console.log('first click: ' 
-	    				+ mouseX + ', ' + mouseY)
-	        isDrawing = true;
+	    	
+	    	isDrawing = true;
 	        startX = mouseX;
 	        startY = mouseY;
 	        canvas.style.cursor = "crosshair";
@@ -246,17 +357,22 @@ $(document).ready(function(){
 
 
 	$.each(bbs_colors, function(i){
-		console.log('test');
-		$("#bounding_box_colors li").eq(i).mousedown(function (e) {
 
-			ctx.strokeStyle = bbs_colors[i];
-		});
+		$.each(bbs_colors[i], function(j){
+			$("#bounding_box_colors ul li").eq(i).mousedown(function (e) {
+
+				ctx.strokeStyle = bbs_colors[i][j];
+			});
+		})
 	})
 
 
     $(document).keydown(function(e) {
-
-    switch(e.which) {
+    
+    var e_which = e.which
+	var c = String.fromCharCode(e_which)
+    
+    switch(e_which) {
 
 		//
 		// NAVIGATION between images
@@ -271,7 +387,7 @@ $(document).ready(function(){
 			// set default values
 			select_document_type(doc_types, doc_types[0]);
 			select_orientation(0);
-			select_bb(bbs_names, 0);
+			select_bb(bb_lists, 0, 0);
 
 			console.log('previous image');
         break;
@@ -285,7 +401,7 @@ $(document).ready(function(){
 			// set default values
 			select_document_type(doc_types, doc_types[0]);
 			select_orientation(0);
-			select_bb(bbs_names, 0);
+			select_bb(bb_lists, 0, 0);
 
 			console.log('next image');
         break;
@@ -318,33 +434,33 @@ $(document).ready(function(){
 			console.log('document type: ', document_type);
         break;
 
-
-
-        // 
-        // ORIENTATION: using [5, 8] digits
-        //
 		case 53: // 5
-	        orientation = 0;
-			console.log('orientation: ', orientation);
-			select_orientation(0);
+			document_type = doc_types[4];
+			select_document_type(doc_types, document_type);
+			console.log('document type: ', document_type);
         break;
 
 		case 54: // 6
-	        orientation = 1;
-			console.log('orientation: ', orientation);
-			select_orientation(1);
+			document_type = doc_types[5];
+			select_document_type(doc_types, document_type);
+			console.log('document type: ', document_type);
         break;
 
 		case 55: // 7
-	        orientation = 2;
-			console.log('orientation: ', orientation);
-			select_orientation(2);
+			document_type = doc_types[6];
+			select_document_type(doc_types, document_type);
+			console.log('document type: ', document_type);
         break;
 
 		case 56: // 8
-	        orientation = 3;
-			console.log('orientation: ', orientation);
-			select_orientation(3);
+			document_type = doc_types[7];
+			select_document_type(doc_types, document_type);
+			console.log('document type: ', document_type);
+
+		case 57: // 9
+			document_type = doc_types[8];
+			select_document_type(doc_types, document_type);
+			console.log('document type: ', document_type);
         break;
 
         //
@@ -353,8 +469,6 @@ $(document).ready(function(){
 
         case 13: // enter
 
-        	console.log(orientation);
-        	console.log(orientations);
         	var json_obj = {
         		"img_path": images[image_idx],
         		"document_type": doc_types[document_type],
@@ -371,16 +485,43 @@ $(document).ready(function(){
 			        console.log(result);
 			    }
 			});
+
 			if (image_idx < images.length){
 				image_idx++;
 			}
 			img.src = images[image_idx];
         break;
-
-        default: 
-        	return; // exit this handler for other keys
     }
 
-});
+    switch(c){
+    	//
+        case 'Q': // 5
+
+	        orientation = 0;
+			console.log('orientation: ', orientation);
+			select_orientation(0);
+        break;
+
+		case 'W': // 6
+	        orientation = 1;
+			console.log('orientation: ', orientation);
+			select_orientation(1);
+        break;
+
+		case 'E': // 7
+	        orientation = 2;
+			console.log('orientation: ', orientation);
+			select_orientation(2);
+        break;
+
+		case 'R': // 8
+	        orientation = 3;
+			console.log('orientation: ', orientation);
+			select_orientation(3);
+		break;
+
+        default: 
+			return; // exit this handler for other keys
+    }});
 });
 
