@@ -7,9 +7,14 @@
 	# NOTE:
 	#
 	# Remember to set the environment variable:
-	# $ export FLASK_APP=flask_server.py
+	# $ export FLASK_APP="flask_server.py"
 	# Then run using:
 	# $ flask run
+	#
+	#
+	# DEVELOPMENT:
+	# $ python3 render_js_css_template.py && flask run
+	#
 	#
 """
 
@@ -17,6 +22,8 @@ from flask import Flask, jsonify, render_template, request
 from pymongo import MongoClient
 import glob
 import os
+import json
+import copy
 
 app = Flask(__name__)
 app.config.update(TEMPLATES_AUTO_RELOAD=True)
@@ -47,14 +54,36 @@ def get_style_version(dir_path):
 
 
 def insert_label_to_mongodb(data):
-	db.labels_db.insert_one(data)
+	db.labels_db.update({'img_path': data['img_path']}, data, upsert=True)
+
+
+def get_label(img_path):
+	label = db.labels_db.find({'img_path': img_path})[0]
+
+	return label
+
+
+@app.route('/visualize', methods=['POST'])
+def visualize():
+	try:
+		label = get_label(request.json['img_path'])
+		del label['_id'] # not json-friendly object
+
+		return jsonify(dict(label))
+	except Exception as e:
+		print('ERROR: {}'.format(e))
+		return jsonify(result=300)
+
 
 @app.route('/label', methods=['POST'])
 def label():
 	try:
-		insert_label_to_mongodb(request.json)
+		label = copy.copy(request.json)
+		insert_label_to_mongodb(label)
+
 		return jsonify(result=200)
 	except Exception as e:
+		print('ERROR: {}'.format(e))
 		return jsonify(result=300)
 
 

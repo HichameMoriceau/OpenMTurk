@@ -10,7 +10,7 @@ from jinja2 import Template
 from shutil import copyfile
 import glob
 import time
-import yaml
+import json
 
 
 def get_style_version(dir_path):
@@ -38,7 +38,7 @@ def get_style_version(dir_path):
 def load_labels(labels_filename):
 
 	with open(labels_filename, 'r') as f:
-		labels_dict = yaml.load(f)
+		labels_dict = json.load(f)
 
 	return labels_dict
 
@@ -57,7 +57,7 @@ def generate_js(main_js_path, new_version, images_dir, labels_filename):
 	labels['images'] = images
 
 	with open(html_index_path, "w") as f:
-	    f.write(template.render(**labels))
+	    f.write(template.render(config=labels))
 
 	print('{} HTML was generated from template'.format(html_index_path))
 
@@ -71,7 +71,7 @@ def main():
 	main_js_path = 'static/scripts/main_template.js'
 	main_css = 'static/scripts/css/style.css'
 	images_dir = 'static/notes_photos/*'
-	labels_filename = 'labels.yaml'
+	labels_filename = 'labels.json'
 
 	new_version_num = get_style_version('static/scripts/*')+1
 

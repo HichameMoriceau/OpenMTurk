@@ -1,0 +1,33 @@
+{
+  "categories": [
+    "Form", 
+    "Receipt", 
+    "Letter",
+    "CV"
+  ],
+  
+  "bbs": [
+    [
+      "Text", 
+      "box"
+    ], 
+    [
+      "Word", 
+      "box_with_text"
+    ], 
+    [
+      "Image", 
+      "box"
+    ], 
+    [
+      "Separation", 
+      "line"
+    ]
+  ], 
+  "orientations": [
+    "up", 
+    "left", 
+    "down", 
+    "right"
+  ]
+}

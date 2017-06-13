@@ -5,6 +5,59 @@
 // 1) Capture user interaction
 // 2) send label to back-end (`flask_server.label()`)
 
+
+var colours = ['white',
+			  'orange',
+			  'pink',
+			  'mediumpurple',
+			  'salmon',
+			  'blue',
+			  'brown',
+			  'lime',
+			  'Maroon',
+			  'green',
+			  'DarkGreen',
+			  'DarkBlue',
+			  'Peru',
+			  'Bisque',
+			  'lightyellow',
+			  'darkmagenta',
+			  'indigo',
+			  'LightSlateGrey',
+			  'yellow',
+			  'beige',
+			  'purple',
+			  'DeepPink',
+			  'DarkTurquoise',
+			  'chocolate',
+			  'papayawhip'];
+
+function draw_labels(ctx, label){
+	console.log('drawing all bounding boxes ... ');
+
+	$.each(label['bbs'] , function(i){
+		console.log('current label:')
+		console.log(label['bbs'][i])
+
+		var x_0 = label['bbs'][i]['orig_point_0'][0];
+		var y_0 = label['bbs'][i]['orig_point_0'][1];
+		var x_1 = label['bbs'][i]['orig_point_1'][0];
+		var y_1 = label['bbs'][i]['orig_point_1'][1];
+		ctx.strokeStyle = label['bbs'][i]['color'];
+
+		if(label['bbs'][i]['label_type'] == 'line'){
+			ctx.moveTo(x_0, y_0);
+  			ctx.lineTo(x_1, y_1);
+  			ctx.stroke();
+
+		}else{
+			ctx.beginPath();
+	        ctx.strokeRect(x_0, y_0,
+        			 	   x_1, y_1);
+		}
+	})
+}
+
 function select_orientation(o){
 
 	$('#orientation li').eq(0)
@@ -25,14 +78,14 @@ function select_orientation(o){
 }
 
 
-function select_document_type(doc_types, dt){
+function select_document_type(categories, dt){
 
-	$.each(doc_types , function(i){
+	$.each(categories , function(i){
 		$('#document_type li').eq(i)
 			.css("color", "black")
 			.css("font-weight", "normal");
 		
-		if (doc_types[i] == dt){
+		if (categories[i] == dt){
 			$('#document_type li').eq(i)
 				.css("color", "red")
 				.css("font-weight", "bold");
@@ -46,12 +99,12 @@ function select_document_type(doc_types, dt){
 
 $(document).ready(function(){
 
-	
-	var images = {{ images }};
-	var doc_types = {{ doc_types }};
-	var orientations = {{ orientations }};
-	var bb_names = {{ bb_names }};
-	var bbs_colors = {{ bbs_colors }};
+	var config = {{ config }};
+
+	var images = config.images;
+	var categories = config.categories;
+	var orientations = config.orientations;
+	var bbs = config.bbs;
 	
 	var image_idx = 0;
 	var bounding_boxes = [];
@@ -59,11 +112,16 @@ $(document).ready(function(){
 	var orientation = 0;
 	var selected_bb = 0;
 
-
+	var canvas = document.getElementById('img_canvas');
+	var ctx = canvas.getContext("2d");
+	var img = new Image();
 
 	var isDrawing=false;
 	var isRect = true;
 	var isLine = false;
+	
+	var label = [];
+
 	// var textarea_alive = false;
 	var textarea;
 
@@ -74,9 +132,6 @@ $(document).ready(function(){
 	var offsetX = canvasOffset.left;
 	var offsetY = canvasOffset.top;	
 
-	var canvas = document.getElementById('img_canvas');
-	var ctx = canvas.getContext("2d");
-	var img = new Image();
 
 	var img_ratio = 0;
 	var scale_x = 0;
@@ -102,15 +157,18 @@ $(document).ready(function(){
 	    			  0, 0, img.width, img.height,
 	    			  0, 0, new_width, new_height);
 
-		ctx.strokeStyle = bbs_colors[0];
+		ctx.strokeStyle = colours[0];
 		ctx.lineWidth = 4;
+
+		draw_labels(ctx, label)
 	}
 
+	console.log('setting img.src !');
 	img.src = images[0]+"?t="+ new Date().getTime();
-	
-	function select_bb(bbs_names, bb_idx){
 
-		$.each(bbs_names , function(i){
+	function select_bb(bbs, bb_idx){
+
+		$.each(bbs , function(i){
 			$('#bounding_boxes li').eq(i)
 				.css("color", "black")
 				.css("font-weight", "normal");
@@ -120,7 +178,7 @@ $(document).ready(function(){
 					.css("color", "red")
 					.css("font-weight", "bold");
 
-				if (bb_names[i] == 'Line'){
+				if (bbs[i][1] == 'line'){
 					isLine = true;
 					isRect = false;
 				}else{
@@ -133,7 +191,7 @@ $(document).ready(function(){
 	}	
 
 
-	$.each(doc_types , function(i){
+	$.each(categories , function(i){
 
 		var doc_type_legend = document.getElementById('document_type');
 		var key_value = i+1;
@@ -144,7 +202,7 @@ $(document).ready(function(){
 			.css("font-weight", "normal");
 
 		var div = $('<div/>')
-			.text(doc_types[i])
+			.text(categories[i])
 
 		var li = $('<li/>')
 			.attr("class", "btn btn-a btn-sm smooth")
@@ -158,7 +216,7 @@ $(document).ready(function(){
 
 		li.mousedown(function (e) {
 			document_type = i;
-			select_document_type(doc_types, doc_types[i]);
+			select_document_type(categories, categories[i]);
 		});
 	})
 
@@ -196,34 +254,34 @@ $(document).ready(function(){
 	})
 
 
-	$.each(bb_names , function(i){
+	$.each(bbs , function(i){
 		var bbs_legend = document.getElementById('bounding_boxes');
 		
 		var li = $('<li/>')
 			.attr("class", "btn btn-a btn-sm smooth")
-			.text(bb_names[i])
-			.css("background-color", bbs_colors[i])
+			.text(bbs[i][0])
+			.css("background-color", colours[i])
 			.css("color", 'black')
 			.css("border", "3px solid black")
 			.css("margin-top", "1%");
 
 		li.mousedown(function (e) {
 			selected_bb = i;
-			select_bb(bb_names, i);
+			select_bb(bbs, i);
 		});
 
 		li.appendTo(bbs_legend);
 	})
 
 	// set default values
-	select_document_type(doc_types, doc_types[0]);
+	select_document_type(categories, categories[0]);
 	select_orientation(0);
-	select_bb(bb_names, 0);
+	select_bb(bbs, 0);
 
 
-	$.each(bbs_colors , function(i){
+	$.each(colours , function(i){
 		$("#bounding_boxes li").eq(i).mousedown(function (e) {
-			ctx.strokeStyle = bbs_colors[i];
+			ctx.strokeStyle = colours[i];
 		});
 	})
 
@@ -243,14 +301,19 @@ $(document).ready(function(){
 
 	        if (isRect){
 	        	bb = {
-		    		"label": bb_names[selected_bb],
+		    		"label": bbs[selected_bb][0],
+		    		"label_type": bbs[selected_bb][1],
+		    		"color": colours[selected_bb],
 		    		"offset": [offsetX, offsetY],
 		    		
 		    		"point_0": [startX*scale_x,
 		    					startY*scale_y],
 		    		
 		    		"point_1": [(e.pageX - offsetX)*scale_x,
-		    					(e.pageY - offsetY)*scale_y]
+		    					(e.pageY - offsetY)*scale_y],
+
+		    		"orig_point_0": [startX, startY],
+		    		"orig_point_1": [mouseX - startX, mouseY - startY],
 		    	}
 
 		        ctx.strokeRect(startX, startY,
@@ -258,9 +321,9 @@ $(document).ready(function(){
 
 		        console.log('here:');
 		        console.log(selected_bb);
-		        console.log(bb_names[selected_bb]);
+		        console.log(bbs[selected_bb]);
 
-		        if (bb_names[selected_bb] == 'Text'){
+		        if (bbs[selected_bb][1] == 'box_with_text'){
 		        	var div = $('<div/>');
 		        	textarea = $('<textarea/>')
 		        						.attr('rows', '3')
@@ -296,14 +359,20 @@ $(document).ready(function(){
 	        	console.log('tracing line');
 
 				bb = {
-		    		"label": bb_names[selected_bb],
+		    		"label": bbs[selected_bb][0],
+		    		"label_type": bbs[selected_bb][1],
+		    		"color": colours[selected_bb],
 		    		"offset": [offsetX, offsetY],
 		    		
 		    		"point_0": [startX*scale_x,
 		    					startY*scale_y],
 		    		
 		    		"point_1": [mouseX*scale_x,
-		    					mouseY*scale_y]
+		    					mouseY*scale_y],
+
+		    		"orig_point_0": [startX, startY],
+		    		"orig_point_1": [mouseX, mouseY]
+
 		    	}
 	        	bounding_boxes.push(bb);
 
@@ -333,31 +402,52 @@ $(document).ready(function(){
 			//
 
 	        case 37: // left
+	        	label = [];
 		        if (image_idx != 0){
 					image_idx--;
 				}
+				console.log('setting img.src !');
 				img.src = images[image_idx]+"?t="+ new Date().getTime();
 
-				// set default values
-				select_document_type(doc_types, doc_types[0]);
-				select_orientation(0);
-				select_bb(bb_names, 0);
+
+	        	var json_obj = {
+	        		"img_path": images[image_idx]
+	        	}
+
+
+				$.ajax({
+				    type : "POST",
+				    url : '/visualize',
+				    data: JSON.stringify(json_obj, null, '\t'),
+				    contentType: 'application/json;charset=UTF-8',
+				    success: function(l) {
+				    	label = l;
+				        console.log(label);
+				    	// restore labels if already done:
+						select_document_type(categories, label['category']);
+						select_orientation(label['orientation']);
+						select_bb(bbs, 0);
+						// draw_labels(ctx, label);
+				    }
+				});
+
 
 				console.log('previous image');
 	        break;
 
 	        case 39: // right
+	        	label = [];
 		        if (image_idx < images.length){
 					image_idx++;
 				}
 
-				console.log('trying to render: ' + images[image_idx] + ', index ' + image_idx);
+				console.log('setting img.src !');
 				img.src = images[image_idx]+"?t="+ new Date().getTime();
 
 				// set default values
-				select_document_type(doc_types, doc_types[0]);
+				select_document_type(categories, categories[0]);
 				select_orientation(0);
-				select_bb(bb_names, 0);
+				select_bb(bbs, 0);
 				isDrawing = false
 				
 				console.log('next image:');
@@ -368,56 +458,56 @@ $(document).ready(function(){
 	        //
 
 			case 49: // 1
-				document_type = doc_types[0];
-				select_document_type(doc_types, document_type);
+				document_type = categories[0];
+				select_document_type(categories, document_type);
 				console.log('document type: ', document_type);
 	        break;
 
 			case 50: // 2
-				document_type = doc_types[1];
-				select_document_type(doc_types, document_type);
+				document_type = categories[1];
+				select_document_type(categories, document_type);
 				console.log('document type: ', document_type);
 	        break;
 
 			case 51: // 3
-				document_type = doc_types[2];
-				select_document_type(doc_types, document_type);
+				document_type = categories[2];
+				select_document_type(categories, document_type);
 				console.log('document type: ', document_type);
 	        break;
 
 			case 52: // 4
-				document_type = doc_types[3];
-				select_document_type(doc_types, document_type);
+				document_type = categories[3];
+				select_document_type(categories, document_type);
 				console.log('document type: ', document_type);
 	        break;
 
 			case 53: // 5
-				document_type = doc_types[4];
-				select_document_type(doc_types, document_type);
+				document_type = categories[4];
+				select_document_type(categories, document_type);
 				console.log('document type: ', document_type);
 	        break;
 
 			case 54: // 6
-				document_type = doc_types[5];
-				select_document_type(doc_types, document_type);
+				document_type = categories[5];
+				select_document_type(categories, document_type);
 				console.log('document type: ', document_type);
 	        break;
 
 			case 55: // 7
-				document_type = doc_types[6];
-				select_document_type(doc_types, document_type);
+				document_type = categories[6];
+				select_document_type(categories, document_type);
 				console.log('document type: ', document_type);
 	        break;
 
 			case 56: // 8
-				document_type = doc_types[7];
-				select_document_type(doc_types, document_type);
+				document_type = categories[7];
+				select_document_type(categories, document_type);
 				console.log('document type: ', document_type);
 			break;
 
 			case 57: // 9
-				document_type = doc_types[8];
-				select_document_type(doc_types, document_type);
+				document_type = categories[8];
+				select_document_type(categories, document_type);
 				console.log('document type: ', document_type);
 	        break;
 
@@ -472,9 +562,9 @@ $(document).ready(function(){
 
 	        	var json_obj = {
 	        		"img_path": images[image_idx],
-	        		"document_type": doc_types[document_type],
+	        		"category": categories[document_type],
 	        		"orientation": orientations[orientation],
-	        		"bounding_boxes": bounding_boxes
+	        		"bbs": bounding_boxes
 	        	}
 
 	        	$.ajax({
@@ -490,13 +580,15 @@ $(document).ready(function(){
 				if (image_idx < images.length){
 					image_idx++;
 				}
+
+				console.log('setting img.src !');
 				img.src = images[image_idx]+'?#'+new Date().getTime();
 
 				// set default values
 				selected_bb = 0;
-				select_document_type(doc_types, doc_types[0]);
+				select_document_type(categories, categories[0]);
 				select_orientation(0);
-				select_bb(bb_names, 0);
+				select_bb(bbs, 0);
 	        break;
 
 	        default: return; // exit this handler for other keys
