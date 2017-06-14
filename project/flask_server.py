@@ -58,7 +58,13 @@ def insert_label_to_mongodb(data):
 
 
 def get_label(img_path):
-	label = db.labels_db.find({'img_path': img_path})[0]
+	label = []
+
+	try:
+		label = db.labels_db.find({'img_path': img_path})[0]
+		del label['_id'] # not json-friendly object
+	except Exception as e:
+		print('No label found for img_path {}'.format(img_path))
 
 	return label
 
@@ -67,7 +73,6 @@ def get_label(img_path):
 def visualize():
 	try:
 		label = get_label(request.json['img_path'])
-		del label['_id'] # not json-friendly object
 
 		return jsonify(dict(label))
 	except Exception as e:

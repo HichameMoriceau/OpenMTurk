@@ -163,6 +163,28 @@ $(document).ready(function(){
 		draw_labels(ctx, label)
 	}
 
+
+	var json_obj = {
+		"img_path": images[0]
+	}
+
+
+	$.ajax({
+	    type : "POST",
+	    url : '/visualize',
+	    data: JSON.stringify(json_obj, null, '\t'),
+	    contentType: 'application/json;charset=UTF-8',
+	    success: function(l) {
+	    	label = l;
+	        console.log(label);
+	    	// restore labels if already done:
+			select_document_type(categories, label['category']);
+			select_orientation(label['orientation']);
+			select_bb(bbs, 0);
+			// draw_labels(ctx, label);
+	    }
+	});
+
 	console.log('setting img.src !');
 	img.src = images[0]+"?t="+ new Date().getTime();
 
@@ -444,10 +466,26 @@ $(document).ready(function(){
 				console.log('setting img.src !');
 				img.src = images[image_idx]+"?t="+ new Date().getTime();
 
-				// set default values
-				select_document_type(categories, categories[0]);
-				select_orientation(0);
-				select_bb(bbs, 0);
+				var json_obj = {
+	        		"img_path": images[image_idx]
+	        	}
+
+
+				$.ajax({
+				    type : "POST",
+				    url : '/visualize',
+				    data: JSON.stringify(json_obj, null, '\t'),
+				    contentType: 'application/json;charset=UTF-8',
+				    success: function(l) {
+				    	label = l;
+				        console.log(label);
+				    	// restore labels if already done:
+						select_document_type(categories, label['category']);
+						select_orientation(label['orientation']);
+						select_bb(bbs, 0);
+						// draw_labels(ctx, label);
+				    }
+				});
 				isDrawing = false
 				
 				console.log('next image:');
@@ -583,12 +621,27 @@ $(document).ready(function(){
 
 				console.log('setting img.src !');
 				img.src = images[image_idx]+'?#'+new Date().getTime();
+				
+				var json_obj = {
+	        		"img_path": images[image_idx]
+	        	}
 
-				// set default values
-				selected_bb = 0;
-				select_document_type(categories, categories[0]);
-				select_orientation(0);
-				select_bb(bbs, 0);
+
+				$.ajax({
+				    type : "POST",
+				    url : '/visualize',
+				    data: JSON.stringify(json_obj, null, '\t'),
+				    contentType: 'application/json;charset=UTF-8',
+				    success: function(l) {
+				    	label = l;
+				        console.log(label);
+				    	// restore labels if already done:
+						select_document_type(categories, label['category']);
+						select_orientation(label['orientation']);
+						select_bb(bbs, 0);
+						// draw_labels(ctx, label);
+				    }
+				});
 	        break;
 
 	        default: return; // exit this handler for other keys
