@@ -57,6 +57,10 @@ def insert_label_to_mongodb(data):
 	db.labels_db.update({'img_path': data['img_path']}, data, upsert=True)
 
 
+def remove_label_from_mongodb(data):
+	db.labels_db.remove({'img_path': data['img_path']})
+
+
 def get_label(img_path):
 	label = []
 
@@ -91,6 +95,17 @@ def label():
 		print('ERROR: {}'.format(e))
 		return jsonify(result=300)
 
+
+@app.route('/reset', methods=['POST'])
+def reset():
+	try:
+		label = copy.copy(request.json)
+		remove_label_from_mongodb(label)
+
+		return jsonify(result=200)
+	except Exception as e:
+		print('ERROR: {}'.format(e))
+		return jsonify(result=300)
 
 @app.route('/')
 def index():

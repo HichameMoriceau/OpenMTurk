@@ -307,6 +307,45 @@ $(document).ready(function(){
 		});
 	})
 
+	var reset_button = $('<div/>')
+			.attr("class", "btn btn-a btn-sm smooth")
+			.css("background-color", colours[0])
+			.css("color", 'black')
+			.css("border", "3px solid black")
+			.text('Remove labels')
+			.appendTo($("#reset_div"));
+
+	//
+	// HANDLE EVENTS:
+	//
+
+	reset_button.mousedown(function (e) {
+
+		var json_obj = {
+			"img_path": images[image_idx]
+		}
+
+
+		$.ajax({
+		    type : "POST",
+		    url : '/reset',
+		    data: JSON.stringify(json_obj, null, '\t'),
+		    contentType: 'application/json;charset=UTF-8',
+		    success: function(l) {
+		    	label = l;
+		        console.log(label);
+		    	// restore labels if already done:
+				select_document_type(categories, label['category']);
+				select_orientation(label['orientation']);
+				select_bb(bbs, 0);
+				// draw_labels(ctx, label);
+
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+				img.src = json_obj['img_path'];
+		    }
+		});
+
+	});
 
 	function handleMouseDown(e) {
 		console.log('handleMouseDown');
