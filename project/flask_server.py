@@ -53,6 +53,17 @@ def get_style_version(dir_path):
 	return int(version)
 
 
+def upsert_many_images(img_paths):
+
+	# TODO(hichame): replace this by query + batch insert
+	# It will assume no transaction occur between query and insert
+
+	for path in img_paths:
+		print('path: ', path)
+		insert_label_to_mongodb({'img_path': path,
+								 'is_labelled': False})
+
+
 def insert_label_to_mongodb(data):
 	db.labels_db.update({'img_path': data['img_path']}, data, upsert=True)
 
@@ -61,6 +72,7 @@ def remove_label_from_mongodb(data):
 	result = db.labels_db.delete_many({'img_path': data['img_path']})
 
 	return result.deleted_count
+
 
 def get_label_from_mongodb(img_path):
 	label = []
@@ -78,14 +90,27 @@ def get_label_from_mongodb(img_path):
 
 	return label
 
-def get_dataset_info_from_mongodb():
-	info_dict = {}
 
-	# TODO(hichame): implement metrics functions
-	# - num annotated images
-	# - total num images
+def get_all_labelled_images():
+	labelled_img_paths = db.labels_db.distinct('img_path')
+
+	return labelled_img_paths
+
+
+def get_dataset_info_from_mongodb():
+
+	num_labelled = db.labels_db.count({'is_labelled': True})
+	num_unlabelled = db.labels_db.count({'is_labelled': False})
+
+	total = num_labelled + num_unlabelled
+
+	info_dict = {
+		'num_labelled_examples': num_labelled, 
+		'total_num_examples': total
+	}
 
 	return info_dict
+
 
 @app.route('/get_label', methods=['POST'])
 def get_label():
@@ -98,14 +123,14 @@ def get_label():
 		return jsonify(result=300)
 
 
-@app.route('/get_label_count', methods=['POST'])
+@app.route('/get_dataset_info', methods=['POST'])
 def get_dataset_info():
 	try:
 		ajax_dict = copy.copy(request.json)
 		db_info = get_dataset_info_from_mongodb()
-		print('Received labels of image {}'.format(label['img_path']))
+		print('Produced DB info: {}'.format(db_info))
 		
-		return jsonify(result=200)
+		return jsonify(result=db_info)
 	except Exception as e:
 		print('ERROR: {}'.format(e))
 		return jsonify(result=300)
@@ -149,6 +174,11 @@ def index():
 	
 	print('Using scripts: {}, {}'.format(os.path.basename(main_css), 
 								   os.path.basename(main_js)))
+
+	img_dir = 'static/notes_photos/*'
+	img_paths = sorted(glob.glob(img_dir))
+	
+	upsert_many_images(img_paths)
 
 	return render_template('index.html', 
 						   main_js=main_js,

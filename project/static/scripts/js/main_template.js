@@ -233,6 +233,24 @@ function create_submit_button(){
 	return submit_button;
 }
 
+
+function get_dataset_info(){
+
+	var json_obj = {}
+
+	$.ajax({
+	    type : "POST",
+	    url : '/get_dataset_info',
+	    data: JSON.stringify({}, null, '\t'),
+	    contentType: 'application/json;charset=UTF-8',
+	    success: function(ds_info) {
+
+	        console.log(ds_info);
+			return ds_info;
+	    }
+	});
+}
+
 //
 // main:
 //
@@ -273,6 +291,8 @@ $(document).ready(function(){
 
 	var scale_x = 0;
 	var scale_y = 0;
+
+	var dataset_info = get_dataset_info();
 
 	function select_bb(bbs, bb_idx){
 
@@ -362,7 +382,8 @@ $(document).ready(function(){
     		"img_path": images[image_idx],
     		"category": category,
     		"orientation": orientation,
-    		"bbs": bounding_boxes
+    		"bbs": bounding_boxes,
+    		"is_labelled": true
     	}
 
     	$.ajax({
@@ -734,12 +755,14 @@ $(document).ready(function(){
 
 	        case 37: // left
 	        	previous_image();
+	        	dataset_info = get_dataset_info();
 				console.log('previous image');
 
 	        break;
 
 	        case 39: // right
 	        	next_image();
+	        	dataset_info = get_dataset_info();
 				console.log('next image:');
 	        break;
 
