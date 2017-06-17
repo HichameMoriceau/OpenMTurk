@@ -285,6 +285,8 @@ $(document).ready(function(){
 				$('#bounding_boxes li').eq(i)
 					.css("color", "red")
 					.css("font-weight", "bold");
+					
+				selected_bb = i;
 
 				if (bbs[i][1] == 'line'){
 					isLine = true;
@@ -349,8 +351,8 @@ $(document).ready(function(){
 		        						
     	textarea.prop('disabled', 'true');
     	// make textarea appear
-    	div.appendTo($('#legend_col_1'));
-    	
+    	// div.appendTo($('#legend_col_2'));
+    	div.appendTo($("#word_textarea"));
     	return textarea
 	}
 
@@ -573,9 +575,9 @@ $(document).ready(function(){
 							$(document).on('keydown', handleKeyDown);
 							// make textarea disappear
 
-							textarea.text('Please select each word to write in here.');
+							textarea.val('Please select each word to write in here.');
 							textarea.prop('disabled', true);
-							div.remove();
+							
 						}
 					});
 		        }

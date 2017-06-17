@@ -63,37 +63,50 @@
 			    </canvas>
 		 	</div>
 
+		 	<!-- Annotation tools: -->
 		    <div id="legend_div" class="col-md-8">
 				
-		    	<div id="legend_col_1" class="col-md-4">
-		    		
-		    	</div>
+				<div class="row">
 
-		    	<div id="legend_col_2" class="col-md-4">
-			    	<div>
-						<h4>Category:</h4>
-						<ul id="category">
-						</ul>
-			    	</div>
-	 
-			    	<div>
-						<h4>Document orientation: </h4>
-						<ul id="orientation">
-						</ul>
-					</div>
-
-			    	<div>
-			    		<h4>Bounding boxes: <span id="bb_small_text">(clic, release, clic)</span>:</h4>
-			    		<ul id="bounding_boxes">
-			    		</ul>
+					<div id="legend_col_1" class="col-md-0">	
 			    	</div>
 
-		    	</div>
+			    	<div id="legend_col_2" class="col-md-8">
+				    	<div>
+							<h4>Document category:</h4>
+							<ul id="category">
+							</ul>
+				    	</div>
+		 
+				    	<div>
+							<h4>Document orientation: </h4>
+							<ul id="orientation">
+							</ul>
+						</div>
+
+				    	<div>
+				    		<h4>Bounding boxes: <span id="bb_small_text">(clic, release, clic)</span>:</h4>
+				    		<ul id="bounding_boxes">
+				    		</ul>
+				    	</div>
+
+				    	<div>
+					    	<h4>Text extraction: <span id="bb_small_text">(Use the bounding-box: `word`)</span>:</h4>
+					    	<div id="word_textarea">
+					    	</div>
+				    	</div>
+
+			    	</div>
+				</div>
+
 		    	
-		    	<div id="reset_div">
-		    	</div>
-		    	
-		    	<div id="submit_button">
+		    	<!-- Submit/remove buttons: -->
+		    	<div class="row">
+			    	<div id="reset_div">
+			    	</div>
+			    	
+			    	<div id="submit_button">
+			    	</div>
 		    	</div>
 
 		    </div>
