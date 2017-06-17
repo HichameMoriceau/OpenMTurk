@@ -199,17 +199,38 @@ function create_orientation_buttons(orientations){
 }
 
 
-function create_reset_button(images){
+function create_reset_button(){
 
 	var reset_button = $('<div/>')
 			.attr("class", "btn btn-a btn-sm smooth")
 			.css("background-color", colours[0])
 			.css("color", 'black')
 			.css("border", "3px solid black")
-			.text('Remove labels')
+			.text('Clear labels')
 			.appendTo($("#reset_div"));
 
 	return reset_button;
+}
+
+
+
+function create_submit_button(){
+
+	var span = $('<span/>')
+		.text(' (key : enter)')
+		.css("font-size", "10px")
+		.css("font-weight", "normal");
+
+	var submit_button = $('<div/>')
+			.attr("class", "btn btn-a btn-sm smooth")
+			.css("background-color", colours[0])
+			.css("color", 'black')
+			.css("border", "3px solid black")
+			.text('Submit labels')
+			.append(span)
+			.appendTo($("#submit_button"));
+
+	return submit_button;
 }
 
 //
@@ -303,6 +324,34 @@ $(document).ready(function(){
 				ctx.strokeStyle = colours[i];
 			});
 		})
+	}
+
+	function create_textarea(){
+	    var div = $('<div/>');
+
+    	var textarea = $('<textarea/>')
+    						.attr('rows', '3')
+    						.attr('class', 'smooth')
+    						.text('Please select each word to write in here.')
+    						.appendTo(div);
+
+
+		textarea.focus(function() {
+		        if (this.value === this.defaultValue) {
+		            this.value = '';
+		        }
+		  })
+		  .blur(function() {
+		        if (this.value === '') {
+		            this.value = this.defaultValue;
+		        }
+		});
+		        						
+    	textarea.prop('disabled', 'true');
+    	// make textarea appear
+    	div.appendTo($('#legend_col_1'));
+    	
+    	return textarea
 	}
 
 	function insert_label(image_idx, category, orientation, bounding_boxes){
@@ -417,8 +466,10 @@ $(document).ready(function(){
 	create_category_buttons(categories);
 	create_orientation_buttons(orientations);
 	create_bb_buttons(bbs);
-	reset_button = create_reset_button();
-	
+	var textarea = create_textarea();
+	var reset_button = create_reset_button();
+	var submit_button = create_submit_button();
+
 	img.src = images[0]+"?t="+ new Date().getTime();
 	get_label(0);
 
@@ -443,15 +494,25 @@ $(document).ready(function(){
 		    data: JSON.stringify(json_obj, null, '\t'),
 		    contentType: 'application/json;charset=UTF-8',
 		    success: function(l) {
-		    	label = l;
-		    	// restore labels if already done:
-				select_category(categories, label['category']);
-				// select_orientation(label['orientation']);
-				select_orientation(orientations, label['orientation']);
+
+
+				// set default label values:
+
+				category = categories[0];
+				select_category(categories, category);
+
+				orientation = orientations[0];
+				select_orientation(orientations, orientation);
+				
+				label = {};
+				bounding_boxes = [];
 				select_bb(bbs, 0);
+
+				// clear image from bounding boxes
 
 				ctx.clearRect(0, 0, canvas.width, canvas.height);
 				img.src = json_obj['img_path'];
+
 		    }
 		});
 	}
@@ -494,18 +555,9 @@ $(document).ready(function(){
 		        console.log(bbs[selected_bb]);
 
 		        if (bbs[selected_bb][1] == 'textbox'){
-		        	var div = $('<div/>');
-		        	var p = $('<p/>')
-		        				.text('What word(s) does this bounding box contain?')
-		        				.appendTo(div)
 
-		        	var textarea = $('<textarea/>')
-		        						.attr('rows', '3')
-		        						.attr('class', 'smooth')
-		        						.appendTo(div);
-		        						
-		        	// make textarea appear
-		        	div.appendTo($('#legend_col_1'));
+					textarea.prop('disabled', false);
+		        	textarea.focus();
 		        	
 		        	// disable all events
 		        	$(document).on('keydown', handleKeyDown);
@@ -520,7 +572,9 @@ $(document).ready(function(){
 	        	
 							$(document).on('keydown', handleKeyDown);
 							// make textarea disappear
-							textarea.remove();
+
+							textarea.text('Please select each word to write in here.');
+							textarea.prop('disabled', true);
 							div.remove();
 						}
 					});
@@ -566,6 +620,17 @@ $(document).ready(function(){
 
 	}
 
+	function submit_label(){
+    	insert_label(image_idx, category, orientation, bounding_boxes);
+
+		if (image_idx < images.length){
+			image_idx++;
+		}
+
+		img.src = images[image_idx]+'?#'+new Date().getTime();
+		
+		get_label(image_idx);
+	}
 
 	function handleKeyDown(e){
 
@@ -697,16 +762,7 @@ $(document).ready(function(){
 
 	        case 13: // enter
 		        console.log('FINAL ENTER');
-
-	        	insert_label(image_idx, category, orientation, bounding_boxes);
-
-				if (image_idx < images.length){
-					image_idx++;
-				}
-
-				img.src = images[image_idx]+'?#'+new Date().getTime();
-				
-				get_label(image_idx);
+		        submit_label();
 	        break;
 
 	        default: return; // exit this handler for other keys
@@ -717,16 +773,19 @@ $(document).ready(function(){
 	// HANDLE EVENTS: function calls
 	//
 
-
-	reset_button.mousedown(function (e) {
-		handleResetEvent(e);
-	});
-
 	$("#img_canvas").mousedown(function (e) {
 		handleMouseDown(e);
 	});
 
     $(document).keydown(function(e) {
     	handleKeyDown(e);
+	});
+
+	reset_button.mousedown(function (e) {
+		handleResetEvent(e);
+	});
+
+	submit_button.mousedown(function (e) {
+		submit_label();
 	});
 });
