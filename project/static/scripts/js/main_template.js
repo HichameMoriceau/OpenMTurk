@@ -458,17 +458,108 @@ $(document).ready(function(){
 		});
 	}
 
-	//
+	function previous_image(){
+	    label = [];
+	    
+	    if (image_idx != 0){
+			image_idx--;
+		}
+
+		img.src = images[image_idx]+"?t="+ new Date().getTime();
+
+		get_label(image_idx);
+		isDrawing = false
+	}
+
+	function next_image(){
+	    label = [];
+	    
+	    if (image_idx < images.length){
+			image_idx++;
+		}
+
+		img.src = images[image_idx]+"?t="+ new Date().getTime();
+		
+		get_label(image_idx);
+		isDrawing = false
+	}
+
+
+	function create_previous_button(){
+
+		var img_navigation_div = document.getElementById('img_navigation');
+
+		var span = $('<span/>')
+				.text(' (key : left-arrow)')
+				.css("font-size", "10px")
+				.css("font-weight", "normal");
+
+		var div = $('<div/>')
+				.attr("class", "icon-arrow-left-circle")
+				.css("font-weight", "bold")
+				.css("font-size", "20px");
+
+		var prev_button = $('<div/>')
+				.attr("class", "btn btn-a btn-sm smooth")
+				.css("background-color", 'white')
+				.css("border", "3px solid black")
+				.css('margin-bottom', '1%')
+				.append(div)
+				.append(span)
+				.appendTo(img_navigation_div);
+
+		prev_button.mousedown(function (e) {
+			previous_image();
+		});
+
+		return prev_button;
+	}
+
+
+	function create_next_button(){
+
+		var img_navigation_div = document.getElementById('img_navigation');
+
+		var span = $('<span/>')
+				.text(' (key : right-arrow)')
+				.css("font-size", "10px")
+				.css("font-weight", "normal");
+
+		var div = $('<div/>')
+				.attr("class", "icon-arrow-right-circle")
+				.css("font-weight", "bold")
+				.css("font-size", "20px");
+
+		var next_button = $('<div/>')
+				.attr("class", "btn btn-a btn-sm smooth")
+				.css("background-color", 'white')
+				.css("border", "3px solid black")
+				.css('margin-bottom', '1%')
+				.append(div)
+				.append(span)
+				.appendTo(img_navigation_div);
+
+		next_button.mousedown(function (e) {
+			next_image();
+		});
+
+		return next_button;
+	}
+
+	
 	// Create page:
 	// from provided: 
 	// 		- categories, 
 	//		- orientation, 
 	//		- bounding boxes
-	//
 	create_category_buttons(categories);
 	create_orientation_buttons(orientations);
 	create_bb_buttons(bbs);
 	var textarea = create_textarea();
+
+	var prev_button = create_previous_button();
+	var next_button = create_next_button();
+	
 	var reset_button = create_reset_button();
 	var submit_button = create_submit_button();
 
@@ -642,31 +733,13 @@ $(document).ready(function(){
 			//
 
 	        case 37: // left
-	        	label = [];
-		        if (image_idx != 0){
-					image_idx--;
-				}
-
-				img.src = images[image_idx]+"?t="+ new Date().getTime();
-
-				get_label(image_idx);
-
-
+	        	previous_image();
 				console.log('previous image');
+
 	        break;
 
 	        case 39: // right
-	        	label = [];
-		        if (image_idx < images.length){
-					image_idx++;
-				}
-
-				img.src = images[image_idx]+"?t="+ new Date().getTime();
-				
-				get_label(image_idx);
-				
-				isDrawing = false
-				
+	        	next_image();
 				console.log('next image:');
 	        break;
 
