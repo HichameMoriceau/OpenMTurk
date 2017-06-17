@@ -69,23 +69,19 @@ function draw_labels(ctx, label){
 
 // Changes the color of the selected orientation 
 // button
-function select_orientation(o){
+function select_orientation(orientations, orientation){
 
-	$('#orientation li').eq(0)
-		.css("color", "black")
-		.css("font-weight", "normal");
-	$('#orientation li').eq(1)
-		.css("color", "black")
-		.css("font-weight", "normal");
-	$('#orientation li').eq(2)
-		.css("color", "black")
-		.css("font-weight", "normal");
-	$('#orientation li').eq(3)
-		.css("color", "black")
-		.css("font-weight", "normal");
-	$('#orientation li').eq(o)
-		.css("color", "red")
-		.css("font-weight", "bold");
+	$.each(orientations, function(i) {
+		$('#orientation li').eq(i)
+			.css("color", "black")
+			.css("font-weight", "normal");
+
+		if (orientations[i] == orientation){
+			$('#orientation li').eq(i)
+				.css("color", "red")
+				.css("font-weight", "bold");
+		}
+	})
 }
 
 // Changes the color of the selected document-
@@ -106,9 +102,39 @@ function select_category(categories, dt){
 }
 
 
+	// function create_bb_buttons(bbs){
+	// 	var bbs_legend = document.getElementById('bounding_boxes');
+		
+	// 	$.each(bbs , function(i){
+			
+	// 		var li = $('<li/>')
+	// 			.attr("class", "btn btn-a btn-sm smooth")
+	// 			.text(bbs[i][0])
+	// 			.css("background-color", colours[i])
+	// 			.css("color", 'black')
+	// 			.css("border", "3px solid black")
+	// 			.css("margin-top", "1%");
+
+	// 		li.mousedown(function (e) {
+	// 			selected_bb = i;
+	// 			select_bb(bbs, i);
+	// 		});
+
+	// 		li.appendTo(bbs_legend);
+	// 	})
+
+	// 	$.each(bbs , function(i){
+	// 		$("#bounding_boxes li").eq(i).mousedown(function (e) {
+	// 			ctx.strokeStyle = colours[i];
+	// 		});
+	// 	})
+	// }
+
+
 function create_category_buttons(categories){
 
 	var doc_type_legend = document.getElementById('category');
+
 	$.each(categories , function(i){
 
 		var key_value = i+1;
@@ -129,13 +155,11 @@ function create_category_buttons(categories){
 			.appendTo(doc_type_legend);
 
 
-
 		li.mousedown(function (e) {
-			category = i;
-			select_category(categories, categories[i]);
+			category = categories[i];
+			select_category(categories, category);
 		});
 	})
-
 }
 
 function create_orientation_buttons(orientations){
@@ -167,41 +191,13 @@ function create_orientation_buttons(orientations){
 			.appendTo(orientation_legend);
 
 		li.mousedown(function (e) {
-			orientation = i;
-			select_orientation(orientation);
+			orientation = orientations[i];
+			select_orientation(orientations, orientation);
 		});
 
 	})
 }
 
-function create_bb_buttons(bbs){
-	var bbs_legend = document.getElementById('bounding_boxes');
-	
-	$.each(bbs , function(i){
-		
-		var li = $('<li/>')
-			.attr("class", "btn btn-a btn-sm smooth")
-			.text(bbs[i][0])
-			.css("background-color", colours[i])
-			.css("color", 'black')
-			.css("border", "3px solid black")
-			.css("margin-top", "1%");
-
-		li.mousedown(function (e) {
-			selected_bb = i;
-			select_bb(bbs, i);
-		});
-
-		li.appendTo(bbs_legend);
-	})
-
-	$.each(colours , function(i){
-		$("#bounding_boxes li").eq(i).mousedown(function (e) {
-			ctx.strokeStyle = colours[i];
-		});
-	})
-
-}
 
 function create_reset_button(images){
 
@@ -233,8 +229,8 @@ $(document).ready(function(){
 	
 	var image_idx = 0;
 	var bounding_boxes = [];
-	var category = 0;
-	var orientation = 0;
+	var category = categories[0];
+	var orientation = orientations[0];
 	var selected_bb = 0;
 
 	var canvas = document.getElementById('img_canvas');
@@ -281,11 +277,40 @@ $(document).ready(function(){
 		})
 	}
 
+	function create_bb_buttons(bbs){
+		var bbs_legend = document.getElementById('bounding_boxes');
+		
+		$.each(bbs , function(i){
+			
+			var li = $('<li/>')
+				.attr("class", "btn btn-a btn-sm smooth")
+				.text(bbs[i][0])
+				.css("background-color", colours[i])
+				.css("color", 'black')
+				.css("border", "3px solid black")
+				.css("margin-top", "1%");
+
+			li.mousedown(function (e) {
+				selected_bb = i;
+				select_bb(bbs, i);
+			});
+
+			li.appendTo(bbs_legend);
+		})
+
+		$.each(bbs , function(i){
+			$("#bounding_boxes li").eq(i).mousedown(function (e) {
+				ctx.strokeStyle = colours[i];
+			});
+		})
+	}
+
 	function insert_label(image_idx, category, orientation, bounding_boxes){
+		
 		var json_obj = {
     		"img_path": images[image_idx],
-    		"category": categories[category],
-    		"orientation": orientations[orientation],
+    		"category": category,
+    		"orientation": orientation,
     		"bbs": bounding_boxes
     	}
 
@@ -351,39 +376,36 @@ $(document).ready(function(){
 		    	// category
 		        if (typeof label_dict['category'] == 'undefined'){
 		    		category = categories[0];
-		        	select_category(categories, categories[0]);
+		        	select_category(categories, category);
 		        }else{
 		    		category = label_dict['category'];
+		        	console.log('setting category to ')
+		        	console.log(category)
 					select_category(categories, category);
 		        }
 
 		        // orientation
 		        if (typeof label_dict['orientation'] == 'undefined'){
 					orientation = orientations[0];
-					select_orientation(orientation);
+					select_orientation(orientations, orientation);
 		       		
 		        }else{
 		        	orientation = label_dict['orientation'];
-		        	select_orientation(orientation);
+					select_orientation(orientations, orientation);
 		        }
 
 		        if (typeof label_dict['bbs'] == 'undefined'){
-					bbs = [];
-		        	select_bb(bounding_boxes, bbs);
+					bounding_boxes = [];
+		        	select_bb(bbs, 0);
 
 		        }else{
-					bbs = label_dict['bbs'];
-					select_bb(bounding_boxes, bbs);
+					bounding_boxes = label_dict['bbs'];
+					select_bb(bbs, 0);
 		        	
 		        }
 		    }
 		});
 	}
-	
-	console.log('setting img.src !');
-	img.src = images[0]+"?t="+ new Date().getTime();
-	get_label(0);
-
 
 	//
 	// Create page:
@@ -392,11 +414,16 @@ $(document).ready(function(){
 	//		- orientation, 
 	//		- bounding boxes
 	//
-
 	create_category_buttons(categories);
 	create_orientation_buttons(orientations);
 	create_bb_buttons(bbs);
 	reset_button = create_reset_button();
+	
+	img.src = images[0]+"?t="+ new Date().getTime();
+	get_label(0);
+
+
+
 
 
 
@@ -417,10 +444,10 @@ $(document).ready(function(){
 		    contentType: 'application/json;charset=UTF-8',
 		    success: function(l) {
 		    	label = l;
-		        console.log(label);
 		    	// restore labels if already done:
 				select_category(categories, label['category']);
-				select_orientation(label['orientation']);
+				// select_orientation(label['orientation']);
+				select_orientation(orientations, label['orientation']);
 				select_bb(bbs, 0);
 
 				ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -552,7 +579,7 @@ $(document).ready(function(){
 		        if (image_idx != 0){
 					image_idx--;
 				}
-				console.log('setting img.src !');
+
 				img.src = images[image_idx]+"?t="+ new Date().getTime();
 
 				get_label(image_idx);
@@ -567,7 +594,6 @@ $(document).ready(function(){
 					image_idx++;
 				}
 
-				console.log('setting img.src !');
 				img.src = images[image_idx]+"?t="+ new Date().getTime();
 				
 				get_label(image_idx);
@@ -641,27 +667,27 @@ $(document).ready(function(){
 
 	        case 81: // Q
 
-		        orientation = 0;
+		        orientation = orientations[0];
 				console.log('orientation: ', orientation);
-				select_orientation(0);
+				select_orientation(orientations, orientation);
 	        break;
 
 			case 87: // W
-		        orientation = 1;
+		        orientation = orientations[1];
 				console.log('orientation: ', orientation);
-				select_orientation(1);
+				select_orientation(orientations, orientation);
 	        break;
 
 			case 69: // E
-		        orientation = 2;
+		        orientation = orientations[2];
 				console.log('orientation: ', orientation);
-				select_orientation(2);
+				select_orientation(orientations, orientation);
 	        break;
 
 			case 82: // R
-		        orientation = 3;
+		        orientation = orientations[3];
 				console.log('orientation: ', orientation);
-				select_orientation(3);
+				select_orientation(orientations, orientation);
 			break;
 
 
@@ -678,7 +704,6 @@ $(document).ready(function(){
 					image_idx++;
 				}
 
-				console.log('setting img.src !');
 				img.src = images[image_idx]+'?#'+new Date().getTime();
 				
 				get_label(image_idx);

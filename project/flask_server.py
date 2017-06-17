@@ -70,6 +70,8 @@ def get_label_from_mongodb(img_path):
 		
 		del label['_id'] # not json-friendly object
 		print('Found label for img path {}'.format(img_path))
+		print(label)
+		print()
 
 	except Exception as e:
 		print('No label found for img_path {}'.format(img_path))
@@ -115,6 +117,7 @@ def insert_label():
 		label = copy.copy(request.json)
 		insert_label_to_mongodb(label)
 		print('Received labels of image {}'.format(label['img_path']))
+		print(label)
 		
 		return jsonify(result=200)
 	except Exception as e:
