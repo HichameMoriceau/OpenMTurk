@@ -58,25 +58,37 @@ def insert_label_to_mongodb(data):
 
 
 def remove_label_from_mongodb(data):
-	db.labels_db.remove({'img_path': data['img_path']})
+	result = db.labels_db.delete_many({'img_path': data['img_path']})
 
+	return result.deleted_count
 
-def get_label(img_path):
+def get_label_from_mongodb(img_path):
 	label = []
 
 	try:
 		label = db.labels_db.find({'img_path': img_path})[0]
+		
 		del label['_id'] # not json-friendly object
+		print('Found label for img path {}'.format(img_path))
+
 	except Exception as e:
 		print('No label found for img_path {}'.format(img_path))
 
 	return label
 
+def get_dataset_info_from_mongodb():
+	info_dict = {}
 
-@app.route('/visualize', methods=['POST'])
-def visualize():
+	# TODO(hichame): implement metrics functions
+	# - num annotated images
+	# - total num images
+
+	return info_dict
+
+@app.route('/get_label', methods=['POST'])
+def get_label():
 	try:
-		label = get_label(request.json['img_path'])
+		label = get_label_from_mongodb(request.json['img_path'])
 
 		return jsonify(dict(label))
 	except Exception as e:
@@ -84,12 +96,26 @@ def visualize():
 		return jsonify(result=300)
 
 
-@app.route('/label', methods=['POST'])
-def label():
+@app.route('/get_label_count', methods=['POST'])
+def get_dataset_info():
+	try:
+		ajax_dict = copy.copy(request.json)
+		db_info = get_dataset_info_from_mongodb()
+		print('Received labels of image {}'.format(label['img_path']))
+		
+		return jsonify(result=200)
+	except Exception as e:
+		print('ERROR: {}'.format(e))
+		return jsonify(result=300)
+
+
+@app.route('/insert_label', methods=['POST'])
+def insert_label():
 	try:
 		label = copy.copy(request.json)
 		insert_label_to_mongodb(label)
-
+		print('Received labels of image {}'.format(label['img_path']))
+		
 		return jsonify(result=200)
 	except Exception as e:
 		print('ERROR: {}'.format(e))
@@ -100,18 +126,22 @@ def label():
 def reset():
 	try:
 		label = copy.copy(request.json)
-		remove_label_from_mongodb(label)
+		
+		num_delete = remove_label_from_mongodb(label)
 
+		print('Removed {} records'.format(num_delete))
 		return jsonify(result=200)
+	
 	except Exception as e:
+
 		print('ERROR: {}'.format(e))
 		return jsonify(result=300)
 
 @app.route('/')
 def index():
-	style_version = get_style_version('static/scripts/*')
+	style_version = get_style_version('static/scripts/js/*')
 	
-	main_js = 'static/scripts/main.{}.js'.format(style_version)
+	main_js = 'static/scripts/js/main.{}.js'.format(style_version)
 	main_css = 'static/scripts/css/style.{}.css'.format(style_version)
 	
 	print('Using scripts: {}, {}'.format(os.path.basename(main_css), 

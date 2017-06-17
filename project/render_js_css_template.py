@@ -45,7 +45,7 @@ def load_labels(labels_filename):
 
 def generate_js(main_js_path, new_version, images_dir, labels_filename):
 
-	html_index_path = 'static/scripts/main.{}.js'.format(new_version)
+	html_index_path = 'static/scripts/js/main.{}.js'.format(new_version)
 
 	with open(main_js_path, 'r') as f:
 	    html_template = f.read()
@@ -68,12 +68,12 @@ def generate_css(main_css, new_version):
 
 
 def main():
-	main_js_path = 'static/scripts/main_template.js'
+	main_js_path = 'static/scripts/js/main_template.js'
 	main_css = 'static/scripts/css/style.css'
 	images_dir = 'static/notes_photos/*'
 	labels_filename = 'labels.json'
 
-	new_version_num = get_style_version('static/scripts/*')+1
+	new_version_num = get_style_version('static/scripts/js/*')+1
 
 	generate_js(main_js_path, new_version_num, images_dir, labels_filename)
 	generate_css(main_css, new_version_num)

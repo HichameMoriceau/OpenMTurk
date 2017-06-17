@@ -6,6 +6,12 @@
 // 2) send label to back-end (`flask_server.label()`)
 
 
+//
+// list of colour names a bounding box type may have.
+// There cannot and shouldnt be more bounding box type
+// than there are colours.
+//
+
 var colours = ['white',
 			  'orange',
 			  'pink',
@@ -32,6 +38,9 @@ var colours = ['white',
 			  'chocolate',
 			  'papayawhip'];
 
+
+// draws all the bounding boxes and lines on 
+// a given canvas context
 function draw_labels(ctx, label){
 	console.log('drawing all bounding boxes ... ');
 
@@ -58,6 +67,8 @@ function draw_labels(ctx, label){
 	})
 }
 
+// Changes the color of the selected orientation 
+// button
 function select_orientation(o){
 
 	$('#orientation li').eq(0)
@@ -77,16 +88,17 @@ function select_orientation(o){
 		.css("font-weight", "bold");
 }
 
-
-function select_document_type(categories, dt){
+// Changes the color of the selected document-
+// type button
+function select_category(categories, dt){
 
 	$.each(categories , function(i){
-		$('#document_type li').eq(i)
+		$('#category li').eq(i)
 			.css("color", "black")
 			.css("font-weight", "normal");
 		
 		if (categories[i] == dt){
-			$('#document_type li').eq(i)
+			$('#category li').eq(i)
 				.css("color", "red")
 				.css("font-weight", "bold");
 		}
@@ -94,128 +106,11 @@ function select_document_type(categories, dt){
 }
 
 
+function create_category_buttons(categories){
 
-
-
-$(document).ready(function(){
-
-	var config = {{ config }};
-
-	var images = config.images;
-	var categories = config.categories;
-	var orientations = config.orientations;
-	var bbs = config.bbs;
-	
-	var image_idx = 0;
-	var bounding_boxes = [];
-	var document_type = 0;
-	var orientation = 0;
-	var selected_bb = 0;
-
-	var canvas = document.getElementById('img_canvas');
-	var ctx = canvas.getContext("2d");
-	var img = new Image();
-
-	var isDrawing=false;
-	var isRect = true;
-	var isLine = false;
-	
-	var label = [];
-
-	// var textarea_alive = false;
-	var textarea;
-
-	var startX;
-	var startY;
-
-	var canvasOffset = $("#img_canvas").offset();
-	var offsetX = canvasOffset.left;
-	var offsetY = canvasOffset.top;	
-
-
-	var img_ratio = 0;
-	var scale_x = 0;
-	var scale_y = 0;
-
-	img.onload = function () {
-		console.log('onload -	 image');
-
-		// resize image but maintain original ratio
-	 	img_ratio = img.width / img.height;
-
-	 	var new_width = 500;
-	 	var new_height = new_width / img_ratio;
-		
-		scale_x = img.width / new_width;
-		scale_y = img.height / new_height;
-
-		canvas.width = new_width;
-	    canvas.height = new_height;
-	    
-	    console.log('calling drawImage');
-	    ctx.drawImage(img,
-	    			  0, 0, img.width, img.height,
-	    			  0, 0, new_width, new_height);
-
-		ctx.strokeStyle = colours[0];
-		ctx.lineWidth = 4;
-
-		draw_labels(ctx, label)
-	}
-
-
-	var json_obj = {
-		"img_path": images[0]
-	}
-
-
-	$.ajax({
-	    type : "POST",
-	    url : '/visualize',
-	    data: JSON.stringify(json_obj, null, '\t'),
-	    contentType: 'application/json;charset=UTF-8',
-	    success: function(l) {
-	    	label = l;
-	        console.log(label);
-	    	// restore labels if already done:
-			select_document_type(categories, label['category']);
-			select_orientation(label['orientation']);
-			select_bb(bbs, 0);
-			// draw_labels(ctx, label);
-	    }
-	});
-
-	console.log('setting img.src !');
-	img.src = images[0]+"?t="+ new Date().getTime();
-
-	function select_bb(bbs, bb_idx){
-
-		$.each(bbs , function(i){
-			$('#bounding_boxes li').eq(i)
-				.css("color", "black")
-				.css("font-weight", "normal");
-			
-			if (i == bb_idx){
-				$('#bounding_boxes li').eq(i)
-					.css("color", "red")
-					.css("font-weight", "bold");
-
-				if (bbs[i][1] == 'line'){
-					isLine = true;
-					isRect = false;
-				}else{
-					isLine = false;
-					isRect = true;
-				}
-
-			}
-		})
-	}	
-
-
+	var doc_type_legend = document.getElementById('category');
 	$.each(categories , function(i){
 
-		var doc_type_legend = document.getElementById('document_type');
 		var key_value = i+1;
 		
 		var span = $('<span/>')
@@ -223,8 +118,7 @@ $(document).ready(function(){
 			.css("font-size", "10px")
 			.css("font-weight", "normal");
 
-		var div = $('<div/>')
-			.text(categories[i])
+		var div = $('<div/>').text(categories[i])
 
 		var li = $('<li/>')
 			.attr("class", "btn btn-a btn-sm smooth")
@@ -237,16 +131,20 @@ $(document).ready(function(){
 
 
 		li.mousedown(function (e) {
-			document_type = i;
-			select_document_type(categories, categories[i]);
+			category = i;
+			select_category(categories, categories[i]);
 		});
 	})
 
+}
+
+function create_orientation_buttons(orientations){
 
 	var key_values = ['q', 'w', 'e', 'r'];
+	var orientation_legend = document.getElementById('orientation');
+	
 	$.each(orientations, function(i){
 		
-		var orientation_legend = document.getElementById('orientation');
 
 		var span = $('<span/>')
 			.text(' (key : ' + key_values[i] + ')')
@@ -274,10 +172,12 @@ $(document).ready(function(){
 		});
 
 	})
+}
 
-
+function create_bb_buttons(bbs){
+	var bbs_legend = document.getElementById('bounding_boxes');
+	
 	$.each(bbs , function(i){
-		var bbs_legend = document.getElementById('bounding_boxes');
 		
 		var li = $('<li/>')
 			.attr("class", "btn btn-a btn-sm smooth")
@@ -295,17 +195,15 @@ $(document).ready(function(){
 		li.appendTo(bbs_legend);
 	})
 
-	// set default values
-	select_document_type(categories, categories[0]);
-	select_orientation(0);
-	select_bb(bbs, 0);
-
-
 	$.each(colours , function(i){
 		$("#bounding_boxes li").eq(i).mousedown(function (e) {
 			ctx.strokeStyle = colours[i];
 		});
 	})
+
+}
+
+function create_reset_button(images){
 
 	var reset_button = $('<div/>')
 			.attr("class", "btn btn-a btn-sm smooth")
@@ -315,16 +213,202 @@ $(document).ready(function(){
 			.text('Remove labels')
 			.appendTo($("#reset_div"));
 
-	//
-	// HANDLE EVENTS:
-	//
+	return reset_button;
+}
 
-	reset_button.mousedown(function (e) {
+//
+// main:
+//
+
+$(document).ready(function(){
+
+	var config = {{ config }};
+
+	var images = config.images;
+	var categories = config.categories;
+	var orientations = config.orientations;
+	var bbs = config.bbs;
+
+	var labelled;
+	
+	var image_idx = 0;
+	var bounding_boxes = [];
+	var category = 0;
+	var orientation = 0;
+	var selected_bb = 0;
+
+	var canvas = document.getElementById('img_canvas');
+	var ctx = canvas.getContext("2d");
+	var img = new Image();
+
+	var isDrawing=false;
+	var isRect = true;
+	var isLine = false;
+	
+	var label = [];
+
+	var startX;
+	var startY;
+
+	var canvasOffset = $("#img_canvas").offset();
+	var offsetX = canvasOffset.left;
+	var offsetY = canvasOffset.top;	
+
+	var scale_x = 0;
+	var scale_y = 0;
+
+	function select_bb(bbs, bb_idx){
+
+		$.each(bbs , function(i){
+			$('#bounding_boxes li').eq(i)
+				.css("color", "black")
+				.css("font-weight", "normal");
+			
+			if (i == bb_idx){
+				$('#bounding_boxes li').eq(i)
+					.css("color", "red")
+					.css("font-weight", "bold");
+
+				if (bbs[i][1] == 'line'){
+					isLine = true;
+					isRect = false;
+				}else{
+					isLine = false;
+					isRect = true;
+				}
+
+			}
+		})
+	}
+
+	function insert_label(image_idx, category, orientation, bounding_boxes){
+		var json_obj = {
+    		"img_path": images[image_idx],
+    		"category": categories[category],
+    		"orientation": orientations[orientation],
+    		"bbs": bounding_boxes
+    	}
+
+    	$.ajax({
+		    type : "POST",
+		    url : '/insert_label',
+		    data: JSON.stringify(json_obj, null, '\t'),
+		    contentType: 'application/json;charset=UTF-8',
+		    success: function(result) {
+		        console.log(result);
+		    }
+		});
+	}
+
+	img.onload = function () {
+		console.log('onload -	 image');
+
+		// resize image but maintain original ratio
+	 	var img_ratio = img.width / img.height;
+
+	 	var new_width = 500;
+	 	var new_height = new_width / img_ratio;
+		
+		scale_x = img.width / new_width;
+		scale_y = img.height / new_height;
+
+		canvas.width = new_width;
+	    canvas.height = new_height;
+	    
+	    console.log('calling drawImage');
+	    ctx.drawImage(img,
+	    			  0, 0, img.width, img.height,
+	    			  0, 0, new_width, new_height);
+
+		ctx.strokeStyle = colours[0];
+		ctx.lineWidth = 4;
+		draw_labels(ctx, label);
+
+	}
+
+	function get_label(image_idx){
+
 
 		var json_obj = {
 			"img_path": images[image_idx]
 		}
 
+		$.ajax({
+		    type : "POST",
+		    url : '/get_label',
+		    data: JSON.stringify(json_obj, null, '\t'),
+		    contentType: 'application/json;charset=UTF-8',
+		    success: function(label_dict) {
+		    	console.log('retrieved labels: ');
+		    	console.log(label_dict);
+
+		    	label = label_dict;
+
+		    	//
+		    	// restore labels if they exists:
+		    	//
+
+		    	// category
+		        if (typeof label_dict['category'] == 'undefined'){
+		    		category = categories[0];
+		        	select_category(categories, categories[0]);
+		        }else{
+		    		category = label_dict['category'];
+					select_category(categories, category);
+		        }
+
+		        // orientation
+		        if (typeof label_dict['orientation'] == 'undefined'){
+					orientation = orientations[0];
+					select_orientation(orientation);
+		       		
+		        }else{
+		        	orientation = label_dict['orientation'];
+		        	select_orientation(orientation);
+		        }
+
+		        if (typeof label_dict['bbs'] == 'undefined'){
+					bbs = [];
+		        	select_bb(bounding_boxes, bbs);
+
+		        }else{
+					bbs = label_dict['bbs'];
+					select_bb(bounding_boxes, bbs);
+		        	
+		        }
+		    }
+		});
+	}
+	
+	console.log('setting img.src !');
+	img.src = images[0]+"?t="+ new Date().getTime();
+	get_label(0);
+
+
+	//
+	// Create page:
+	// from provided: 
+	// 		- categories, 
+	//		- orientation, 
+	//		- bounding boxes
+	//
+
+	create_category_buttons(categories);
+	create_orientation_buttons(orientations);
+	create_bb_buttons(bbs);
+	reset_button = create_reset_button();
+
+
+
+	//
+	// HANDLE EVENTS: function definitions
+	//
+
+	function handleResetEvent(e){
+
+		var json_obj = {
+			"img_path": images[image_idx]
+		}
 
 		$.ajax({
 		    type : "POST",
@@ -335,17 +419,15 @@ $(document).ready(function(){
 		    	label = l;
 		        console.log(label);
 		    	// restore labels if already done:
-				select_document_type(categories, label['category']);
+				select_category(categories, label['category']);
 				select_orientation(label['orientation']);
 				select_bb(bbs, 0);
-				// draw_labels(ctx, label);
 
 				ctx.clearRect(0, 0, canvas.width, canvas.height);
 				img.src = json_obj['img_path'];
 		    }
 		});
-
-	});
+	}
 
 	function handleMouseDown(e) {
 		console.log('handleMouseDown');
@@ -384,16 +466,20 @@ $(document).ready(function(){
 		        console.log(selected_bb);
 		        console.log(bbs[selected_bb]);
 
-		        if (bbs[selected_bb][1] == 'box_with_text'){
+		        if (bbs[selected_bb][1] == 'textbox'){
 		        	var div = $('<div/>');
-		        	textarea = $('<textarea/>')
+		        	var p = $('<p/>')
+		        				.text('What word(s) does this bounding box contain?')
+		        				.appendTo(div)
+
+		        	var textarea = $('<textarea/>')
 		        						.attr('rows', '3')
 		        						.attr('class', 'smooth')
 		        						.appendTo(div);
 		        						
 		        	// make textarea appear
 		        	div.appendTo($('#legend_col_1'));
-		        	// textarea_alive = true;
+		        	
 		        	// disable all events
 		        	$(document).on('keydown', handleKeyDown);
 		        	$(document).off('keydown click');
@@ -408,8 +494,7 @@ $(document).ready(function(){
 							$(document).on('keydown', handleKeyDown);
 							// make textarea disappear
 							textarea.remove();
-
-							
+							div.remove();
 						}
 					});
 		        }
@@ -470,27 +555,7 @@ $(document).ready(function(){
 				console.log('setting img.src !');
 				img.src = images[image_idx]+"?t="+ new Date().getTime();
 
-
-	        	var json_obj = {
-	        		"img_path": images[image_idx]
-	        	}
-
-
-				$.ajax({
-				    type : "POST",
-				    url : '/visualize',
-				    data: JSON.stringify(json_obj, null, '\t'),
-				    contentType: 'application/json;charset=UTF-8',
-				    success: function(l) {
-				    	label = l;
-				        console.log(label);
-				    	// restore labels if already done:
-						select_document_type(categories, label['category']);
-						select_orientation(label['orientation']);
-						select_bb(bbs, 0);
-						// draw_labels(ctx, label);
-				    }
-				});
+				get_label(image_idx);
 
 
 				console.log('previous image');
@@ -504,27 +569,9 @@ $(document).ready(function(){
 
 				console.log('setting img.src !');
 				img.src = images[image_idx]+"?t="+ new Date().getTime();
-
-				var json_obj = {
-	        		"img_path": images[image_idx]
-	        	}
-
-
-				$.ajax({
-				    type : "POST",
-				    url : '/visualize',
-				    data: JSON.stringify(json_obj, null, '\t'),
-				    contentType: 'application/json;charset=UTF-8',
-				    success: function(l) {
-				    	label = l;
-				        console.log(label);
-				    	// restore labels if already done:
-						select_document_type(categories, label['category']);
-						select_orientation(label['orientation']);
-						select_bb(bbs, 0);
-						// draw_labels(ctx, label);
-				    }
-				});
+				
+				get_label(image_idx);
+				
 				isDrawing = false
 				
 				console.log('next image:');
@@ -535,57 +582,57 @@ $(document).ready(function(){
 	        //
 
 			case 49: // 1
-				document_type = categories[0];
-				select_document_type(categories, document_type);
-				console.log('document type: ', document_type);
+				category = categories[0];
+				select_category(categories, category);
+				console.log('document type: ', category);
 	        break;
 
 			case 50: // 2
-				document_type = categories[1];
-				select_document_type(categories, document_type);
-				console.log('document type: ', document_type);
+				category = categories[1];
+				select_category(categories, category);
+				console.log('document type: ', category);
 	        break;
 
 			case 51: // 3
-				document_type = categories[2];
-				select_document_type(categories, document_type);
-				console.log('document type: ', document_type);
+				category = categories[2];
+				select_category(categories, category);
+				console.log('document type: ', category);
 	        break;
 
 			case 52: // 4
-				document_type = categories[3];
-				select_document_type(categories, document_type);
-				console.log('document type: ', document_type);
+				category = categories[3];
+				select_category(categories, category);
+				console.log('document type: ', category);
 	        break;
 
 			case 53: // 5
-				document_type = categories[4];
-				select_document_type(categories, document_type);
-				console.log('document type: ', document_type);
+				category = categories[4];
+				select_category(categories, category);
+				console.log('document type: ', category);
 	        break;
 
 			case 54: // 6
-				document_type = categories[5];
-				select_document_type(categories, document_type);
-				console.log('document type: ', document_type);
+				category = categories[5];
+				select_category(categories, category);
+				console.log('document type: ', category);
 	        break;
 
 			case 55: // 7
-				document_type = categories[6];
-				select_document_type(categories, document_type);
-				console.log('document type: ', document_type);
+				category = categories[6];
+				select_category(categories, category);
+				console.log('document type: ', category);
 	        break;
 
 			case 56: // 8
-				document_type = categories[7];
-				select_document_type(categories, document_type);
-				console.log('document type: ', document_type);
+				category = categories[7];
+				select_category(categories, category);
+				console.log('document type: ', category);
 			break;
 
 			case 57: // 9
-				document_type = categories[8];
-				select_document_type(categories, document_type);
-				console.log('document type: ', document_type);
+				category = categories[8];
+				select_category(categories, category);
+				console.log('document type: ', category);
 	        break;
 
 	        //
@@ -625,34 +672,7 @@ $(document).ready(function(){
 	        case 13: // enter
 		        console.log('FINAL ENTER');
 
-	        	// if (textarea_alive){
-	        	// 	console.log('textarea_alive ' + textarea_alive);
-		        // 	bb["text"] = textarea.val();
-		        // 	console.log(bb["text"]);
-
-		        // 	// make textarea disappear
-		        // 	textarea.remove();
-		        // 	textarea_alive = false;
-
-		        // 	return;
-	        	// }
-
-	        	var json_obj = {
-	        		"img_path": images[image_idx],
-	        		"category": categories[document_type],
-	        		"orientation": orientations[orientation],
-	        		"bbs": bounding_boxes
-	        	}
-
-	        	$.ajax({
-				    type : "POST",
-				    url : '/label',
-				    data: JSON.stringify(json_obj, null, '\t'),
-				    contentType: 'application/json;charset=UTF-8',
-				    success: function(result) {
-				        console.log(result);
-				    }
-				});
+	        	insert_label(image_idx, category, orientation, bounding_boxes);
 
 				if (image_idx < images.length){
 					image_idx++;
@@ -661,37 +681,25 @@ $(document).ready(function(){
 				console.log('setting img.src !');
 				img.src = images[image_idx]+'?#'+new Date().getTime();
 				
-				var json_obj = {
-	        		"img_path": images[image_idx]
-	        	}
-
-
-				$.ajax({
-				    type : "POST",
-				    url : '/visualize',
-				    data: JSON.stringify(json_obj, null, '\t'),
-				    contentType: 'application/json;charset=UTF-8',
-				    success: function(l) {
-				    	label = l;
-				        console.log(label);
-				    	// restore labels if already done:
-						select_document_type(categories, label['category']);
-						select_orientation(label['orientation']);
-						select_bb(bbs, 0);
-						// draw_labels(ctx, label);
-				    }
-				});
+				get_label(image_idx);
 	        break;
 
 	        default: return; // exit this handler for other keys
 	    }
 	}
 
+	//
+	// HANDLE EVENTS: function calls
+	//
+
+
+	reset_button.mousedown(function (e) {
+		handleResetEvent(e);
+	});
 
 	$("#img_canvas").mousedown(function (e) {
 		handleMouseDown(e);
 	});
-
 
     $(document).keydown(function(e) {
     	handleKeyDown(e);
