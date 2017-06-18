@@ -19,9 +19,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-	<!-- Personal scripts: -->
-	<script type="text/javascript" src="{{ main_js }}"></script>
-	<link rel="stylesheet" href="{{ main_css }}">
+	<!-- stylesheet imported from HTML5UP-->
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
+	<link rel="stylesheet" href="static/scripts/assets/assets/css/main.css" />
+	<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
 
 </head>
 <body>
@@ -44,83 +46,168 @@
           </button>
           <a class="navbar-brand" href="#">CAT: Customizable Annotation Tool</a>
         </div>
-        <div id="navbar" class="collapse navbar-collapse">
+
+<!--         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <li class="active"><a href="#">Home</a></li>
             <li><a href="#about">About</a></li>
             <li><a href="#contact">Contact</a></li>
           </ul>
-        </div><!--/.nav-collapse -->
+        </div>
+ -->
+        <!--/.nav-collapse -->
+      
       </div>
     </nav>
 
 
-	<div id="main_div">
-		<div class="row">
-		 	<div id="img_div" class="col-md-4">
-				<canvas id="img_canvas">
-			        Sorry. Your browser does not support HTML5 canvas element.
-			    </canvas>
-		 	</div>
+	<div class="container">
+		<div id="main_div">
+			<div class="row">
+			 	<div id="img_div" class="col-md-4">
+					<canvas id="img_canvas">
+				        Sorry. Your browser does not support HTML5 canvas element.
+				    </canvas>
+			 	</div>
 
-		 	<!-- Annotation tools: -->
-		    <div id="legend_div" class="col-md-8">
-				
-				<div class="row">
+			 	<!-- Annotation tools: -->
+			    <div id="legend_div" class="col-md-8">
+					
+					<div class="row">
 
-					<div id="legend_col_1" class="col-md-0">	
-			    	</div>
-
-			    	<div id="legend_col_2" class="col-md-8">
-				    	<div>
-							<h4>Document category:</h4>
-							<ul id="category">
-							</ul>
-				    	</div>
-		 
-				    	<div>
-							<h4>Document orientation: </h4>
-							<ul id="orientation">
-							</ul>
-						</div>
-
-				    	<div>
-				    		<h4>Bounding boxes: <span id="bb_small_text">(clic, release, clic)</span>:</h4>
-				    		<ul id="bounding_boxes">
-				    		</ul>
+						<div id="legend_col_1" class="col-md-0">	
 				    	</div>
 
-				    	<div>
-					    	<h4>Text extraction: <span id="bb_small_text">(Use the bounding-box: `word`)</span>:</h4>
-					    	<div id="word_textarea">
+				    	<div id="legend_col_2" class="col-md-8">
+					    	<div>
+								<h4>Document category:</h4>
+								<ul id="category">
+								</ul>
 					    	</div>
+			 
+					    	<div>
+								<h4>Document orientation: </h4>
+								<ul id="orientation">
+								</ul>
+							</div>
+
+					    	<div>
+					    		<h4>Bounding boxes: <span id="bb_small_text">(clic, release, clic)</span>:</h4>
+					    		<ul id="bounding_boxes">
+					    		</ul>
+					    	</div>
+
+					    	<div>
+						    	<h4>Text extraction: <span id="bb_small_text">(Use the bounding-box: `word`)</span>:</h4>
+						    	<div id="word_textarea">
+						    	</div>
+					    	</div>
+
+					    	<div>
+					    		<h4>Previous/Next image<span id="bb_small_text">(does not submit labels)</span>:</h4>
+					    		<div id="img_navigation">
+					    		</div>
+					    	</div>
+
 				    	</div>
+					</div>
 
-				    	<div>
-				    		<h4>Previous/Next image<span id="bb_small_text">(does not submit labels)</span>:</h4>
-				    		<div id="img_navigation">
-				    		</div>
-				    	</div>
+					<div class="row">
+					</div>
 
-			    	</div>
-				</div>
-
-				<div class="row">
-				</div>
-
-		    	
-		    	<!-- Submit/remove buttons: -->
-		    	<div class="row">
-			    	<div id="reset_div">
-			    	</div>
 			    	
-			    	<div id="submit_button">
+			    	<!-- Submit/remove buttons: -->
+			    	<div class="row">
+				    	<div id="reset_div">
+				    	</div>
+				    	
+				    	<div id="submit_button">
+				    	</div>
 			    	</div>
-		    	</div>
 
-		    </div>
+			    </div>
+			</div>
 		</div>
 	</div>
+
+	<div class="container">
+		<div id="documentation">
+			<div class="row">
+				<h3>Using the labelling tool</h3>
+				
+				<br>
+				<p>For each image, we currently aim to gather:</p>
+				
+				<ul>
+					<li>The <strong>type</strong> of document that the picture contains.</li>
+					<li>The <strong>orientation</strong> of the document (is it sideways? (to the left, or to the right?). (is it upside-down? ) </li>
+					<li>The location of <strong>titles</strong> in the image</li>
+					<li>The location of the <strong>text blocks</strong> in the image</li>
+					<li>The location of <strong>drawings or diagrams</strong> in the image</li>
+					<li>The location of <strong>tables</strong> in the image</li>
+				</ul>
+			</div>
+
+			<div id="instructions">
+				<h3>Before you start labelling:</h3>
+
+				<p>Please follow these guidelines:</p>
+				<ul>
+					<li>Make sure to submit your labels (by clicking the submit button or pressing the return key)</li>
+					<li>Labels must be <strong>very</strong> accurate. Please clear the labels of any incorrectly labelled document and re-label it.</li>
+				</ul>
+			</div>
+
+			<div id="label_quality">
+				<h3>How we measure labels quality:</h3>
+				<p>A method for quantifying the quality of the annotations is yet to be developped. (TODO(Hichame))</p>
+			</div>
+
+			<div id="companies">
+				<h3>Companies/researchers interested in using this tool in-house</h3>
+				<p>Contact me via <a href="#footer">Linkedin</a></p>
+			</div>
+
+		</div>
+	</div>
+
+	<!-- footer -->
+	<div class="container">
+		<div id="footer">
+		    <div class="container">
+		        <div class="row">
+
+		            <br>
+		            <div class="col-md-12">
+		                <center>
+			                <img src="http://oi60.tinypic.com/w8lycl.jpg" class="img-circle" alt="the-brains">
+			                <br>
+			                <h4 class="footertext">Who built this?</h4>
+			                <p class="footertext"><a href="http://www.hichamemoriceau.com">Hichame Moriceau</a><br>
+		              	</center>
+		            </div>
+
+<!-- 		            
+		            <br>
+					<div class="col-md-4">
+		                <center>
+		                  <img src="http://oi60.tinypic.com/2z7enpc.jpg" class="img-circle" alt="...">
+		                  <br>
+		                  <h4 class="footertext">Who edited this?</h4>
+		                  <p class="footertext">Checkout her company's website <a href="">here</a>. <br>
+		                </center>
+		            </div>
+ -->
+
+		        </div>
+		    </div>
+		</div>
+	</div> 
+
+
+	<!-- Personal scripts: -->
+	<script type="text/javascript" src="{{ main_js }}"></script>
+	<link rel="stylesheet" href="{{ main_css }}">
 
 </body>
 </html>

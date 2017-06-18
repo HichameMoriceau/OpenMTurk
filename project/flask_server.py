@@ -59,7 +59,6 @@ def upsert_many_images(img_paths):
 	# It will assume no transaction occur between query and insert
 
 	for path in img_paths:
-		print('path: ', path)
 		insert_label_to_mongodb({'img_path': path,
 								 'is_labelled': False})
 
