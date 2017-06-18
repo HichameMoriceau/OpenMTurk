@@ -32,6 +32,8 @@ app.config.update(TEMPLATES_AUTO_RELOAD=True)
 client = MongoClient()
 db = client['labels_db'] # use existing database
 
+# Dump the database to file every BACKUP_FREQUENCY inserts
+BACKUP_FREQUENCY = 10
 
 
 def check_auth(username, password):
@@ -139,6 +141,20 @@ def get_dataset_info_from_mongodb():
 	return info_dict
 
 
+def dump_all_labels(filename):
+	serializable_labels = []
+	labels = db.labels_db.find({})
+
+	for label in labels:
+		print(label)
+		if '_id' in label.keys():
+			del label['_id']
+			serializable_labels+=[label]
+
+	with open(filename, 'w') as f:
+		json.dump(serializable_labels, f)
+
+
 @app.route('/get_label', methods=['POST'])
 def get_label():
 	try:
@@ -162,19 +178,26 @@ def get_dataset_info():
 		print('ERROR: {}'.format(e))
 		return jsonify(result=300)
 
-
 @app.route('/insert_label', methods=['POST'])
 def insert_label():
+	print(insert_label.counter)
+
+	if insert_label.counter == BACKUP_FREQUENCY:
+		print('BACKUP triggered!')
+		dump_all_labels('labels_backup.json')
+		insert_label.counter = 0
+
 	try:
 		label = copy.copy(request.json)
 		insert_label_to_mongodb(label)
 		print('Received labels of image {}'.format(label['img_path']))
 		print(label)
-		
+		insert_label.counter += 1		
 		return jsonify(result=200)
 	except Exception as e:
 		print('ERROR: {}'.format(e))
 		return jsonify(result=300)
+insert_label.counter = 0
 
 
 @app.route('/reset', methods=['POST'])
