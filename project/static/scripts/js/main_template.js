@@ -240,19 +240,40 @@ function create_submit_button(){
 
 function get_dataset_info(){
 
-	var json_obj = {}
+	var ds_info;
 
 	$.ajax({
 	    type : "POST",
 	    url : '/get_dataset_info',
 	    data: JSON.stringify({}, null, '\t'),
 	    contentType: 'application/json;charset=UTF-8',
-	    success: function(ds_info) {
+	    success: function(json_obj) {
+	    	console.log('Received dataset info:');
+	        console.log(json_obj['result']);
+			ds_info = json_obj['result'];
 
-	        console.log(ds_info);
-			return ds_info;
+
+			$('#num_labelled_imgs')
+						.text('Number of labelled images: ' + ds_info['num_labelled_imgs'])
+						.attr("class", "btn btn-a btn-sm smooth")
+						.css("background-color", colours[0])
+						.css("color", 'black')
+						.css("border", "3px solid black")
+						.css("margin-top", "1%");
+			
+			$('#total_num_imgs')
+							.text('Total number of images: ' + ds_info['total_num_imgs'])
+							.attr("class", "btn btn-a btn-sm smooth")
+							.css("background-color", colours[0])
+							.css("color", 'black')
+							.css("border", "3px solid black")
+							.css("margin-top", "1%");
 	    }
 	});
+	console.log('got it');
+	console.log(ds_info);
+
+	return ds_info;
 }
 
 //
@@ -295,8 +316,6 @@ $(document).ready(function(){
 
 	var scale_x = 0;
 	var scale_y = 0;
-
-	var dataset_info = get_dataset_info();
 
 	function select_bb(bbs, bb_idx){
 
@@ -425,7 +444,7 @@ $(document).ready(function(){
 		ctx.strokeStyle = colours[0];
 		ctx.lineWidth = 4;
 		draw_labels(ctx, label);
-
+		get_dataset_info();
 	}
 
 	function get_label(image_idx){
@@ -594,6 +613,7 @@ $(document).ready(function(){
 	
 	var reset_button = create_reset_button();
 	var submit_button = create_submit_button();
+	
 
 	img.src = images[0]+"?t="+ new Date().getTime();
 	get_label(0);

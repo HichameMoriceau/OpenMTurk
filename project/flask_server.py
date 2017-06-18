@@ -94,9 +94,11 @@ def insert_label_to_mongodb(data):
 
 
 def remove_label_from_mongodb(data):
-	result = db.labels_db.delete_many({'img_path': data['img_path']})
-
-	return result.deleted_count
+	result = db.labels_db.update({'img_path': data['img_path']}, 
+								 {'is_labelled': False, 
+								  'bbs': [],
+								  'category': '',
+								  'orientation': ''})
 
 
 def get_label_from_mongodb(img_path):
@@ -130,8 +132,8 @@ def get_dataset_info_from_mongodb():
 	total = num_labelled + num_unlabelled
 
 	info_dict = {
-		'num_labelled_examples': num_labelled, 
-		'total_num_examples': total
+		'num_labelled_imgs': num_labelled, 
+		'total_num_imgs': total
 	}
 
 	return info_dict
@@ -180,9 +182,9 @@ def reset():
 	try:
 		label = copy.copy(request.json)
 		
-		num_delete = remove_label_from_mongodb(label)
+		remove_label_from_mongodb(label)
 
-		print('Removed {} records'.format(num_delete))
+		print('Removed labels from record')
 		return jsonify(result=200)
 	
 	except Exception as e:
