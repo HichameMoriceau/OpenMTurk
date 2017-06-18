@@ -216,7 +216,6 @@ function create_reset_button(){
 }
 
 
-
 function create_submit_button(){
 
 	var span = $('<span/>')
@@ -252,28 +251,28 @@ function get_dataset_info(){
 	        console.log(json_obj['result']);
 			ds_info = json_obj['result'];
 
+			$("#qty_span").attr("class", "badge")
+						  .text("" + ds_info['num_labelled_imgs']);
 
-			$('#num_labelled_imgs')
-						.text('Number of labelled images: ' + ds_info['num_labelled_imgs'])
-						.attr("class", "btn btn-a btn-sm smooth")
-						.css("background-color", colours[0])
-						.css("color", 'black')
-						.css("border", "3px solid black")
-						.css("margin-top", "1%");
+			$("#total_span").attr("class", "badge")
+							.text("" + ds_info['total_num_imgs']);
+
+
+			// $('#num_labelled_imgs')
+			// 			.text('Number of labelled images: ' + ds_info['num_labelled_imgs'])
+			// 			.attr("class", "well well-sm")
+			// 			.css("background-color", colours[0])
+			// 			.css("color", 'black')
+			// 			.css("border", "3px solid black");
 			
-			$('#total_num_imgs')
-							.text('Total number of images: ' + ds_info['total_num_imgs'])
-							.attr("class", "btn btn-a btn-sm smooth")
-							.css("background-color", colours[0])
-							.css("color", 'black')
-							.css("border", "3px solid black")
-							.css("margin-top", "1%");
+			// $('#total_num_imgs')
+			// 				.text('Total number of images: ' + ds_info['total_num_imgs'])
+			// 				.attr("class", "well well-sm")
+			// 				.css("background-color", colours[0])
+			// 				.css("color", 'black')
+			// 				.css("border", "3px solid black");
 	    }
 	});
-	console.log('got it');
-	console.log(ds_info);
-
-	return ds_info;
 }
 
 //
@@ -786,14 +785,14 @@ $(document).ready(function(){
 
 	        case 37: // left
 	        	previous_image();
-	        	dataset_info = get_dataset_info();
+	        	get_dataset_info();
 				console.log('previous image');
 
 	        break;
 
 	        case 39: // right
 	        	next_image();
-	        	dataset_info = get_dataset_info();
+	        	get_dataset_info();
 				console.log('next image:');
 	        break;
 

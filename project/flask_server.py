@@ -21,6 +21,7 @@
 from flask import Flask, jsonify, render_template, request, Response
 from functools import wraps
 from pymongo import MongoClient
+import pymongo
 import glob
 import os
 import json
@@ -34,6 +35,9 @@ db = client['labels_db'] # use existing database
 
 # Dump the database to file every BACKUP_FREQUENCY inserts
 BACKUP_FREQUENCY = 10
+
+def init_db():
+	db.labels_db.create_index([('img_path', pymongo.ASCENDING)], unique=True)
 
 
 def check_auth(username, password):
@@ -81,6 +85,10 @@ def get_style_version(dir_path):
 	return int(version)
 
 
+def insert_label_to_mongodb(data):
+	db.labels_db.update_one({'img_path': data['img_path']}, {'$set': data}, upsert=True)
+
+
 def upsert_many_images(img_paths):
 
 	# TODO(hichame): replace this by query + batch insert
@@ -91,16 +99,12 @@ def upsert_many_images(img_paths):
 								 'is_labelled': False})
 
 
-def insert_label_to_mongodb(data):
-	db.labels_db.update({'img_path': data['img_path']}, data, upsert=True)
-
-
 def remove_label_from_mongodb(data):
-	result = db.labels_db.update({'img_path': data['img_path']}, 
-								 {'is_labelled': False, 
-								  'bbs': [],
-								  'category': '',
-								  'orientation': ''})
+	result = db.labels_db.update_one({'img_path': data['img_path']}, 
+								 {'$set': {'is_labelled': False, 
+										   'bbs': [],
+										   'category': '',
+										   'orientation': ''}})
 
 
 def get_label_from_mongodb(img_path):
@@ -229,6 +233,7 @@ def index():
 	img_dir = 'static/notes_photos/*'
 	img_paths = sorted(glob.glob(img_dir))
 	
+	init_db()
 	upsert_many_images(img_paths)
 
 	return render_template('index.html', 
