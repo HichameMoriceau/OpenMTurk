@@ -21,13 +21,9 @@ textarea{
 	float:left;
 }
 
-/*#legend_div {
-	margin: 0% 1% 1% 1%;
-}
-*/
 #legend_div {
 	float:left; 
-	width:60%; 
+	width:50%; 
 	margin: 0% 1% 1% 1%; 
 	border: 3px solid black;
 }
@@ -36,16 +32,24 @@ textarea{
 	margin: 1% 1% 1% 1%;
 }
 
-/*#legend_col_1 {
-	float:left; 
-	width:45%; 
-	margin: 1% 1% 1% 1%; 
-	border: 5px solid blue;
+#word_textarea{
+	padding-top: 2%;
+	padding-bottom: 1%;
 }
-*/
+
+#img_navigation{
+	padding-top: 1%;
+	padding-bottom: 1%;
+}
+
+#submit_remove_buttons{
+	margin-top: 1%;
+	margin-bottom: 1%;
+}
+
 #legend_col_2 {
 	float:left;
-	width:45%;
+	width:90%;
 	border: 5px solid red;
 }
 
@@ -66,4 +70,8 @@ textarea{
 
 .img-circle {
 	width:5%;
+}
+
+#documentation{
+	margin-top: 1%;
 }

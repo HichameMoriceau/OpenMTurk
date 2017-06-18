@@ -150,6 +150,7 @@ function create_category_buttons(categories){
 			.attr("class", "btn btn-a btn-sm smooth")
 			.css("background-color", 'white')
 			.css("border", "3px solid black")
+			.css("margin-left", "1%")
 			.append(div)
 			.append(span)
 			.appendTo(doc_type_legend);
@@ -186,6 +187,7 @@ function create_orientation_buttons(orientations){
 			.css("background-color", 'white')
 			.css("border", "3px solid black")
 			.css('margin-bottom', '1%')
+			.css("margin-left", "1%")
 			.append(div)
 			.append(span)
 			.appendTo(orientation_legend);
@@ -206,6 +208,7 @@ function create_reset_button(){
 			.css("background-color", colours[0])
 			.css("color", 'black')
 			.css("border", "3px solid black")
+			.css("margin-top", "1%")
 			.text('Clear labels')
 			.appendTo($("#reset_div"));
 
@@ -226,6 +229,7 @@ function create_submit_button(){
 			.css("background-color", colours[0])
 			.css("color", 'black')
 			.css("border", "3px solid black")
+			.css("margin-top", "1%")
 			.text('Submit labels')
 			.append(span)
 			.appendTo($("#submit_button"));
@@ -331,7 +335,8 @@ $(document).ready(function(){
 				.css("background-color", colours[i])
 				.css("color", 'black')
 				.css("border", "3px solid black")
-				.css("margin-top", "1%");
+				.css("margin-top", "1%")
+				.css("margin-left", "1%");
 
 			li.mousedown(function (e) {
 				selected_bb = i;
@@ -524,7 +529,10 @@ $(document).ready(function(){
 				.attr("class", "btn btn-a btn-sm smooth")
 				.css("background-color", 'white')
 				.css("border", "3px solid black")
+				.css("color", "black")
+				.css("margin-top", "1%")
 				.css('margin-bottom', '1%')
+				.css("margin-left", "1%")
 				.append(div)
 				.append(span)
 				.appendTo(img_navigation_div);
@@ -555,7 +563,10 @@ $(document).ready(function(){
 				.attr("class", "btn btn-a btn-sm smooth")
 				.css("background-color", 'white')
 				.css("border", "3px solid black")
+				.css("color", "black")
+				.css("margin-top", "1%")
 				.css('margin-bottom', '1%')
+				.css("margin-left", "1%")
 				.append(div)
 				.append(span)
 				.appendTo(img_navigation_div);
