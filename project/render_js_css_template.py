@@ -71,7 +71,7 @@ def main():
 	main_js_path = 'static/scripts/js/main_template.js'
 	main_css = 'static/scripts/css/style.css'
 	images_dir = 'static/notes_photos/*'
-	labels_filename = 'labels.json'
+	labels_filename = 'config.json'
 
 	new_version_num = get_style_version('static/scripts/js/*')+1
 
