@@ -11,7 +11,10 @@ Make sure the server has the following dependencies installed:
 
 
 ```bash
+# dependencies:
 $ pip install Flask pymongo
+# set Flask environment variable:
+$ export FLASK_APP="flask_server.py"
 ```
 
 
@@ -36,7 +39,7 @@ Update the `project/config.json` to *add*, *remove* or *rename* any button. This
 
 For bounding-boxes there are 3 types of drawing buttons:
 - **box**: a simple bounding box,
-- **textbox**: bounding box which then ask you for the text inside the box (a textarea will appear),
+- **textbox**: bounding box which then ask you for the text inside the box (the textarea will become writeable),
 - **line**: a simple line
 
 #### Example configuration:
