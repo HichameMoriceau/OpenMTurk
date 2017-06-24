@@ -239,3 +239,7 @@ def index():
 	return render_template('index.html', 
 						   main_js=main_js,
 						   main_css=main_css)
+
+	
+if __name__ == '__main__':
+    app.run(debug=True, use_reloader=True)

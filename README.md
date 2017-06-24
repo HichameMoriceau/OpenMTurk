@@ -12,9 +12,9 @@ Make sure the server has the following dependencies installed:
 
 ```bash
 # dependencies:
-$ pip install Flask pymongo
+$ pip install Flask pymongo gunicorn
 # set Flask environment variable:
-$ export FLASK_APP="flask_server.py"
+$ export FLASK_APP="app.py"
 ```
 
 
