@@ -28,6 +28,7 @@ If you are interested in deploying it on heroku install extra dependencies:
 
 ```bash
 $ pip3 install gunicorn
+
 ```
 test deploy with:
 ```bash
@@ -38,7 +39,10 @@ create the heroku app:
 $ heroku create
 # ... heroku will show you your app's name
 ```
-
+and deploy with:
+```bash
+$ git push heroku master
+```
 
 ## Built-in features:
 Out of the box, OpenTurk comes with the following labelling features:
@@ -100,7 +104,7 @@ For bounding-boxes there are 3 types of drawing buttons:
 
 - prettify authentication pop-up alert
 - deploy an example website on heroku
-- add an [Active Learning] strategy to improve labelling efficiency
+- add an [Active Learning](https://en.wikipedia.org/wiki/Active_learning_(machine_learning)) strategy to improve labelling efficiency
 - add an "undo" feature to the drawing buttons
 - add a "Add/remove images to be labelled" section.
 - add a "retrieve all labels"
