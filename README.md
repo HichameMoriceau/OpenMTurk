@@ -112,4 +112,4 @@ For bounding-boxes there are 3 types of drawing buttons:
 
 ## License
 
-This project was built under an MIT License.
+Copyright (c) 2017 Hichame Moriceau, the content of this repository is bound by an MIT License.
