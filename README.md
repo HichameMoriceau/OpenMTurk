@@ -7,12 +7,12 @@ An image-labelling platform written in [javascript](https://en.wikipedia.org/wik
 
 ### Before cloning the repo:
 
-Make sure the server has the following dependencies installed:
+In the root directory, make sure the server has the following dependencies installed:
 
 
 ```bash
 # dependencies:
-$ pip install Flask pymongo gunicorn
+$ pip3 install Flask pymongo 
 # set Flask environment variable:
 $ export FLASK_APP="app.py"
 ```
@@ -23,6 +23,22 @@ $ export FLASK_APP="app.py"
 ```bash
 $ python3 render_js_css_template.py && flask run
 ```
+
+If you are interested in deploying it on heroku install extra dependencies:
+
+```bash
+$ pip3 install gunicorn
+```
+test deploy with:
+```bash
+$ heroku local web
+```
+create the heroku app:
+```bash
+$ heroku create
+# ... heroku will show you your app's name
+```
+
 
 ## Built-in features:
 Out of the box, OpenTurk comes with the following labelling features:
