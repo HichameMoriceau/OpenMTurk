@@ -24,6 +24,8 @@
 	<!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
 	<link rel="stylesheet" href="static/scripts/assets/assets/css/main.css" />
 	<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
+	<link href="https://fonts.googleapis.com/css?family=Amatica+SC|Assistant|Comfortaa:400,700|Cairo|Gruppo|Hind+Guntur:300" rel="stylesheet"> 
+	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 
 </head>
 <body>
@@ -44,31 +46,29 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">OpenTurk</a>
+          <a class="navbar-brand" id="openmturk_title" href="#">OpenMTurk</a>
         </div>
-
-<!--         <div id="navbar" class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
-          </ul>
-        </div>
- -->
 
         <div id="navbar" class="collapse navbar-collapse">
-        	<ul class="nav navbar-nav navbar-right">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
 <!-- 	            <li class="active"><a href="#">Home</a></li>
 	            <li><a href="#about">About</a></li>
 	            <li><a href="#contact">Contact</a></li> -->
 
-	            <li id="num_labelled_imgs">Number of labelled images: <span id="qty_span"></span>
+	            <li id="num_labelled_imgs" class="active">Number of labelled images: <span id="qty_span"></span>
 				</li>
-
-    			<li id="total_num_imgs">Total number of images: <span id="total_span"></span>
+				<br>
+    			<li id="total_num_imgs" class="active">Total number of images: <span id="total_span"></span>
     			</li>
     			
           	</ul>
+        </div>
+
+        <div id="navbar" class="collapse navbar-collapse">
+        	
         </div>
 
         <!--/.nav-collapse -->
@@ -76,6 +76,11 @@
       </div>
     </nav>
 
+    <div class="container">
+    	<h1 class="row headers">OpenMTurk <small id="subtitle">Customizable image-labelling tool</small></h1>
+    	<br>
+    	<p class="row" id="introductory_text">The OpenTurk labelling tool was born out of the need to label images in an efficient manner while keeping the data private. The image labelling tool is part of a project to digitalize written or typed documents. The goal is that eventually the programme will be able to recognize not just text, but drawings, diagrams, tables, separation structures, mathematical formulas and symbols, in any kind of written or typed text.</p>
+    </div>
 
 	<div class="container-fluid">
 		<div id="main_div">
@@ -131,42 +136,48 @@
 							</div>
 
 					    	<div class="row-fluid">
-					    		<h4>Bounding boxes: <span id="bb_small_text">(clic, release, clic)</span>:</h4>
+					    		<h4>Bounding boxes: <span id="bb_small_text">(click, release, click)</span>:</h4>
 					    		<ul id="bounding_boxes" class="col-md-12">
 					    		</ul>
 					    	</div>
 
 					    	<div class="row-fluid">
-						    	<h4>Text extraction: <span id="bb_small_text">(Use the bounding-box: `word`)</span>:</h4>
+						    	<h4>Text extraction: <span id="bb_small_text">(Use the bounding-box: "word")</span>:</h4>
 						    	<div id="word_textarea" class="col-md-12">
 						    	</div>
 					    	</div>
 
+					    		
+					    	<!-- Submit/remove buttons: -->
 					    	<div class="row-fluid">
-					    		<h4>Previous/Next image<span id="bb_small_text">(does not submit labels)</span>:</h4>
+						    	<div class="submit_remove_buttons">
+						    		<div class="col-md-3">
+							    		<div id="reset_div">
+								    	</div>
+								    </div>
+
+								    <div class="col-md-3">
+								    	<div id="submit_button">
+								    	</div>
+						    		</div>
+
+						    		<div class="col-md-6"></div>
+						    	</div>
+					    	</div>
+
+					    	<div class="row-fluid" id="previous_next_image">
+					    		<div class="col-md-12">
+					    			<h4 id="prev_next_header">Previous/next image<span id="bb_small_text">(Make sure you save your changes by hitting ENTER first)</span>:</h4>
+					    		</div>
+					    	</div>
+
+					    	<div class="row-fluid">
 					    		<div id="img_navigation" class="col-md-12">
 					    		</div>
 					    	</div>
 
 				    	</div>
 					</div>
-
-
-			    	<!-- Submit/remove buttons: -->
-			    	<div class="row-fluid">
-				    	<div class="submit_remove_buttons">
-				    		<div class="col-md-2">
-					    		<div id="reset_div">
-						    	</div>
-						    </div>
-
-						    <div class="col-md-2">
-						    	<div id="submit_button">
-						    	</div>
-				    		</div>
-				    		<div class="col-md-8"></div>
-				    	</div>
-			    	</div>
 
 			    </div>
 
@@ -180,13 +191,13 @@
 
 	<div class="container">
 		<div id="documentation">
-			<div class="row">
-				<h3>Using the labelling tool</h3>
+			<div class="row text_block">
+				<h3 class="headers">Using the labelling tool</h3>
 				
 				<br>
 				<p>For each image, we currently aim to accurately gather:</p>
 				
-				<ul>
+				<ul class="label_creation">
 					<li>The <strong>type</strong> of document that the picture contains.</li>
 					<li>The <strong>orientation</strong> of the document (is it sideways? (to the left, or to the right?). (is it upside-down? ) </li>
 					<li>The location of <strong>headers</strong> in the image</li>
@@ -196,24 +207,19 @@
 				</ul>
 			</div>
 
-			<div id="instructions" class="row">
-				<h3>Before you start labelling:</h3>
+			<div id="instructions" class="row text_block">
+				<h3 class="headers">Before you start labelling</h3>
 
 				<p>Please follow these guidelines:</p>
-				<ul>
+				<ul class="label_creation">
 					<li>Make sure to submit your labels (by clicking the submit button or pressing the return key)</li>
-					<li>Labels must be <strong>very</strong> accurate. Please clear the labels of any incorrectly labelled document and re-label it.</li>
+					<li>Labels must be <strong>very</strong> accurate. If you made a mistake, please clear your document from labels and re-label it.</li>
 				</ul>
 			</div>
 
-			<div id="label_quality" class="row">
-				<h3>How we measure labels quality:</h3>
-				<p>A method for quantifying the quality of the annotations is yet to be developped. (TODO(Hichame))</p>
-			</div>
-
-			<div id="companies" class="row">
-				<h3>Companies/researchers interested in using this tool in-house</h3>
-				<p>Contact me via <a href="#footer">Linkedin</a></p>
+			<div id="label_quality" class="row text_block">
+				<h3 class="headers">How we measure label quality</h3>
+				<p>A method for quantifying the quality of the annotations is yet to be developed. (TODO(Hichame))</p>
 			</div>
 
 		</div>
@@ -226,26 +232,25 @@
 		        <div class="row">
 
 		            <br>
-		            <div class="col-md-12">
+		            <div class="col-md-6">
 		                <center>
 			                <img src="http://oi60.tinypic.com/w8lycl.jpg" class="img-circle" alt="the-brains">
 			                <br>
-			                <h4 class="footertext">Who built this?</h4>
-			                <p class="footertext"><a href="http://www.hichamemoriceau.com">Hichame Moriceau and me!</a><br>
+			                <h4 class="footertext who_built_this">Who built this?</h4>
+			                <p class="footertext">Check out <a href="http://www.hichamemoriceau.com">Hichame Moriceau</a>'s profile on <a href="https://www.linkedin.com/in/hichamemoriceau/">LinkedIn</a>.</p>
+			                <br>
 		              	</center>
 		            </div>
-
-<!-- 		            
-		            <br>
-					<div class="col-md-4">
+		            
+		            
+					<div class="col-md-6">
 		                <center>
 		                  <img src="http://oi60.tinypic.com/2z7enpc.jpg" class="img-circle" alt="...">
 		                  <br>
-		                  <h4 class="footertext">Who edited this?</h4>
-		                  <p class="footertext">Checkout her company's website <a href="">here</a>. <br>
+		                  <h4 class="footertext who_built_this">Who edited this?</h4>
+		                  <p class="footertext">Check out Larissa Tijms's profile on <a href="https://www.linkedin.com/in/larissa-tijms-a92041120">LinkedIn</a>. <br>
 		                </center>
 		            </div>
- -->
 
 		        </div>
 		    </div>
