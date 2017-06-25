@@ -6,3 +6,5 @@
 *.jpg
 *.jpeg
 *.bnp
+
+!openmturk_screenshot.png
