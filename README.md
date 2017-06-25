@@ -24,32 +24,12 @@ $ export FLASK_APP="app.py"
 $ python3 render_js_css_template.py && flask run
 ```
 
-If you are interested in deploying it on heroku install extra dependencies:
-
-```bash
-$ pip3 install gunicorn
-
-```
-test deploy with:
-```bash
-$ heroku local web
-```
-create the heroku app:
-```bash
-$ heroku create
-# ... heroku will show you your app's name
-```
-and deploy with:
-```bash
-$ git push heroku master
-```
-
 ## Built-in features:
 Out of the box, OpenTurk comes with the following labelling features:
 
 - **Image category**: (e.g. receipt, bill, letter, etc.)
 - **Image orientation**: (is it upside-down? Is it sideways?)
-- **Bounding-boxes and lines**: draw a rectangle around objects (e.g. dog, cat, etc.)
+- **Bounding-boxes and lines**: draw a rectangle around objects (e.g. dog, cat, etc.) or a line (baselines of paragraph, separation etc.)
 
 In case of an unexpected server crash, OpenTurk dumps all annotations into a `labels_backup.json` file every 10 annotations by default.
 
