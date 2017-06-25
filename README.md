@@ -1,4 +1,4 @@
-# OpenTurk
+# OpenMTurk
 
 An image-labelling platform written in [javascript](https://en.wikipedia.org/wiki/JavaScript) and [python 3](https://en.wikipedia.org/wiki/Python_(programming_language))/[Flask](http://flask.pocoo.org/) to populate a [MongoDB](https://www.mongodb.com/what-is-mongodb) database. The idea is that you can clone, install and run this repo (and customize it if necessary) and have your own, *in-house* image-labelling tool.
 
