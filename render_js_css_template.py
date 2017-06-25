@@ -21,6 +21,7 @@ def get_style_version(dir_path):
 
 	fn = lambda x: int(x.split('.')[1])
 	files = sorted(considered_files, key=fn)
+	version = 0
 	
 	for f in files:
 

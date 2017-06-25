@@ -36,7 +36,8 @@ var colours = ['white',
 			  'DeepPink',
 			  'DarkTurquoise',
 			  'chocolate',
-			  'papayawhip'];
+			  'papayawhip',
+			  'mediumspringgreen'];
 
 
 // draws all the bounding boxes and lines on 
@@ -149,7 +150,8 @@ function create_category_buttons(categories){
 		var li = $('<li/>')
 			.attr("class", "btn btn-a btn-sm smooth")
 			.css("background-color", 'white')
-			.css("border", "3px solid black")
+			.css("border", "1px solid black")
+			.css("box-shadow", "2px 2px 1px #000000")
 			.css("margin-left", "1%")
 			.append(div)
 			.append(span)
@@ -185,7 +187,8 @@ function create_orientation_buttons(orientations){
 		var li = $('<li/>')
 			.attr("class", "btn btn-a btn-sm smooth")
 			.css("background-color", 'white')
-			.css("border", "3px solid black")
+			.css("border", "1px solid black")
+			.css("box-shadow", "2px 2px 1px #000000")
 			.css('margin-bottom', '1%')
 			.css("margin-left", "1%")
 			.append(div)
@@ -205,10 +208,13 @@ function create_reset_button(){
 
 	var reset_button = $('<div/>')
 			.attr("class", "btn btn-a btn-sm smooth")
-			.css("background-color", colours[0])
+			.css("background-color", 'rgb(20, 45, 110)')
 			.css("color", 'black')
-			.css("border", "3px solid black")
+			.css("border", "2px solid black")
+			.css("box-shadow", "2px 2px 1px #000000")
 			.css("margin-top", "15%")
+			.css("font-size", "21px")
+			.css("background", "linear-gradient(#BC0404, #D44B4B)")
 			.text('Clear labels')
 			.appendTo($("#reset_div"));
 
@@ -219,7 +225,8 @@ function create_reset_button(){
 function create_submit_button(){
 
 	var span = $('<span/>')
-		.text(' (key : enter)')
+		.text('(key : enter)')
+		.css('line-height', '17%')
 		.css("font-size", "10px")
 		.css("font-weight", "normal");
 
@@ -227,9 +234,15 @@ function create_submit_button(){
 			.attr("class", "btn btn-a btn-sm smooth")
 			.css("background-color", colours[0])
 			.css("color", 'black')
-			.css("border", "3px solid black")
+			.css("border", "2px solid black")
+			.css("box-shadow", "4px 4px 3px #000000")
 			.css("margin-top", "15%")
+			.css("margin-bottom", "15%")
+			.css("font-size", "20px")
+			.css("font-weight", "bold")
+			.css("background", "linear-gradient(#BC0404, #D44B4B)")
 			.text('Submit labels')
+			.append($('<br/>'))
 			.append(span)
 			.appendTo($("#submit_button"));
 
@@ -282,7 +295,6 @@ function get_dataset_info(){
 $(document).ready(function(){
 
 	var config = {{ config }};
-
 	var images = config.images;
 	var categories = config.categories;
 	var orientations = config.orientations;
@@ -352,7 +364,8 @@ $(document).ready(function(){
 				.text(bbs[i][0])
 				.css("background-color", colours[i])
 				.css("color", 'black')
-				.css("border", "3px solid black")
+				.css("border", "1px solid black")
+				.css("box-shadow", "2px 2px 1px #000000")
 				.css("margin-top", "1%")
 				.css("margin-left", "1%");
 
@@ -378,6 +391,9 @@ $(document).ready(function(){
     						.attr('rows', '3')
     						.attr('class', 'smooth')
     						.text('Please select each word to write in here.')
+    						.css("border", "1px solid black")
+    						.css("box-shadow", "2px 2px 1px #000000")
+    						.css("border-radius", "4px")
     						.appendTo(div);
 
 
@@ -559,9 +575,9 @@ $(document).ready(function(){
 		var prev_button = $('<div/>')
 				.attr("class", "btn btn-a btn-sm smooth")
 				.css("background-color", 'white')
-				.css("border", "3px solid black")
+				.css("border", "1px solid black")
+				.css("box-shadow", "2px 2px 1px #000000")
 				.css("color", "black")
-				.css("margin-top", "1%")
 				.css('margin-bottom', '1%')
 				.css("margin-left", "1%")
 				.append(div)
@@ -593,9 +609,9 @@ $(document).ready(function(){
 		var next_button = $('<div/>')
 				.attr("class", "btn btn-a btn-sm smooth")
 				.css("background-color", 'white')
-				.css("border", "3px solid black")
+				.css("border", "1px solid black")
+				.css("box-shadow", "2px 2px 1px #000000")
 				.css("color", "black")
-				.css("margin-top", "1%")
 				.css('margin-bottom', '1%')
 				.css("margin-left", "1%")
 				.append(div)
