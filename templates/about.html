@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>	
+
+<head>
+	<title>Guidelines | Customizable labelling tool | Hichame Moriceau</title>
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link rel="stylesheet" href="static/scripts/css/style.css" />
+	<link href="https://fonts.googleapis.com/css?family=Amatica+SC|Assistant|Comfortaa:400,700|Cairo|Gruppo|Hind+Guntur:300|Roboto+Mono" rel="stylesheet"> 
+	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+
+<body id="body">
+
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" id="openmturk_title" href="/">OpenMTurk</a>
+        </div>
+
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="/">Labelling tool</a></li>
+            <li class="active"><a href="about.html">Guidelines</a></li>
+          </ul>
+        </div>
+      </div>
+   </nav>
+
+  <div class="container" id="documentation">
+    <div class="container">
+      <h1 class="row headers">OpenMTurk <small id="subtitle">Customizable image-labelling tool</small></h1>
+      <br>
+      <p class="row" id="introductory_text">On this demo site it's not possible to upload your own files for labelling, but we've included a couple of dummy images for you to test. Before you start labelling, please first read the below guidelines. In the box beneath the tool, you'll see the output of the label coordinates as you would get them in a json file.</p>
+    </div>
+
+  <div id="documentation">  
+    <div class="row text_block">
+      <h3 class="headers">Using the labelling tool</h3>
+
+
+        <br>
+        <p>For each image, we currently aim to accurately gather:</p>
+        
+        <ul class="label_creation">
+          <li>The <strong>type</strong> of document that the picture contains.</li>
+          <li>The <strong>orientation</strong> of the document (is it sideways? (to the left, or to the right?). (is it upside-down? ) </li>
+          <li>The location of <strong>headers</strong> in the image</li>
+          <li>The location of the <strong>text blocks</strong> in the image</li>
+          <li>The location of <strong>drawings or diagrams</strong> in the image</li>
+          <li>The location of <strong>tables</strong> in the image</li>
+        </ul>
+      </div>
+
+      <div id="instructions" class="row text_block">
+        <h3 class="headers">Before you start labelling</h3>
+
+        <p>Please follow these guidelines:</p>
+        <ul class="label_creation">
+          <li>Make sure to submit your labels (by clicking the submit button or pressing the return key)</li>
+          <li>Labels must be <strong>very</strong> accurate. If you made a mistake, please clear your document from labels and re-label it.</li>
+        </ul>
+      </div>
+
+      <div id="label_quality" class="row text_block">
+        <h3 class="headers">How we measure label quality</h3>
+        <p>A method for quantifying the quality of the annotations is yet to be developed. (TODO(Hichame))</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- footer -->
+  <div class="container-fluid">
+    <div id="footer">
+        <div class="container">
+            <div class="row">
+
+                <br>
+                <div class="col-md-6">
+                    <center>
+                      <img src="http://oi60.tinypic.com/w8lycl.jpg" class="img-circle" alt="the-brains">
+                      <br>
+                      <h4 class="footertext who_built_this">Who built this?</h4>
+                      <p class="footertext">Check out <a href="http://www.hichamemoriceau.com">Hichame Moriceau</a>'s profile on <a href="https://www.linkedin.com/in/hichamemoriceau/">LinkedIn</a>.</p>
+                      <br>
+                    </center>
+                </div>
+                
+                
+          <div class="col-md-6">
+                    <center>
+                      <img src="http://oi60.tinypic.com/2z7enpc.jpg" class="img-circle" alt="...">
+                      <br>
+                      <h4 class="footertext who_built_this">Who edited this?</h4>
+                      <p class="footertext">Check out Larissa Tijms's profile on <a href="https://www.linkedin.com/in/larissa-tijms-a92041120">LinkedIn</a>. <br>
+                    </center>
+                </div>
+
+            </div>
+        </div>
+    </div>
+  </div> 
+
+</body>
+
+
+</html>

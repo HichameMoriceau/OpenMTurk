@@ -268,9 +268,9 @@ function create_submit_button(){
 			.css("margin-top", "15%")
 			.css("margin-bottom", "15%")
 			.css("font-size", "20px")
-			.css("font-weight", "bold")
+			.css("font-weight", "bolder")
 			.css("background", "linear-gradient(#BC0404, #D44B4B)")
-			.text('Submit labels')
+			.text('SUBMIT')
 			.append($('<br/>'))
 			.append(span)
 			.appendTo($("#submit_button"));
