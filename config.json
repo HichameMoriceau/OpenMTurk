@@ -32,6 +32,10 @@
       "box"
     ], 
     [
+      "Text-extraction", 
+      "textbox"
+    ], 
+    [
       "Separation", 
       "line"
     ]
