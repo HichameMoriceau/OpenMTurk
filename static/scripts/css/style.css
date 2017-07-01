@@ -61,6 +61,24 @@ li.active {
 	color: #3893AF;
 }
 
+#user_id{
+	color: red;
+	font-weight: bold;
+}
+
+.labels_section{
+    /*width: 50px;*/
+    height: 10%;
+	background-color: blue;
+	border: 5px solid blue;
+    overflow-y: scroll;
+}
+
+#all_labels_id{
+	color: white;
+	height: 30%; 
+}
+
 .img-circle {
 	width:5%;
 }
