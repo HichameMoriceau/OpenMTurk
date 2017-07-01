@@ -1,6 +1,6 @@
 {
   "categories": [
-    "Form", 
+    "Hand-written page", 
     "Receipt", 
     "Letter",
     "CV"
@@ -8,15 +8,27 @@
   
   "bbs": [
     [
-      "Text", 
+      "Drawing", 
       "box"
     ], 
     [
-      "Word", 
-      "textbox"
+      "List-title", 
+      "box"
     ], 
     [
-      "Image", 
+      "List-item", 
+      "box"
+    ], 
+    [
+      "math", 
+      "box"
+    ], 
+    [
+      "Striked-out text", 
+      "box"
+    ], 
+    [
+      "Text", 
       "box"
     ], 
     [
