@@ -219,27 +219,39 @@ def reset():
 		print('ERROR: {}'.format(e))
 		return jsonify(result=300)
 
+@app.route('/about.html')
+def about():
+	
+	style_version = 64
+
+	main_js = 'static/scripts/js/main.{}.js'.format(style_version)
+	main_css = 'static/scripts/css/style.{}.css'.format(style_version)
+	print("Get about file")
+	return render_template('about.html', 
+						   main_js=main_js,
+						   main_css=main_css)
+
 @app.route('/')
 @requires_auth
 def index():
-	style_version = get_style_version('static/scripts/js/*')
-	
+	#style_version = get_style_version('static/scripts/js/*')
+	style_version = 64
+
 	main_js = 'static/scripts/js/main.{}.js'.format(style_version)
 	main_css = 'static/scripts/css/style.{}.css'.format(style_version)
 	
 	print('Using scripts: {}, {}'.format(os.path.basename(main_css), 
 								   os.path.basename(main_js)))
 
-	img_dir = 'static/notes_photos/*'
-	img_paths = sorted(glob.glob(img_dir))
+	# img_dir = 'static/notes_photos/*'
+	# img_paths = sorted(glob.glob(img_dir))
 	
-	init_db()
-	upsert_many_images(img_paths)
+	# init_db()
+	# upsert_many_images(img_paths)
 
 	return render_template('index.html', 
 						   main_js=main_js,
 						   main_css=main_css)
-
 	
 if __name__ == "__main__":
     app.run()

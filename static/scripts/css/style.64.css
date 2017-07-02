@@ -51,9 +51,20 @@ li.active {
 	font-family: 'Comfortaa', Arial, sans-serif;
 }
 
-.col-md-12 {
+.copy_download_buttons {
+	background-color: #DBDBDB;
+	margin-top: 16px;
+	padding-top: 5px;
+	padding-left: 5px;
+	padding-right: 5px;
 	font-family: 'Hind Guntur', Arial, sans-serif;
-	font-size: 1.1em;
+	font-size: 16px;
+	font-weight: bold;
+	text-align: center;
+	color: black;
+	border-radius: 4px;
+	border: 1px solid black;
+	box-shadow: 4px 4px 2px #000000;
 }
 
 .headers {
@@ -61,29 +72,11 @@ li.active {
 	color: #3893AF;
 }
 
-#user_id{
-	color: red;
-	font-weight: bold;
-}
-
-.labels_section{
-    /*width: 50px;*/
-    height: 10%;
-	background-color: blue;
-	border: 5px solid blue;
-    overflow-y: scroll;
-}
-
-#all_labels_id{
-	color: white;
-	height: 30%; 
-}
-
 .img-circle {
 	width:5%;
 }
 
-.image_and_annotation_tools{
+.image_and_annotation_tools {
 	margin-top:-20%;
 }
 
@@ -119,9 +112,25 @@ div.navbar-header {
 	box-shadow: 4px 4px 2px #000000;
 }
 
+.tool_list_items {
+	font-family: 'Hind Guntur', Arial, sans-serif;
+	font-size: 1.1em;
+}
+
 .who_built_this {
 	color: #3893AF;
 	font-family: 'Comfortaa', Arial, sans-serif;
+}
+
+#all_labels_id {
+    /*width: 50px;*/
+    background-color: black;
+	border: 1px solid white;
+	border-radius: 4px;
+    overflow-y: scroll;
+    font-family: 'Roboto Mono', monospace, sans-serif;
+	color: white;
+	height: 15%; 
 }
 
 #bb_small_text {
@@ -134,7 +143,7 @@ div.navbar-header {
 	margin-left: -10%; 
 }
 
-#documentation{
+#documentation {
 	margin-top: 1%;
 	color: white;
 }
@@ -156,6 +165,14 @@ div.navbar-header {
 
 #img_div {
 	float:left;
+	border-radius: 4px;
+}
+
+#input_output_header {
+	background-color: rgba(0, 0, 0, 0.35);
+	margin: 1em;
+	padding-top: 0.5em;
+	padding-bottom: 0.5em;
 	border-radius: 4px;
 }
 
@@ -198,7 +215,7 @@ div.navbar-header {
 	width:95%;
 }
 
-#num_labelled_imgs, #total_num_imgs {
+#num_labelled_imgs {
 	color: white;
 }
 
@@ -221,6 +238,13 @@ div.navbar-header {
 
 #subtitle {
 	font-size: 0.4em;
+}
+
+#user_id {
+	color: red;
+	font-weight: normal;
+	font-family: 'Roboto Mono', monospace, sans-serif;
+	font-size: 16px;
 }
 
 #word_textarea{
