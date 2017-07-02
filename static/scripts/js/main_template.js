@@ -57,9 +57,7 @@ function draw_labels(ctx, label){
 	console.log('drawing all bounding boxes ... ');
 
 	$.each(label['bbs'] , function(i){
-		console.log('current label:')
-		console.log(label['bbs'][i])
-
+		
 		var x_0 = label['bbs'][i]['orig_point_0'][0];
 		var y_0 = label['bbs'][i]['orig_point_0'][1];
 		var x_1 = label['bbs'][i]['orig_point_1'][0];
@@ -343,6 +341,9 @@ $(document).ready(function(){
 	var canvas = document.getElementById('img_canvas');
 	canvas.style.cursor = "crosshair";
 	var ctx = canvas.getContext("2d");
+	var ctx_linewidth = 5;
+	ctx.lineWidth = ctx_linewidth;
+
 	var img = new Image();
 
 	var isDrawing=false;
@@ -446,9 +447,8 @@ $(document).ready(function(){
 		});
 		        						
     	textarea.prop('disabled', 'true');
-    	// make textarea appear
-    	// div.appendTo($('#legend_col_2'));
     	div.appendTo($("#word_textarea"));
+
     	return textarea
 	}
 
@@ -497,7 +497,7 @@ $(document).ready(function(){
 	    			  0, 0, new_width, new_height);
 
 		ctx.strokeStyle = colours[0];
-		ctx.lineWidth = 4;
+		ctx.lineWidth = ctx_linewidth;
 		draw_labels(ctx, label);
 		get_dataset_info();
 	}
@@ -765,7 +765,6 @@ $(document).ready(function(){
 	// 	        ctx.strokeRect(startX, startY,
 	// 	        			   mouseX - startX, mouseY - startY);
 
-	// 	        console.log('here:');
 	// 	        console.log(selected_bb);
 	// 	        console.log(bbs[selected_bb]);
 
@@ -991,29 +990,82 @@ $(document).ready(function(){
 	function mouseUp(e) {
 	    if (mouseIsDown !== 0) {
 	        mouseIsDown = 0;
+
 	        mouseX = parseInt(e.pageX - offsetX);
 	        mouseY = parseInt(e.pageY - offsetY);
+	        
 	        var pos = getMousePos(canvas, e);
 	        endX = pos.x;
 	        endY = pos.y;
 	        // drawSquare(); //update on mouse-up
-			bb = {
-	    		"label": bbs[selected_bb][0],
-	    		"label_type": bbs[selected_bb][1],
-	    		"color": colours[selected_bb],
-	    		"offset": [offsetX, offsetY],
-	    		
-	    		"point_0": [startX*scale_x,
-	    					startY*scale_y],
-	    		
-	    		"point_1": [(e.pageX - offsetX)*scale_x,
-	    					(e.pageY - offsetY)*scale_y],
 
-	    		"orig_point_0": [startX, startY],
-	    		"orig_point_1": [mouseX - startX, mouseY - startY]
-	    	}
+	    	if (isRect){
+	        	console.log('keep RECTANGLE');
+				bb = {
+		    		"label": bbs[selected_bb][0],
+		    		"label_type": bbs[selected_bb][1],
+		    		"color": colours[selected_bb],
+		    		"offset": [offsetX, offsetY],
+		    		
+		    		"point_0": [startX*scale_x,
+		    					startY*scale_y],
+		    		
+		    		"point_1": [(e.pageX - offsetX)*scale_x,
+		    					(e.pageY - offsetY)*scale_y],
+
+		    		"orig_point_0": [startX, startY],
+		    		"orig_point_1": [mouseX - startX, mouseY - startY]
+		    	}
+	    	} else if (isLine){
+	        	console.log('keep LINE');
+
+				bb = {
+		    		"label": bbs[selected_bb][0],
+		    		"label_type": bbs[selected_bb][1],
+		    		"color": colours[selected_bb],
+		    		"offset": [offsetX, offsetY],
+		    		
+		    		"point_0": [startX*scale_x,
+		    					startY*scale_y],
+		    		
+		    		"point_1": [mouseX*scale_x,
+		    					mouseY*scale_y],
+
+		    		"orig_point_0": [startX, startY],
+		    		"orig_point_1": [mouseX, mouseY]
+
+		    	}
+	        }
+
+
+	        if (bbs[selected_bb][1] == 'textbox'){
+
+				textarea.prop('disabled', false);
+	        	textarea.focus();
+	        	
+	        	// disable all events
+	        	$(document).on('keydown', handleKeyDown);
+	        	$(document).off('keydown click');
+	        	$(textarea).on();
+	        	
+	        	$(textarea).keypress(function(e) {
+	        		// on ENTER
+					if(e.which == 13) { 
+						
+						bb["text"] = textarea.val();
+        	
+						$(document).on('keydown', handleKeyDown);
+
+						textarea.val('Please write the content of textboxes here.');
+						textarea.prop('disabled', true);
+					}
+				});
+	        }
+
 	    	bounding_boxes.push(bb);
-	    	draw_labels(ctx, label)
+
+			ctx.lineWidth = ctx_linewidth;
+	    	draw_labels(ctx, label);
 		}
 	}
 
@@ -1022,7 +1074,11 @@ $(document).ready(function(){
 	    var pos = getMousePos(canvas, eve);
 	    startX = endX = pos.x;
 	    startY = endY = pos.y;
-	    drawSquare(); //update
+	    if (isRect){
+	    	drawSquare();
+	    } else if (isLine){
+	    	drawLine();
+	    }
 	}
 
 	function mouseXY(eve) {
@@ -1032,7 +1088,12 @@ $(document).ready(function(){
 	        endX = pos.x;
 	        endY = pos.y;
 
-	        drawSquare();
+	        if (isRect){
+		    	drawSquare();
+		    } else if (isLine){
+		    	console.log('isLine, line so drawLine...');
+		    	drawLine(eve);
+		    }
 	    }
 	}
 
@@ -1069,15 +1130,68 @@ $(document).ready(function(){
 
 
 		draw_labels(ctx, label);
-		get_dataset_info();
+
 
 		ctx.strokeStyle = colours[selected_bb];
-		ctx.lineWidth = 4;
+
+		ctx.lineWidth = ctx_linewidth;
 	    ctx.beginPath();
-	    ctx.rect(startX + offsetX, 
+	    ctx.strokeRect(startX + offsetX, 
 	    		 startY + offsetY, 
-	    		 width, height);
-	    ctx.stroke();
+	    		 width, height);	
+	}
+
+	function drawLine(e) { // HERE
+	    // creating a square
+	    var w = endX - startX;
+	    var h = endY - startY;
+	    var offsetX = (w < 0) ? w : 0;
+	    var offsetY = (h < 0) ? h : 0;
+	    var width = Math.abs(w);
+	    var height = Math.abs(h);
+
+
+
+	    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+
+		// resize image but maintain original ratio
+	 	var img_ratio = img.width / img.height;
+
+	 	var new_width = 500;
+	 	var new_height = new_width / img_ratio;
+		
+		scale_x = img.width / new_width;
+		scale_y = img.height / new_height;
+
+		canvas.width = new_width;
+	    canvas.height = new_height;
+	    
+	    console.log('calling drawImage');
+	    ctx.drawImage(img,
+	    			  0, 0, img.width, img.height,
+	    			  0, 0, new_width, new_height);
+
+
+		draw_labels(ctx, label);
+
+		ctx.strokeStyle = colours[selected_bb];
+		
+		console.log(selected_bb);
+		console.log(colours[selected_bb]);
+
+		var pos = getMousePos(canvas, e);
+	    endX = pos.x;
+	    endY = pos.y;
+
+        // mouseX = parseInt(e.pageX - offsetX);
+        // mouseY = parseInt(e.pageY - offsetY);
+
+	    ctx.beginPath();
+		ctx.lineWidth = ctx_linewidth;
+	    ctx.moveTo(startX, startY);
+		ctx.lineTo(endX, endY);
+		ctx.stroke();
 	}
 
 
