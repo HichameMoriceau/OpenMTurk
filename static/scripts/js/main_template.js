@@ -393,19 +393,11 @@ $(document).ready(function(){
 		    data: JSON.stringify(json_obj, null, '\t'),
 		    contentType: 'application/json;charset=UTF-8',
 		    success: function(all_labels) {
-		        console.log('received all labels: ');
-		        console.log(all_labels);
 		        $("#all_labels_id").text(JSON.stringify(all_labels, null, '\t'));
 		    }
 		});
 	}
 
-
-	if (user_id == ""){
-		user_id_alert = $("div/")
-							.attr('class', 'alert alert-danger fade in')
-							.text('Please enter a valid user id.');
-	}
 
 
 	function select_bb(bbs, bb_idx){
@@ -495,14 +487,15 @@ $(document).ready(function(){
     	return textarea
 	}
 
-	function insert_label(image_idx, category, orientation, bounding_boxes){
+	function insert_label(image_idx, category, orientation, bounding_boxes, username){
 
 		var json_obj = {
     		"img_path": images[image_idx],
     		"category": category,
     		"orientation": orientation,
     		"bbs": bounding_boxes,
-    		"is_labelled": true
+    		"is_labelled": true,
+    		"username": username
     	}
 
 
@@ -540,8 +533,8 @@ $(document).ready(function(){
 		draw_labels(ctx, label);
 		console.log('updating labels div');
 		if (mouseIsDown == 0){
-			update_labels_div();
 			get_dataset_info();
+			update_labels_div();
 		}
 	}
 
@@ -731,24 +724,44 @@ $(document).ready(function(){
 
 	var mouseIsDown = 0;
 
-	function get_user_id(){
-		// disable all events
-		$(document).on('keydown', handleKeyDown);
-		$(document).off('keydown click');
-		$(user_id_input).on();
+
+	// user_id_input.mousedown(function(e){
+	// 	// disable all events
+	// 	$(document).on('keydown', handleKeyDown);
+	// 	$(document).off('keydown click');
+	// 	user_id_input.on();
 		
-		$(user_id_input).keypress(function(e) {
+	// 	user_id_input.keypress(function(e) {
 
-			// on ENTER
-			if(e.which == 13) { 
+	// 		// on ENTER
+	// 		if(e.which == 13) { 
 				
-				user_id = user_id_input.val();
-				$(document).on('keydown', handleKeyDown);
-			}
-		});
-	}
+	// 			user_id = user_id_input.val();
+	// 			$(document).on('keydown', handleKeyDown);
+	// 		}
+	// 	});
+	// })
 
-	get_user_id();
+	function get_user_id(){
+
+		if ($('#user_id').val() == '' || $('#user_id').val() == 'Username'){
+			user_id = -1;
+			usernameEntered = false;
+			// if (user_id == ""){
+			// 	user_id_alert = $("div/")
+			// 						.attr('class', 'alert alert-danger fade in')
+			// 						.text('Please enter a valid user id.');
+			// }
+
+			alert('Make sure to enter your username!');
+		} else {
+			user_id = $('#user_id').val();
+			usernameEntered = true;
+		}
+		console.log('HERE: ' + $('#user_id').val());
+
+		return usernameEntered
+	}
 
 	//
 	// HANDLE EVENTS: function definitions
@@ -896,15 +909,18 @@ $(document).ready(function(){
 	}
 
 	function submit_label(){
-    	insert_label(image_idx, category, orientation, bounding_boxes);
+		usernameEntered = get_user_id()
+		if (usernameEntered){		
+	    	insert_label(image_idx, category, orientation, bounding_boxes, user_id);
 
-		if (image_idx < images.length){
-			image_idx++;
+			if (image_idx < images.length){
+				image_idx++;
+			}
+
+			img.src = images[image_idx]+'?#'+new Date().getTime();
+			
+			get_label(image_idx);
 		}
-
-		img.src = images[image_idx]+'?#'+new Date().getTime();
-		
-		get_label(image_idx);
 	}
 
 	function handleKeyDown(e){
