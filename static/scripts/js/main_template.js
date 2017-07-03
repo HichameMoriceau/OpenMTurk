@@ -488,14 +488,22 @@ $(document).ready(function(){
 	}
 
 	function insert_label(image_idx, category, orientation, bounding_boxes, username){
-
+		var currentdate = new Date(); 
+		var timestamp = currentdate.getDate() + "/"
+		                + (currentdate.getMonth()+1)  + "/" 
+		                + currentdate.getFullYear() + " "  
+		                + currentdate.getHours() + ":"  
+		                + currentdate.getMinutes() + ":" 
+		                + currentdate.getSeconds();
+		           
 		var json_obj = {
     		"img_path": images[image_idx],
     		"category": category,
     		"orientation": orientation,
     		"bbs": bounding_boxes,
     		"is_labelled": true,
-    		"username": username
+    		"username": username,
+    		"timestamp": timestamp
     	}
 
 
