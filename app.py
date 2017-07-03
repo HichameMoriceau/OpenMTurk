@@ -130,6 +130,11 @@ def get_all_labelled_images():
 	return labelled_img_paths
 
 
+def get_all_labels_from_mongodb():
+	all_labels = list(db.labels_db.find({'is_labelled': True}))
+
+	return all_labels
+
 def get_dataset_info_from_mongodb():
 
 	num_labelled = db.labels_db.count({'is_labelled': True})
@@ -157,6 +162,16 @@ def dump_all_labels(filename):
 
 	with open(filename, 'w') as f:
 		json.dump(serializable_labels, f)
+
+
+
+style_version = get_style_version('static/scripts/js/*')
+# style_version = 64
+
+
+#
+# Server webpages: 
+#
 
 
 @app.route('/get_label', methods=['POST'])
@@ -219,23 +234,53 @@ def reset():
 		print('ERROR: {}'.format(e))
 		return jsonify(result=300)
 
-@app.route('/about.html')
+
+@app.route('/get_all_labels', methods=['POST'])
+def get_all_labels():
+	try:
+		all_labels = get_all_labels_from_mongodb()
+		for label in all_labels:
+			del label['_id']
+			
+
+		print('Retrieved {} labels from database'.format(len(all_labels)))
+		return jsonify(all_labels)
+	
+	except Exception as e:
+
+		print('ERROR: {}'.format(e))
+		return jsonify(result=300)
+
+
+
+@app.route('/guidelines.html')
+@app.route('/guidelines')
 def about():
 	
-	style_version = 64
-
 	main_js = 'static/scripts/js/main.{}.js'.format(style_version)
 	main_css = 'static/scripts/css/style.{}.css'.format(style_version)
-	print("Get about file")
-	return render_template('about.html', 
+	print("Get guidelines file")
+	return render_template('guidelines.html', 
 						   main_js=main_js,
 						   main_css=main_css)
+
+
+@app.route('/documentation.html')
+@app.route('/documentation')
+def documentation():
+	
+	main_js = 'static/scripts/js/main.{}.js'.format(style_version)
+	main_css = 'static/scripts/css/style.{}.css'.format(style_version)
+	print("Get documentation file")
+
+	return render_template('documentation.html', 
+						   main_js=main_js,
+						   main_css=main_css)
+
 
 @app.route('/')
 @requires_auth
 def index():
-	#style_version = get_style_version('static/scripts/js/*')
-	style_version = 64
 
 	main_js = 'static/scripts/js/main.{}.js'.format(style_version)
 	main_css = 'static/scripts/css/style.{}.css'.format(style_version)
@@ -252,6 +297,7 @@ def index():
 	return render_template('index.html', 
 						   main_js=main_js,
 						   main_css=main_css)
+
 	
 if __name__ == "__main__":
     app.run()

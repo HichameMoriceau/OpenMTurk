@@ -40,22 +40,21 @@ var colours = ['white',
 			  'mediumspringgreen'];
 
 function make_blank(oInput) {
-    if (oInput.value == 'Insert your user id here.') {
+    if (oInput.value == 'Username') {
         oInput.value = '';
     }
 }
 
 function restore_placeholder(oInput) {
     if (oInput.value == '') {
-        oInput.value = 'Insert your user id here.';
+        oInput.value = 'Username';
     }
 }
 
 // draws all the bounding boxes and lines on 
 // a given canvas context
 function draw_labels(ctx, label){
-	console.log('drawing all bounding boxes ... ');
-
+	
 	$.each(label['bbs'] , function(i){
 		
 		var x_0 = label['bbs'][i]['orig_point_0'][0];
@@ -266,14 +265,36 @@ function create_submit_button(){
 			.css("margin-top", "15%")
 			.css("margin-bottom", "15%")
 			.css("font-size", "20px")
-			.css("font-weight", "bold")
+			.css("font-weight", "bolder")
 			.css("background", "linear-gradient(#BC0404, #D44B4B)")
-			.text('Submit labels')
+			.text('SUBMIT')
 			.append($('<br/>'))
 			.append(span)
 			.appendTo($("#submit_button"));
 
 	return submit_button;
+}
+
+
+function create_copy_button(){
+
+	var copy_button = $('<div/>')
+			.attr("class", "btn btn-a btn-sm smooth")
+			.val('Copy to clipboard')
+			.appendTo($("#copy_button"));
+
+	return copy_button;
+}
+
+
+function create_download_button(){
+
+	var download_button = $('<div/>')
+			.attr("class", "btn btn-a btn-sm smooth")
+			.val('Download')
+			.appendTo($("#download_button"));
+
+	return download_button;
 }
 
 
@@ -287,9 +308,7 @@ function get_dataset_info(){
 	    data: JSON.stringify({}, null, '\t'),
 	    contentType: 'application/json;charset=UTF-8',
 	    success: function(json_obj) {
-	    	console.log('Received dataset info:');
-	        console.log(json_obj['result']);
-			ds_info = json_obj['result'];
+	    	ds_info = json_obj['result'];
 
 			$("#qty_span").attr("class", "badge")
 						  .text("" + ds_info['num_labelled_imgs']);
@@ -314,6 +333,7 @@ function get_dataset_info(){
 	    }
 	});
 }
+
 
 //
 // main:
@@ -341,9 +361,6 @@ $(document).ready(function(){
 	var canvas = document.getElementById('img_canvas');
 	canvas.style.cursor = "crosshair";
 	var ctx = canvas.getContext("2d");
-	var ctx_linewidth = 5;
-	ctx.lineWidth = ctx_linewidth;
-
 	var img = new Image();
 
 	var isDrawing=false;
@@ -364,6 +381,31 @@ $(document).ready(function(){
 
 	var user_id_input = $('#user_id');
 	var user_id = -1;
+
+
+	function update_labels_div(){
+		
+		var json_obj = {};
+		var ret = []
+		$.ajax({
+		    type : "POST",
+		    url : '/get_all_labels',
+		    data: JSON.stringify(json_obj, null, '\t'),
+		    contentType: 'application/json;charset=UTF-8',
+		    success: function(all_labels) {
+		        console.log('received all labels: ');
+		        console.log(all_labels);
+		        $("#all_labels_id").text(JSON.stringify(all_labels, null, '\t'));
+		    }
+		});
+	}
+
+
+	if (user_id == ""){
+		user_id_alert = $("div/")
+							.attr('class', 'alert alert-danger fade in')
+							.text('Please enter a valid user id.');
+	}
 
 
 	function select_bb(bbs, bb_idx){
@@ -447,8 +489,9 @@ $(document).ready(function(){
 		});
 		        						
     	textarea.prop('disabled', 'true');
+    	// make textarea appear
+    	// div.appendTo($('#legend_col_2'));
     	div.appendTo($("#word_textarea"));
-
     	return textarea
 	}
 
@@ -462,8 +505,6 @@ $(document).ready(function(){
     		"is_labelled": true
     	}
 
-    	all_labels.push(json_obj);
-    	$("#all_labels_id").text(JSON.stringify(all_labels, null, '\t'));
 
     	$.ajax({
 		    type : "POST",
@@ -471,13 +512,12 @@ $(document).ready(function(){
 		    data: JSON.stringify(json_obj, null, '\t'),
 		    contentType: 'application/json;charset=UTF-8',
 		    success: function(result) {
-		        console.log(result);
+		        
 		    }
 		});
 	}
 
 	img.onload = function () {
-		console.log('onload -	 image');
 
 		// resize image but maintain original ratio
 	 	var img_ratio = img.width / img.height;
@@ -491,15 +531,18 @@ $(document).ready(function(){
 		canvas.width = new_width;
 	    canvas.height = new_height;
 	    
-	    console.log('calling drawImage');
 	    ctx.drawImage(img,
 	    			  0, 0, img.width, img.height,
 	    			  0, 0, new_width, new_height);
 
 		ctx.strokeStyle = colours[0];
-		ctx.lineWidth = ctx_linewidth;
+		ctx.lineWidth = 4;
 		draw_labels(ctx, label);
-		get_dataset_info();
+		console.log('updating labels div');
+		if (mouseIsDown == 0){
+			update_labels_div();
+			get_dataset_info();
+		}
 	}
 
 	function get_label(image_idx){
@@ -515,9 +558,7 @@ $(document).ready(function(){
 		    data: JSON.stringify(json_obj, null, '\t'),
 		    contentType: 'application/json;charset=UTF-8',
 		    success: function(label_dict) {
-		    	console.log('retrieved labels: ');
-		    	console.log(label_dict);
-
+		    	
 		    	label = label_dict;
 
 		    	//
@@ -532,15 +573,11 @@ $(document).ready(function(){
 		        }else if (categories.indexOf(label_dict['category']) < 0){
 		    		// if the label_dict[category] does not exist:
 		    		category = categories[0];
-		        	console.log('setting category to ')
-		        	console.log(category)
-					select_category(categories, category);
+		        	select_category(categories, category);
 		        
 		        }else{
 		    		// if the label_dict[category] does not exist:
 		    		category = label_dict['category'];
-		        	console.log('setting category to ')
-		        	console.log(category)
 					select_category(categories, category);
 		        }
 
@@ -683,14 +720,35 @@ $(document).ready(function(){
 	var undo_button = create_undo_button();
 	var submit_button = create_submit_button();
 	
+	var copy_button = create_copy_button();
+	var clipboard = new Clipboard('#copy_button');
+
+	var download_button = create_download_button();
+	
 
 	img.src = images[0]+"?t="+ new Date().getTime();
 	get_label(0);
 
+	var mouseIsDown = 0;
 
+	function get_user_id(){
+		// disable all events
+		$(document).on('keydown', handleKeyDown);
+		$(document).off('keydown click');
+		$(user_id_input).on();
+		
+		$(user_id_input).keypress(function(e) {
 
+			// on ENTER
+			if(e.which == 13) { 
+				
+				user_id = user_id_input.val();
+				$(document).on('keydown', handleKeyDown);
+			}
+		});
+	}
 
-
+	get_user_id();
 
 	//
 	// HANDLE EVENTS: function definitions
@@ -765,6 +823,7 @@ $(document).ready(function(){
 	// 	        ctx.strokeRect(startX, startY,
 	// 	        			   mouseX - startX, mouseY - startY);
 
+	// 	        console.log('here:');
 	// 	        console.log(selected_bb);
 	// 	        console.log(bbs[selected_bb]);
 
@@ -875,55 +934,46 @@ $(document).ready(function(){
 			case 49: // 1
 				category = categories[0];
 				select_category(categories, category);
-				console.log('document type: ', category);
 	        break;
 
 			case 50: // 2
 				category = categories[1];
 				select_category(categories, category);
-				console.log('document type: ', category);
 	        break;
 
 			case 51: // 3
 				category = categories[2];
 				select_category(categories, category);
-				console.log('document type: ', category);
 	        break;
 
 			case 52: // 4
 				category = categories[3];
 				select_category(categories, category);
-				console.log('document type: ', category);
 	        break;
 
 			case 53: // 5
 				category = categories[4];
 				select_category(categories, category);
-				console.log('document type: ', category);
 	        break;
 
 			case 54: // 6
 				category = categories[5];
 				select_category(categories, category);
-				console.log('document type: ', category);
 	        break;
 
 			case 55: // 7
 				category = categories[6];
 				select_category(categories, category);
-				console.log('document type: ', category);
 	        break;
 
 			case 56: // 8
 				category = categories[7];
 				select_category(categories, category);
-				console.log('document type: ', category);
 			break;
 
 			case 57: // 9
 				category = categories[8];
 				select_category(categories, category);
-				console.log('document type: ', category);
 	        break;
 
 	        //
@@ -933,25 +983,21 @@ $(document).ready(function(){
 	        case 81: // Q
 
 		        orientation = orientations[0];
-				console.log('orientation: ', orientation);
 				select_orientation(orientations, orientation);
 	        break;
 
 			case 87: // W
 		        orientation = orientations[1];
-				console.log('orientation: ', orientation);
 				select_orientation(orientations, orientation);
 	        break;
 
 			case 69: // E
 		        orientation = orientations[2];
-				console.log('orientation: ', orientation);
 				select_orientation(orientations, orientation);
 	        break;
 
 			case 82: // R
 		        orientation = orientations[3];
-				console.log('orientation: ', orientation);
 				select_orientation(orientations, orientation);
 			break;
 
@@ -961,7 +1007,7 @@ $(document).ready(function(){
 	        //
 
 	        case 13: // enter
-		        console.log('FINAL ENTER');
+		        console.log('Submitting labels to back-end');
 		        submit_label();
 	        break;
 
@@ -979,7 +1025,7 @@ $(document).ready(function(){
 
 
 	var startX, endX, startY, endY;
-	var mouseIsDown = 0;
+	
 
     canvas.addEventListener("mousedown", mouseDown, false);
     canvas.addEventListener("mousemove", mouseXY, false);
@@ -990,82 +1036,29 @@ $(document).ready(function(){
 	function mouseUp(e) {
 	    if (mouseIsDown !== 0) {
 	        mouseIsDown = 0;
-
 	        mouseX = parseInt(e.pageX - offsetX);
 	        mouseY = parseInt(e.pageY - offsetY);
-	        
 	        var pos = getMousePos(canvas, e);
 	        endX = pos.x;
 	        endY = pos.y;
 	        // drawSquare(); //update on mouse-up
+			bb = {
+	    		"label": bbs[selected_bb][0],
+	    		"label_type": bbs[selected_bb][1],
+	    		"color": colours[selected_bb],
+	    		"offset": [offsetX, offsetY],
+	    		
+	    		"point_0": [startX*scale_x,
+	    					startY*scale_y],
+	    		
+	    		"point_1": [(e.pageX - offsetX)*scale_x,
+	    					(e.pageY - offsetY)*scale_y],
 
-	    	if (isRect){
-	        	console.log('keep RECTANGLE');
-				bb = {
-		    		"label": bbs[selected_bb][0],
-		    		"label_type": bbs[selected_bb][1],
-		    		"color": colours[selected_bb],
-		    		"offset": [offsetX, offsetY],
-		    		
-		    		"point_0": [startX*scale_x,
-		    					startY*scale_y],
-		    		
-		    		"point_1": [(e.pageX - offsetX)*scale_x,
-		    					(e.pageY - offsetY)*scale_y],
-
-		    		"orig_point_0": [startX, startY],
-		    		"orig_point_1": [mouseX - startX, mouseY - startY]
-		    	}
-	    	} else if (isLine){
-	        	console.log('keep LINE');
-
-				bb = {
-		    		"label": bbs[selected_bb][0],
-		    		"label_type": bbs[selected_bb][1],
-		    		"color": colours[selected_bb],
-		    		"offset": [offsetX, offsetY],
-		    		
-		    		"point_0": [startX*scale_x,
-		    					startY*scale_y],
-		    		
-		    		"point_1": [mouseX*scale_x,
-		    					mouseY*scale_y],
-
-		    		"orig_point_0": [startX, startY],
-		    		"orig_point_1": [mouseX, mouseY]
-
-		    	}
-	        }
-
-
-	        if (bbs[selected_bb][1] == 'textbox'){
-
-				textarea.prop('disabled', false);
-	        	textarea.focus();
-	        	
-	        	// disable all events
-	        	$(document).on('keydown', handleKeyDown);
-	        	$(document).off('keydown click');
-	        	$(textarea).on();
-	        	
-	        	$(textarea).keypress(function(e) {
-	        		// on ENTER
-					if(e.which == 13) { 
-						
-						bb["text"] = textarea.val();
-        	
-						$(document).on('keydown', handleKeyDown);
-
-						textarea.val('Please write the content of textboxes here.');
-						textarea.prop('disabled', true);
-					}
-				});
-	        }
-
+	    		"orig_point_0": [startX, startY],
+	    		"orig_point_1": [mouseX - startX, mouseY - startY]
+	    	}
 	    	bounding_boxes.push(bb);
-
-			ctx.lineWidth = ctx_linewidth;
-	    	draw_labels(ctx, label);
+	    	draw_labels(ctx, label)
 		}
 	}
 
@@ -1074,11 +1067,7 @@ $(document).ready(function(){
 	    var pos = getMousePos(canvas, eve);
 	    startX = endX = pos.x;
 	    startY = endY = pos.y;
-	    if (isRect){
-	    	drawSquare();
-	    } else if (isLine){
-	    	drawLine();
-	    }
+	    drawSquare(); //update
 	}
 
 	function mouseXY(eve) {
@@ -1088,12 +1077,7 @@ $(document).ready(function(){
 	        endX = pos.x;
 	        endY = pos.y;
 
-	        if (isRect){
-		    	drawSquare();
-		    } else if (isLine){
-		    	console.log('isLine, line so drawLine...');
-		    	drawLine(eve);
-		    }
+	        drawSquare();
 	    }
 	}
 
@@ -1123,75 +1107,21 @@ $(document).ready(function(){
 		canvas.width = new_width;
 	    canvas.height = new_height;
 	    
-	    console.log('calling drawImage');
 	    ctx.drawImage(img,
 	    			  0, 0, img.width, img.height,
 	    			  0, 0, new_width, new_height);
 
 
 		draw_labels(ctx, label);
-
+		get_dataset_info();
 
 		ctx.strokeStyle = colours[selected_bb];
-
-		ctx.lineWidth = ctx_linewidth;
+		ctx.lineWidth = 4;
 	    ctx.beginPath();
-	    ctx.strokeRect(startX + offsetX, 
+	    ctx.rect(startX + offsetX, 
 	    		 startY + offsetY, 
-	    		 width, height);	
-	}
-
-	function drawLine(e) { // HERE
-	    // creating a square
-	    var w = endX - startX;
-	    var h = endY - startY;
-	    var offsetX = (w < 0) ? w : 0;
-	    var offsetY = (h < 0) ? h : 0;
-	    var width = Math.abs(w);
-	    var height = Math.abs(h);
-
-
-
-	    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-
-		// resize image but maintain original ratio
-	 	var img_ratio = img.width / img.height;
-
-	 	var new_width = 500;
-	 	var new_height = new_width / img_ratio;
-		
-		scale_x = img.width / new_width;
-		scale_y = img.height / new_height;
-
-		canvas.width = new_width;
-	    canvas.height = new_height;
-	    
-	    console.log('calling drawImage');
-	    ctx.drawImage(img,
-	    			  0, 0, img.width, img.height,
-	    			  0, 0, new_width, new_height);
-
-
-		draw_labels(ctx, label);
-
-		ctx.strokeStyle = colours[selected_bb];
-		
-		console.log(selected_bb);
-		console.log(colours[selected_bb]);
-
-		var pos = getMousePos(canvas, e);
-	    endX = pos.x;
-	    endY = pos.y;
-
-        // mouseX = parseInt(e.pageX - offsetX);
-        // mouseY = parseInt(e.pageY - offsetY);
-
-	    ctx.beginPath();
-		ctx.lineWidth = ctx_linewidth;
-	    ctx.moveTo(startX, startY);
-		ctx.lineTo(endX, endY);
-		ctx.stroke();
+	    		 width, height);
+	    ctx.stroke();
 	}
 
 
@@ -1204,27 +1134,10 @@ $(document).ready(function(){
 	}
 
 
-	user_id_input.mousedown(function(e){
 
-		function get_user_id(){
-			// disable all events
-			$(document).on('keydown', handleKeyDown);
-			$(document).off('keydown click');
-			$(user_id_input).on();
-			
-			$(user_id_input).keypress(function(e) {
+	// user_id_input.mousedown(function(e){
 
-				// on ENTER
-				if(e.which == 13) { 
-					
-					user_id = user_id_input.val();
-					
-					$(document).on('keydown', handleKeyDown);
-				}
-			});
-		}
-		get_user_id();
-	});
+	// });
 
     $(document).keydown(function(e) {
     	handleKeyDown(e);
@@ -1241,4 +1154,13 @@ $(document).ready(function(){
 	submit_button.mousedown(function (e) {
 		submit_label();
 	});
+
+	download_button.mousedown(function (e){
+			
+		var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(all_labels));
+		var dlAnchorElem = document.getElementById('download_labels');
+		dlAnchorElem.setAttribute("href",     dataStr     );
+		dlAnchorElem.setAttribute("download", "labels.json");
+		dlAnchorElem.click();
+	})
 });
