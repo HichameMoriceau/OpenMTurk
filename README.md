@@ -29,7 +29,14 @@ Out of the box, OpenTurk comes with the following labelling features:
 
 In case of an unexpected server crash, OpenTurk dumps all annotations into a `labels_backup.json` file every 10 annotations by default.
 
-### Customizing the tool to your classes (config file)
+
+## Frequently Asked Questions:
+
+### Where do I put my images?
+
+By default, the server expects images in the `static/notes_photos/` directory. However, you may change this by overriding the IMG_DIRECTORY variable in the `Makefile`. You will be interested in doing so if you have lots of images.
+
+### How do I add more classes/change the config of the tool?
 
 Update the `project/config.json` to *add*, *remove* or *rename* any button. This file defines the buttons for **categories**, **orientations** and **bbs** (bounding-boxes).
 
@@ -75,6 +82,13 @@ For bounding-boxes there are 3 types of drawing buttons:
   ]
 }
 ```
+
+### How do I retrieve the annotations?
+
+OpenMTurk persists all annotations to MongoDB. You can retrieve all of them by clicking the "Download all labels" button at the bottom of the main (`index.html`) page. 
+
+Note that OpenMTurk dumps a snapshot the database every 10 annotations into a file named `labels_backup.json`.
+
 
 ## Issues?
 
