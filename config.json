@@ -1,9 +1,10 @@
 {
   "categories": [
     "Hand-written page", 
-    "Receipt", 
     "Letter",
-    "CV"
+    "Publication",
+    "CV",
+    "Receipt" 
   ],
   
   "bbs": [

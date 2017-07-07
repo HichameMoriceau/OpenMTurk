@@ -311,7 +311,7 @@ $(document).ready(function(){
 	var scale_x = 0;
 	var scale_y = 0;
 
-	var user_id_input = $('#user_id');
+	// var user_id_input = $('#user_id');
 	var user_id = -1;
 
 
@@ -935,6 +935,14 @@ $(document).ready(function(){
 	}
 
 	function handleKeyDown(e){
+		if ($('#user_id').is(':focus')){
+			console.log('user_id IS focused')
+			// remove focus from text input
+			// $('#user_id').blur();
+			return;
+		}else{
+			console.log('user_id is NOT focused')
+		}
 
 	    switch(e.which) {
 			//
@@ -1271,7 +1279,6 @@ $(document).ready(function(){
 	        y: evt.clientY - rect.top
 	    };
 	}
-
 
 
 	// user_id_input.mousedown(function(e){
