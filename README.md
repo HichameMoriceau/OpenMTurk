@@ -1,42 +1,35 @@
 # OpenMTurk
 
-An image-labelling platform written in [javascript](https://en.wikipedia.org/wiki/JavaScript) and [python 3](https://en.wikipedia.org/wiki/Python_(programming_language))/[Flask](http://flask.pocoo.org/) to populate a [MongoDB](https://www.mongodb.com/what-is-mongodb) database. The idea is that you can clone, install and run this repo (and customize it if necessary) and have your own, *in-house* image-labelling tool.
+An image-labelling platform written in [JQuery](https://en.wikipedia.org/wiki/JQuery)/[Bootstrap](https://en.wikipedia.org/wiki/Bootstrap_(front-end_framework)) and [python 3](https://en.wikipedia.org/wiki/Python_(programming_language))/[Flask](http://flask.pocoo.org/) which persist annotations in a [MongoDB](https://www.mongodb.com/what-is-mongodb) database. The idea is that you can clone, install and run this repo (and customize it if necessary) and have your own, *in-house* image-labelling tool.
 
 ## Screenshot:
 
 ![Screenshot of the OpenMTurk image-labelling platform](static/openmturk_screenshot.png?raw=true "Example set-up of the tool")
 
-## Installation
+## Getting started:
 
-### Before cloning the repo:
-
-In the root directory, make sure the server has the following dependencies installed:
-
+You can build and run the app using make:
 
 ```bash
-# dependencies:
-$ pip3 install Flask pymongo 
-# set Flask environment variable:
-$ export FLASK_APP="app.py"
+$ clone the repository locally
+$ git clone https://github.com/HichameMoriceau/OpenMTurk.git
+$ # install Flask and pymongo
+$ make install
+$ # Run web-server
+$ make
 ```
 
-
-## Running the server
-
-```bash
-$ python3 render_js_css_template.py && flask run
-```
 
 ## Built-in features:
 Out of the box, OpenTurk comes with the following labelling features:
 
-- **Image category**: (e.g. receipt, bill, letter, etc.)
-- **Image orientation**: (is it upside-down? Is it sideways?)
-- **Bounding-boxes and lines**: draw a rectangle around objects (e.g. dog, cat, etc.) or a line (baselines of paragraph, separation etc.)
+- **Image category**
+- **Image orientation**
+- **Bounding-boxes, text-bounding-boxes and lines**
 
 In case of an unexpected server crash, OpenTurk dumps all annotations into a `labels_backup.json` file every 10 annotations by default.
 
-### Customizing the tool to your classes
+### Customizing the tool to your classes (config file)
 
 Update the `project/config.json` to *add*, *remove* or *rename* any button. This file defines the buttons for **categories**, **orientations** and **bbs** (bounding-boxes).
 
@@ -83,14 +76,15 @@ For bounding-boxes there are 3 types of drawing buttons:
 }
 ```
 
-## Todo list:
+## Issues?
 
-- prettify authentication pop-up alert
-- deploy an example website on heroku
+A bug found is a bug fixed! Please raised an issue!
+
+## Available projects:
+
+- deploy an example website
+- add a function which returns a random example to be labelled (instead of sorted return)
 - add an [Active Learning](https://en.wikipedia.org/wiki/Active_learning_(machine_learning)) strategy to improve labelling efficiency
-- add an "undo" feature to the drawing buttons
-- add a "Add/remove images to be labelled" section.
-- add a "retrieve all labels"
 - add a "Getting your images labelled by external annotators" section to the `README.md`
 
 ## License
