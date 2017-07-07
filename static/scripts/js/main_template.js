@@ -140,76 +140,6 @@ function select_category(categories, dt){
 	// }
 
 
-function create_category_buttons(categories){
-
-	var doc_type_legend = document.getElementById('category');
-
-	$.each(categories , function(i){
-
-		var key_value = i+1;
-		
-		var span = $('<span/>')
-			.text(' (key : ' + key_value + ')')
-			.css("font-size", "10px")
-			.css("font-weight", "normal");
-
-		var div = $('<div/>').text(categories[i])
-
-		var li = $('<li/>')
-			.attr("class", "btn btn-a btn-sm smooth")
-			.css("background-color", 'white')
-			.css("border", "1px solid black")
-			.css("box-shadow", "2px 2px 1px #000000")
-			.css("margin-left", "1%")
-			.append(div)
-			.append(span)
-			.appendTo(doc_type_legend);
-
-
-		li.mousedown(function (e) {
-			category = categories[i];
-			select_category(categories, category);
-		});
-	})
-}
-
-function create_orientation_buttons(orientations){
-
-	var key_values = ['q', 'w', 'e', 'r'];
-	var orientation_legend = document.getElementById('orientation');
-	
-	$.each(orientations, function(i){
-		
-
-		var span = $('<span/>')
-			.text(' (key : ' + key_values[i] + ')')
-			.css("font-size", "10px")
-			.css("font-weight", "normal");
-
-
-		var div = $('<div/>')
-			.attr("class", "icon-arrow-"+orientations[i]+"-circle")
-			.css("font-weight", "bold")
-			.css("font-size", "20px");
-
-		var li = $('<li/>')
-			.attr("class", "btn btn-a btn-sm smooth")
-			.css("background-color", 'white')
-			.css("border", "1px solid black")
-			.css("box-shadow", "2px 2px 1px #000000")
-			.css('margin-bottom', '1%')
-			.css("margin-left", "1%")
-			.append(div)
-			.append(span)
-			.appendTo(orientation_legend);
-
-		li.mousedown(function (e) {
-			orientation = orientations[i];
-			select_orientation(orientations, orientation);
-		});
-
-	})
-}
 
 
 function create_reset_button(){
@@ -232,7 +162,7 @@ function create_reset_button(){
 
 function create_undo_button(){
 
-	var reset_button = $('<div/>')
+	var undo_button = $('<div/>')
 			.attr("class", "btn btn-a btn-sm smooth")
 			.css("background-color", 'rgb(20, 45, 110)')
 			.css("color", 'black')
@@ -244,7 +174,7 @@ function create_undo_button(){
 			.text('Undo')
 			.appendTo($("#undo_div"));
 
-	return reset_button;
+	return undo_button;
 }
 
 
@@ -361,13 +291,15 @@ $(document).ready(function(){
 	var canvas = document.getElementById('img_canvas');
 	canvas.style.cursor = "crosshair";
 	var ctx = canvas.getContext("2d");
+	var ctx_linewidth = 5;
 	var img = new Image();
+	var img_width = 650;
 
 	var isDrawing=false;
 	var isRect = true;
 	var isLine = false;
 	
-	var label = [];
+	var label = {};
 
 	var startX;
 	var startY;
@@ -382,6 +314,78 @@ $(document).ready(function(){
 	var user_id_input = $('#user_id');
 	var user_id = -1;
 
+
+
+	function create_orientation_buttons(orientations){
+
+		var key_values = ['q', 'w', 'e', 'r'];
+		var orientation_legend = document.getElementById('orientation');
+		
+		$.each(orientations, function(i){
+			
+
+			var span = $('<span/>')
+				.text(' (key : ' + key_values[i] + ')')
+				.css("font-size", "10px")
+				.css("font-weight", "normal");
+
+
+			var div = $('<div/>')
+				.attr("class", "icon-arrow-"+orientations[i]+"-circle")
+				.css("font-weight", "bold")
+				.css("font-size", "20px");
+
+			var li = $('<li/>')
+				.attr("class", "btn btn-a btn-sm smooth")
+				.css("background-color", 'white')
+				.css("border", "1px solid black")
+				.css("box-shadow", "2px 2px 1px #000000")
+				.css('margin-bottom', '1%')
+				.css("margin-left", "1%")
+				.append(div)
+				.append(span)
+				.appendTo(orientation_legend);
+
+			li.mousedown(function (e) {
+				orientation = orientations[i];
+				select_orientation(orientations, orientation);
+			});
+
+		})
+	}
+
+	function create_category_buttons(categories){
+
+		var doc_type_legend = document.getElementById('category');
+
+		$.each(categories , function(i){
+
+			var key_value = i+1;
+			
+			var span = $('<span/>')
+				.text(' (key : ' + key_value + ')')
+				.css("font-size", "10px")
+				.css("font-weight", "normal");
+
+			var div = $('<div/>').text(categories[i])
+
+			var li = $('<li/>')
+				.attr("class", "btn btn-a btn-sm smooth")
+				.css("background-color", 'white')
+				.css("border", "1px solid black")
+				.css("box-shadow", "2px 2px 1px #000000")
+				.css("margin-left", "1%")
+				.append(div)
+				.append(span)
+				.appendTo(doc_type_legend);
+
+
+			li.mousedown(function (e) {
+				category = categories[i];
+				select_category(categories, category);
+			});
+		})
+	}
 
 	function update_labels_div(){
 		
@@ -460,10 +464,11 @@ $(document).ready(function(){
 	    var div = $('<div/>');
 
     	var textarea = $('<textarea/>')
-    						.attr('rows', '3')
+    						.attr('rows', '2')
     						.attr('class', 'smooth')
     						.text('Please select each word to write in here.')
     						.css("border", "1px solid black")
+    						.css("font-size", "25px")
     						.css("box-shadow", "2px 2px 1px #000000")
     						.css("border-radius", "4px")
     						.appendTo(div);
@@ -505,8 +510,7 @@ $(document).ready(function(){
     		"username": username,
     		"timestamp": timestamp
     	}
-
-
+    	
     	$.ajax({
 		    type : "POST",
 		    url : '/insert_label',
@@ -523,7 +527,7 @@ $(document).ready(function(){
 		// resize image but maintain original ratio
 	 	var img_ratio = img.width / img.height;
 
-	 	var new_width = 500;
+	 	var new_width = img_width;
 	 	var new_height = new_width / img_ratio;
 		
 		scale_x = img.width / new_width;
@@ -535,11 +539,12 @@ $(document).ready(function(){
 	    ctx.drawImage(img,
 	    			  0, 0, img.width, img.height,
 	    			  0, 0, new_width, new_height);
-
+		
 		ctx.strokeStyle = colours[0];
-		ctx.lineWidth = 4;
+		ctx.lineWidth = ctx_linewidth;
+		
 		draw_labels(ctx, label);
-		console.log('updating labels div');
+
 		if (mouseIsDown == 0){
 			get_dataset_info();
 			update_labels_div();
@@ -610,7 +615,7 @@ $(document).ready(function(){
 	}
 
 	function previous_image(){
-	    label = [];
+	    label = {};
 	    
 	    if (image_idx != 0){
 			image_idx--;
@@ -623,7 +628,7 @@ $(document).ready(function(){
 	}
 
 	function next_image(){
-	    label = [];
+	    label = {};
 	    
 	    if (image_idx < images.length){
 			image_idx++;
@@ -766,7 +771,6 @@ $(document).ready(function(){
 			user_id = $('#user_id').val();
 			usernameEntered = true;
 		}
-		console.log('HERE: ' + $('#user_id').val());
 
 		return usernameEntered
 	}
@@ -802,7 +806,6 @@ $(document).ready(function(){
 				select_bb(bbs, 0);
 
 				// clear image from bounding boxes
-
 				ctx.clearRect(0, 0, canvas.width, canvas.height);
 				img.src = json_obj['img_path'];
 
@@ -848,29 +851,29 @@ $(document).ready(function(){
 	// 	        console.log(selected_bb);
 	// 	        console.log(bbs[selected_bb]);
 
-	// 	        if (bbs[selected_bb][1] == 'textbox'){
+		   //      if (bbs[selected_bb][1] == 'textbox'){
 
-	// 				textarea.prop('disabled', false);
-	// 	        	textarea.focus();
+					// textarea.prop('disabled', false);
+		   //      	textarea.focus();
 		        	
-	// 	        	// disable all events
-	// 	        	$(document).on('keydown', handleKeyDown);
-	// 	        	$(document).off('keydown click');
-	// 	        	$(textarea).on();
+		   //      	// disable all events
+		   //      	$(document).on('keydown', handleKeyDown);
+		   //      	$(document).off('keydown click');
+		   //      	$(textarea).on();
 		        	
-	// 	        	$(textarea).keypress(function(e) {
-	// 	        		// on ENTER
-	// 					if(e.which == 13) { 
+		   //      	$(textarea).keypress(function(e) {
+		   //      		// on ENTER
+					// 	if(e.which == 13) { 
 							
-	// 						bb["text"] = textarea.val();
+					// 		bb["text"] = textarea.val();
 	        	
-	// 						$(document).on('keydown', handleKeyDown);
+					// 		$(document).on('keydown', handleKeyDown);
 
-	// 						textarea.val('Please write the content of textboxes here.');
-	// 						textarea.prop('disabled', true);
-	// 					}
-	// 				});
-	// 	        }
+					// 		textarea.val('Please write the content of textboxes here.');
+					// 		textarea.prop('disabled', true);
+					// 	}
+					// });
+		   //      }
 
 	//         	bounding_boxes.push(bb);
 
@@ -1066,24 +1069,76 @@ $(document).ready(function(){
 	        endX = pos.x;
 	        endY = pos.y;
 	        // drawSquare(); //update on mouse-up
-			bb = {
-	    		"label": bbs[selected_bb][0],
-	    		"label_type": bbs[selected_bb][1],
-	    		"color": colours[selected_bb],
-	    		"offset": [offsetX, offsetY],
-	    		
-	    		"point_0": [startX*scale_x,
-	    					startY*scale_y],
-	    		
-	    		"point_1": [(e.pageX - offsetX)*scale_x,
-	    					(e.pageY - offsetY)*scale_y],
+			
+	    	if (isRect){
 
-	    		"orig_point_0": [startX, startY],
-	    		"orig_point_1": [mouseX - startX, mouseY - startY]
-	    	}
+	        	bb = {
+		    		"label": bbs[selected_bb][0],
+		    		"label_type": bbs[selected_bb][1],
+		    		"color": colours[selected_bb],
+		    		"offset": [offsetX, offsetY],
+		    		
+		    		"point_0": [startX*scale_x,
+		    					startY*scale_y],
+		    		
+		    		"point_1": [(e.pageX - offsetX)*scale_x,
+		    					(e.pageY - offsetY)*scale_y],
+
+		    		"orig_point_0": [startX, startY],
+		    		"orig_point_1": [mouseX - startX, mouseY - startY]
+		    	}
+
+
+		        if (bbs[selected_bb][1] == 'textbox'){
+
+					textarea.prop('disabled', false);
+		        	textarea.focus();
+		        	
+		        	// disable all events
+		        	$(document).on('keydown', handleKeyDown);
+		        	$(document).off('keydown click');
+		        	$(textarea).on();
+		        	
+		        	$(textarea).keypress(function(e) {
+		        		// on ENTER
+						if(e.which == 13) { 
+							
+							bb["text"] = textarea.val();
+	        	
+							$(document).on('keydown', handleKeyDown);
+
+							textarea.val('Please write the content of textbox here.');
+							textarea.prop('disabled', true);
+						}
+					});
+		        }
+
+	    	} else if (isLine){
+	        	
+				bb = {
+		    		"label": bbs[selected_bb][0],
+		    		"label_type": bbs[selected_bb][1],
+		    		"color": colours[selected_bb],
+		    		"offset": [offsetX, offsetY],
+		    		
+		    		"point_0": [startX*scale_x,
+		    					startY*scale_y],
+		    		
+		    		"point_1": [mouseX*scale_x,
+		    					mouseY*scale_y],
+
+		    		"orig_point_0": [startX, startY],
+		    		"orig_point_1": [mouseX, mouseY]
+
+		    	}
+	        }
+
 	    	bounding_boxes.push(bb);
-	    	draw_labels(ctx, label)
-		}
+
+			ctx.lineWidth = ctx_linewidth;
+	    	draw_labels(ctx, label);
+
+	    }
 	}
 
 	function mouseDown(eve) {
@@ -1091,7 +1146,12 @@ $(document).ready(function(){
 	    var pos = getMousePos(canvas, eve);
 	    startX = endX = pos.x;
 	    startY = endY = pos.y;
-	    drawSquare(); //update
+	    
+	    if (isRect){
+	    	drawSquare(eve);
+	    } else if (isLine){
+	    	drawLine(eve);
+	    }
 	}
 
 	function mouseXY(eve) {
@@ -1102,6 +1162,12 @@ $(document).ready(function(){
 	        endY = pos.y;
 
 	        drawSquare();
+
+	        if (isRect){
+		    	drawSquare();
+		    } else if (isLine){
+		    	drawLine(eve);
+		    }
 	    }
 	}
 
@@ -1122,7 +1188,7 @@ $(document).ready(function(){
 		// resize image but maintain original ratio
 	 	var img_ratio = img.width / img.height;
 
-	 	var new_width = 500;
+	 	var new_width = img_width;
 	 	var new_height = new_width / img_ratio;
 		
 		scale_x = img.width / new_width;
@@ -1140,12 +1206,61 @@ $(document).ready(function(){
 		get_dataset_info();
 
 		ctx.strokeStyle = colours[selected_bb];
-		ctx.lineWidth = 4;
+		ctx.lineWidth = ctx_linewidth;
 	    ctx.beginPath();
 	    ctx.rect(startX + offsetX, 
 	    		 startY + offsetY, 
 	    		 width, height);
 	    ctx.stroke();
+	}
+
+
+	function drawLine(e) { // HERE
+	    // creating a square
+	    var w = endX - startX;
+	    var h = endY - startY;
+	    var offsetX = (w < 0) ? w : 0;
+	    var offsetY = (h < 0) ? h : 0;
+	    var width = Math.abs(w);
+	    var height = Math.abs(h);
+
+	    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+
+		// resize image but maintain original ratio
+	 	var img_ratio = img.width / img.height;
+
+	 	var new_width = img_width;
+	 	var new_height = new_width / img_ratio;
+		
+		scale_x = img.width / new_width;
+		scale_y = img.height / new_height;
+
+		canvas.width = new_width;
+	    canvas.height = new_height;
+	    
+	    ctx.drawImage(img,
+	    			  0, 0, img.width, img.height,
+	    			  0, 0, new_width, new_height);
+
+
+		draw_labels(ctx, label);
+		get_dataset_info();
+
+		ctx.strokeStyle = colours[selected_bb];
+		
+		var pos = getMousePos(canvas, e);
+	    endX = pos.x;
+	    endY = pos.y;
+
+        // mouseX = parseInt(e.pageX - offsetX);
+        // mouseY = parseInt(e.pageY - offsetY);
+
+	    // ctx.beginPath();
+		ctx.lineWidth = ctx_linewidth;
+	    ctx.moveTo(startX, startY);
+		ctx.lineTo(endX, endY);
+		ctx.stroke();
 	}
 
 

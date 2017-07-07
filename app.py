@@ -135,13 +135,17 @@ def get_all_labels_from_mongodb():
 
 	return all_labels
 
-def get_dataset_info_from_mongodb():
+def get_metrics():
 
 	num_labelled = db.labels_db.count({'is_labelled': True})
-	num_unlabelled = db.labels_db.count({'is_labelled': False})
 
-	total = num_labelled + num_unlabelled
+	images_dir = 'static/notes_photos/*'
 
+	print(list(glob.glob(images_dir)))
+	total = len(list(glob.glob(images_dir)))
+
+	print(total)
+	
 	info_dict = {
 		'num_labelled_imgs': num_labelled, 
 		'total_num_imgs': total
@@ -189,7 +193,7 @@ def get_label():
 def get_dataset_info():
 	try:
 		ajax_dict = copy.copy(request.json)
-		db_info = get_dataset_info_from_mongodb()
+		db_info = get_metrics()
 		print('Produced DB info: {}'.format(db_info))
 		
 		return jsonify(result=db_info)
