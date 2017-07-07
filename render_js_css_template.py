@@ -11,6 +11,7 @@ from shutil import copyfile
 import glob
 import time
 import json
+import sys
 
 
 def get_style_version(dir_path):
@@ -54,6 +55,8 @@ def generate_js(main_js_path, new_version, images_dir, labels_filename):
 	template = Template(html_template)
 	images = sorted(glob.glob(images_dir))
 
+	print('{} files found in {}'.format(len(images, images_dir)))
+
 	labels = load_labels(labels_filename)
 	labels['images'] = images
 
@@ -64,21 +67,32 @@ def generate_js(main_js_path, new_version, images_dir, labels_filename):
 
 def generate_css(main_css, new_version):
 
-	main_css_new_version = 'static/scripts/css/style.{}.css'.format(new_version)
+	main_css_new_version = 'static/scripts/css/style.{}.css'.format(
+															new_version)
 	copyfile(main_css, main_css_new_version)
 
 
-def main():
+def maybe_add_suffix(string, suffix):
+	if string.endswith(suffix):
+		return string
+	else:
+		return string + suffix
+
+
+def main(images_dir='static/notes_photos/'):
 	main_js_path = 'static/scripts/js/main_template.js'
 	main_css = 'static/scripts/css/style.css'
-	images_dir = 'static/notes_photos/*'
-	labels_filename = 'config.json'
 
 	new_version_num = get_style_version('static/scripts/js/*')+1
+	labels_filename = 'config.json'
+	
+	# images_dir = 'static/notes_photos/*'
+	images_dir = maybe_add_suffix(images_dir, '/')+'*'
+
 
 	generate_js(main_js_path, new_version_num, images_dir, labels_filename)
 	generate_css(main_css, new_version_num)
 
 
 if __name__ == "__main__":
-	main()
+	main(sys.argv[1])

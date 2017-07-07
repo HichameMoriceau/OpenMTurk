@@ -1,8 +1,9 @@
+IMG_DIRECTORY=static/notes_photos/
 
 
 build:
 	export FLASK_APP="app.py"
-	python3 render_js_css_template.py 
+	python3 render_js_css_template.py $(IMG_DIRECTORY) 
 	flask run
 
 install:
