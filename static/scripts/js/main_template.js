@@ -161,7 +161,6 @@ function create_submit_button(){
 			.css("border", "2px solid black")
 			.css("box-shadow", "4px 4px 3px #000000")
 			.css("margin-top", "15%")
-			.css("margin-bottom", "15%")
 			.css("font-size", "20px")
 			.css("font-weight", "bolder")
 			.css("background", "linear-gradient(#BC0404, #D44B4B)")
@@ -273,7 +272,7 @@ $(document).ready(function(){
 	var scale_x = 0;
 	var scale_y = 0;
 
-	var user_id = -1;
+	var user_id = '';
 
 
 
@@ -723,38 +722,20 @@ $(document).ready(function(){
 
 	var mouseIsDown = 0;
 
+	function prompt_username(){
+
+		bootbox.prompt("Please enter a username: ", function(result){ 
+			// remember username:
+			user_id = result;
+			$('#user_id').text(user_id);
+		});
+	}
+
 	function get_user_id(){
 
-
-		
-
-		// if ($('#user_id').val() == '' || $('#user_id').val() == 'Username'){
-		// 	user_id = -1;
-		// 	usernameEntered = false;
-
-		// 	alert('Make sure to enter your username!');
-		// } else {
-		// 	user_id = $('#user_id').val();
-		// 	usernameEntered = true;
-		// }
-
-		console.log(user_id); 
-		if (user_id != -1){
-			usernameEntered = true;
-		}else{
-
-			bootbox.prompt("Please enter a username: ", function(result){ 
-				// remember username:
-				user_id = result;
-			});
-
-			if(user_id == ''){
-				usernameEntered = false;
-			}else{
-				usernameEntered = true;
-			}
+		if (user_id == ''){
+			prompt_username();
 		}
-		return usernameEntered
 	}
 	get_user_id();
 
@@ -799,32 +780,30 @@ $(document).ready(function(){
 
 	function handleUndoEvent(e){
 		// remove last box or line element
-		bounding_boxes.pop();
+		// bounding_boxes.pop();
+		label['bbs'].pop();
 		// reload image (see img.onLoad())
 		img.src = images[image_idx]+"?t="+ new Date().getTime();
 	}
 
 	function submit_label(){
-		usernameEntered = get_user_id()
-		if (usernameEntered){		
-	    	insert_label(image_idx, category, orientation, bounding_boxes, user_id);
+		// get_user_id()
+    	insert_label(image_idx, category, orientation, bounding_boxes, user_id);
 
-			if (image_idx < images.length){
-				image_idx++;
-			}
-
-			//
-			// RESET image:
-			//
-
-			// clear current image and label
-			label = {};
-			get_label(image_idx);
-	    	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	    	// load new image
-			img.src = images[image_idx]+'?#'+new Date().getTime();
-			
+		if (image_idx < images.length){
+			image_idx++;
 		}
+
+		//
+		// RESET image:
+		//
+
+		// clear current image and label
+		label = {};
+		get_label(image_idx);
+    	ctx.clearRect(0, 0, canvas.width, canvas.height);
+    	// load new image
+		img.src = images[image_idx]+'?#'+new Date().getTime();
 	}
 
 	function handleKeyDown(e){
@@ -1187,19 +1166,10 @@ $(document).ready(function(){
 	    };
 	}
 
- //    $(document).keydown(function(e) {
- //    	// if username input is focused
-	// 	if ($('#user_id').is(':focus')){
-	// 		console.log('user_id IS focused')
-	// 		// $('#user_id').blur();
-	// 		// prevent keydown shortcuts from triggering
-	// 		//return;
-	// 	}else{
-	// 		console.log('user_id is NOT focused')
-	//     	handleKeyDown(e);
-	//     	update_label_preview_section();
-	// 	}
-	// });
+    $(document).keydown(function(e) {
+    	handleKeyDown(e);
+	    update_label_preview_section();
+	});
 
 	reset_button.mousedown(function (e) {
 		handleResetEvent(e);

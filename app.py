@@ -287,8 +287,10 @@ def index():
 	main_js = 'static/scripts/js/main.{}.js'.format(style_version)
 	main_css = 'static/scripts/css/style.{}.css'.format(style_version)
 	
-	print('Using scripts: {}, {}'.format(os.path.basename(main_css), 
-								   os.path.basename(main_js)))
+	print('Using scripts: {}, {}'.format(
+		os.path.basename(main_css), 
+		os.path.basename(main_js))
+	)
 
 	# img_dir = 'static/notes_photos/*'
 	# img_paths = sorted(glob.glob(img_dir))

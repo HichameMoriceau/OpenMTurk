@@ -51,6 +51,11 @@ li.active {
 	font-family: 'Comfortaa', Arial, sans-serif;
 }
 
+#img_name {
+	font-family: 'Hind Guntur', Arial, sans-serif;
+	color: #777;
+}
+
 .copy_download_buttons {
 	background-color: #DBDBDB;
 	margin-top: 16px;
@@ -164,7 +169,7 @@ div.navbar-header {
 }
 
 #img_div {
-	float:left;
+	/*float:left;*/
 	border-radius: 4px;
 }
 
@@ -182,28 +187,12 @@ div.navbar-header {
 	text-align: center;
 }
 
-#legend_col_2:first-child{
-	margin-top: 1%;
-	/*padding-top: 1%;*/
-}
-
-#legend_col_2 {
-	float:left;
-	width:90%;
-/*	border: 5px solid blue;*/
-}
-
-/*#legend_col_2 div {
-	margin-top: -1%;
-}
-*/
-
 #legend_div {
 	background-color: #3893AF;
 	border-radius: 4px;
-	float:left; 
-	width:50%; 
+	/*float:left; */
 	margin: 1% 1% 1% 1%; 
+	padding-top: 1.5em;
 	padding-bottom: 1.5em;
 	box-shadow: 8px 8px 3px #000000;
 	font-color: black;
@@ -211,8 +200,8 @@ div.navbar-header {
 }
 
 #main_div {
-	margin: 1% 0% 3% 3%; 
-	width:95%;
+	margin: 1% 0% 1% 1%; 
+	/*width:95%;*/
 }
 
 #num_labelled_imgs {
@@ -234,6 +223,7 @@ div.navbar-header {
 #submit_remove_buttons{
 	padding-top: 4%;
 	margin-bottom: 1%;
+	margin-left: 1%;
 }
 
 #subtitle {
@@ -242,12 +232,17 @@ div.navbar-header {
 
 #user_id {
 	color: red;
-	font-weight: normal;
+	font-weight: bold;
 	font-family: 'Roboto Mono', monospace, sans-serif;
 	font-size: 16px;
 }
 
-#word_textarea{
+#word_textarea {
 	padding-top: 2%;
 	padding-bottom: 1%;
 }
+
+/*#github_logo {
+	-webkit-filter: grayscale(1) invert(1);
+	filter: grayscale(1) invert(1);
+}*/
