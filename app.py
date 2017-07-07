@@ -140,8 +140,6 @@ def get_metrics():
 	num_labelled = db.labels_db.count({'is_labelled': True})
 
 	images_dir = 'static/notes_photos/*'
-
-	print(list(glob.glob(images_dir)))
 	total = len(list(glob.glob(images_dir)))
 
 	print(total)

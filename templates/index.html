@@ -1,8 +1,7 @@
 <html>
 <head>
 	<title>OpenMTurk | OpenMTurk - A Customizable labelling tool</title>
-	<!-- JQuery library: -->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
 	
 	<script type=text/javascript>
 	  $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
@@ -13,7 +12,6 @@
 	<!-- Arrows icons: -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.css">
 
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
 	<meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -22,12 +20,13 @@
 	<!-- stylesheet imported from HTML5UP-->
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
-	<link rel="stylesheet" href="static/scripts/css/style.css" />
+
 	<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
 	<link href="https://fonts.googleapis.com/css?family=Amatica+SC|Assistant|Comfortaa:400,700|Cairo|Gruppo|Hind+Guntur:300|Roboto+Mono" rel="stylesheet"> 
 	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 	<!-- Copy to clipboard -->
 	<script src="https://cdn.jsdelivr.net/npm/clipboard@1/dist/clipboard.min.js"></script>
+
 
 </head>
 <body id="body">
@@ -79,22 +78,28 @@
     </div>
 
     <div>
-    	<h3 class="headers" id="input_output_header"><center>Labelling images:</center></h3>
+    	<h3 class="headers" id="input_output_header"><center>Labelling image: <span id='img_name'></span></center></h3>
     </div>
 
     <div class="container-fluid">
+<!-- 
     	<div class="row-fluid col-md-7">
 					<input 	id="user_id" 
 							type="text" 
 							maxlength="60" 
 							placeholder="Username"
-							onfocus="make_blank(this);"
-							onblur="restore_placeholder(this);" />
-		</div>
+							onfocus="make_blank(this);" />
+		</div> -->
+	<div class="row-fluid">
 
-		<div class="row-fluid col-md-5">
+		<div class="col-md-7">
+		</div>
+		
+		<div class="col-md-5">
 			<div id="num_labelled_imgs" class="active">Number of labelled images: <span id="qty_span"></span> / <span id="total_span"></span></div>
 		</div>
+
+	</div>
 	</div>
 
 	<div class="container-fluid">
@@ -135,12 +140,14 @@
 						    		<ul id="bounding_boxes" class="col-md-12 tool_list_items">
 						    		</ul>
 						    	</div>
-
+								
+<!-- 
 						    	<div class="row-fluid">
 							    	<h4>Text extraction: <span id="bb_small_text">(Use after selecting a "textbox")</span>:</h4>
 							    	<div id="word_textarea" class="col-md-12 tool_list_items">
 							    	</div>
 						    	</div>
+ -->
 
 						    		
 						    	<!-- Submit/remove buttons: -->
@@ -190,7 +197,7 @@
 	<div class="container-fluid">
 		<div class="row-fluid">
 			<div>
-		    	<h3 class="headers" id="input_output_header"><center>Image descriptions</center></h3>
+		    	<h3 class="headers" id="input_output_header"><center>Annotation preview:</center></h3>
 		    </div>
 		<div/>
 	</div>
@@ -201,7 +208,7 @@
 		<div class="row">
 			
 			<div class="col-md-8">
-				<pre id="all_labels_id"></pre>
+				<pre id="label_preview_section"></pre>
 			</div>
 
 
@@ -209,19 +216,31 @@
 				<button  class="copy_download_buttons" 
 						 id="copy_button" 
 						 alt="Copy labels to clipboard" 
-						 data-clipboard-target="#all_labels_id">
+						 data-clipboard-target="#label_preview_section">
 					Copy to clipboard
 				</button>	
 
 			</div>
 			
-			<div class="col-md-2">
+			<div class="col-md-1">
 				<div class="row-fluid">
-					<a id="download_labels">
+					<a id="download_label">
 						<button class="copy_download_buttons" 
 								 id="download_button" 
 								 alt="Download labels">
-							Download
+								 Download
+						</button>
+					</a>
+				</div>
+			</div>
+
+			<div class="col-md-1">
+				<div class="row-fluid">
+					<a id="download_labels"> 
+						<button class="copy_download_buttons" 
+								 id="download_all_button" 
+								 alt="Download all labels">
+							Download all labels
 						</button>
 					</a>
 				</div>
@@ -270,10 +289,20 @@
 		</div>
 	</div> 
 
-
+	<!-- JQuery library: -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<!-- Bootstrap CSS library: -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<!-- Bootstrap JS library -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	<!-- Bootbox (prompt user for username) -->
+	<!-- <script type="text/javascript" src="static/scripts/bootbox.min.js"></script> -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
+	
+	
 	<!-- Personal scripts: -->
 	<script type="text/javascript" src="{{ main_js }}"></script>
 	<link rel="stylesheet" href="{{ main_css }}">
-
+	<!-- <link rel="stylesheet" href="static/scripts/css/style.css" /> -->
 </body>
 </html>
