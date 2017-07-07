@@ -444,38 +444,6 @@ $(document).ready(function(){
 		})
 	}
 
-	// function create_textarea(){
-	//     var div = $('<div/>');
-
- //    	var textarea = $('<textarea/>')
- //    						.attr('rows', '2')
- //    						.attr('class', 'smooth')
- //    						.text('Please select each word to write in here.')
- //    						.css("border", "1px solid black")
- //    						.css("font-size", "25px")
- //    						.css("box-shadow", "2px 2px 1px #000000")
- //    						.css("border-radius", "4px")
- //    						.appendTo(div);
-
-
-	// 	textarea.focus(function() {
-	// 	        if (this.value === this.defaultValue) {
-	// 	            this.value = '';
-	// 	        }
-	// 	  })
-	// 	  .blur(function() {
-	// 	        if (this.value === '') {
-	// 	            this.value = this.defaultValue;
-	// 	        }
-	// 	});
-		        						
- //    	textarea.prop('disabled', 'true');
- //    	// make textarea appear
- //    	// div.appendTo($('#legend_col_2'));
- //    	div.appendTo($("#word_textarea"));
- //    	return textarea
-	// }
-
 	function insert_label(image_idx, category, orientation, bounding_boxes, username){
 		var currentdate = new Date(); 
 		var timestamp = currentdate.getDate() + "/"
@@ -702,7 +670,6 @@ $(document).ready(function(){
 	create_category_buttons(categories);
 	create_orientation_buttons(orientations);
 	create_bb_buttons(bbs);
-	// var textarea = create_textarea();
 
 	var prev_button = create_previous_button();
 	var next_button = create_next_button();
