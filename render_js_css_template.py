@@ -55,7 +55,7 @@ def generate_js(main_js_path, new_version, images_dir, labels_filename):
 	template = Template(html_template)
 	images = sorted(glob.glob(images_dir))
 
-	print('{} files found in {}'.format(len(images, images_dir)))
+	print('{} files found in {}'.format(len(images), images_dir))
 
 	labels = load_labels(labels_filename)
 	labels['images'] = images

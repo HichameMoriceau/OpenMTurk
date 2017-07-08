@@ -690,11 +690,12 @@ $(document).ready(function(){
 	var mouseIsDown = 0;
 
 	function prompt_username(){
-
+ 	
 		bootbox.prompt("Please enter a username: ", function(result){ 
 			// remember username:
 			user_id = result;
 			$('#user_id').text(user_id);
+
 		});
 	}
 
@@ -755,7 +756,7 @@ $(document).ready(function(){
 
 	function submit_label(){
 		// get_user_id()
-    	insert_label(image_idx, category, orientation, bounding_boxes, user_id);
+    	insert_label(image_idx, category, orientation, label['bbs'], user_id);
 
 		if (image_idx < images.length){
 			image_idx++;
@@ -931,45 +932,17 @@ $(document).ready(function(){
 
 		        if (bbs[selected_bb][1] == 'textbox'){
 
-					// textarea.prop('disabled', false);
-		   //      	textarea.focus();
-					// textarea.val('');
-
-		   //      	// disable all events
-		   //      	$(document).off('keydown', handleKeyDown);
-		   //      	$(document).off('keydown click');
-		   //      	$(textarea).on();
-		        	
-		   //      	$(textarea).keypress(function(e) {
-
-		   //      		// on ENTER
-					// 	if(e.which == 13) { 
-					// 		// retrieve extracted text
-					// 		bb["text"] = String(textarea.val());
-					// 		// disable text area
-					// 		textarea.prop('disabled', true);
-							
-					// 		// enable keyboard + mouse
-					// 		$(document).on('keydown', handleKeyDown);
-				 //   			$(document).on('keydown click');
-				 //   			// $(document).on();
-				 //   			update_label_preview_section();
-
-					// 	}
-					// });
-
-
 					bootbox.prompt("Textbox content: ", function(result){ 
 						// remember username:
 						bb["text"] = result;
 						// update current label
-						bounding_boxes.push(bb);
+						label["bbs"].push(bb);
 					   	update_label_preview_section();
 					});
 					
 
 		        }else{
-		        	bounding_boxes.push(bb);
+		        	label["bbs"].push(bb);
 		        }
 
 	    	} else if (isLine){
@@ -989,13 +962,13 @@ $(document).ready(function(){
 		    		"orig_point_0": [startX, startY],
 		    		"orig_point_1": [mouseX, mouseY]
 		    	}
-		    	bounding_boxes.push(bb);
+		    	label["bbs"].push(bb);
 		    }
 
 			ctx.lineWidth = ctx_linewidth;
-	    	draw_labels(ctx, label);
+	    	// draw_labels(ctx, label);
 
-	    	label['bbs'] = bounding_boxes;
+	    	// label['bbs'] = bounding_boxes;
 			update_label_preview_section();
 
 	    }
@@ -1134,8 +1107,10 @@ $(document).ready(function(){
 	}
 
     $(document).keydown(function(e) {
-    	handleKeyDown(e);
-	    update_label_preview_section();
+    	if (user_id != ''){
+	    	handleKeyDown(e);
+		    update_label_preview_section();
+    	}
 	});
 
 	reset_button.mousedown(function (e) {
