@@ -259,6 +259,7 @@ $(document).ready(function(){
 
 	var isRect = true;
 	var isLine = false;
+	var isTyping = false;
 	
 	var label = {};
 
@@ -540,7 +541,7 @@ $(document).ready(function(){
 
 	img.onload = function () {
 
-		get_label(image_idx);
+		// get_label(image_idx);
 		$('#img_name').text(images[image_idx]);
 
 		// resize image but maintain original ratio
@@ -694,6 +695,17 @@ $(document).ready(function(){
 		bootbox.prompt("Please enter a username: ", function(result){ 
 			// remember username:
 			user_id = result;
+			
+			if (result == '' || result == null){
+				console.log('EMPTY');
+				user_id = 'default_user';
+			}
+
+			console.log('user things:');
+			console.log(result);
+			console.log(user_id);
+			
+			label['username'] = user_id;
 			$('#user_id').text(user_id);
 
 		});
@@ -932,13 +944,47 @@ $(document).ready(function(){
 
 		        if (bbs[selected_bb][1] == 'textbox'){
 
-					bootbox.prompt("Textbox content: ", function(result){ 
+					
+					// disable keydown events while user is typing
+		        	isTyping = true;
+					// bootbox.prompt("Textbox content: ", function(result){ 
+						
+						// // remember username:
+						// bb["text"] = result;
+						// // update current label
+						// label["bbs"].push(bb);
+					 //   	update_label_preview_section();
+					 //   	isTyping = false;
+					// });	
+
+					bootbox.prompt({ 
+					  size: "small",
+					  className: "user_modal",
+					  title: "Textbox content: ", 
+					  callback: function(result){
+					  	console.log('success') 
 						// remember username:
 						bb["text"] = result;
 						// update current label
 						label["bbs"].push(bb);
 					   	update_label_preview_section();
-					});
+					   	isTyping = false;
+					  }
+					})
+
+					// bootbox.dialog({
+					//     "message" : "Click me!",
+					//     "class" : "textbox_class",   // or btn-primary, or btn-danger, or nothing at all
+					//     "callback": function(result){ 
+						
+					// 		// remember username:
+					// 		bb["text"] = result;
+					// 		// update current label
+					// 		label["bbs"].push(bb);
+					// 	   	update_label_preview_section();
+					// 	   	isTyping = false;
+					// 	}
+					// });
 					
 
 		        }else{
@@ -962,6 +1008,7 @@ $(document).ready(function(){
 		    		"orig_point_0": [startX, startY],
 		    		"orig_point_1": [mouseX, mouseY]
 		    	}
+
 		    	label["bbs"].push(bb);
 		    }
 
@@ -1018,7 +1065,6 @@ $(document).ready(function(){
 
 	    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-
 		// resize image but maintain original ratio
 	 	var img_ratio = img.width / img.height;
 
@@ -1035,12 +1081,11 @@ $(document).ready(function(){
 	    			  0, 0, img.width, img.height,
 	    			  0, 0, new_width, new_height);
 
-
+		ctx.lineWidth = ctx_linewidth;
 		draw_labels(ctx, label);
 		get_dataset_info();
 
 		ctx.strokeStyle = colours[selected_bb];
-		ctx.lineWidth = ctx_linewidth;
 	    ctx.beginPath();
 	    ctx.rect(startX + offsetX, 
 	    		 startY + offsetY, 
@@ -1049,7 +1094,7 @@ $(document).ready(function(){
 	}
 
 
-	function drawLine(e) { // HERE
+	function drawLine(e) {
 	    // creating a square
 	    var w = endX - startX;
 	    var h = endY - startY;
@@ -1108,8 +1153,10 @@ $(document).ready(function(){
 
     $(document).keydown(function(e) {
     	if (user_id != ''){
-	    	handleKeyDown(e);
-		    update_label_preview_section();
+    		if (isTyping == false){
+		    	handleKeyDown(e);
+			    update_label_preview_section();
+    		};
     	}
 	});
 

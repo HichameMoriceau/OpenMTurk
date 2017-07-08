@@ -241,3 +241,13 @@ div.navbar-header {
 	padding-top: 2%;
 	padding-bottom: 1%;
 }
+/*
+.modal-content {
+	float: right;
+	margin-left: 40%; 
+}*/
+
+.user_modal {
+	float: right;
+	margin-left: 40%; 
+}
