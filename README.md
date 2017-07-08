@@ -1,8 +1,14 @@
 # OpenMTurk
 
-An image-labelling platform written in [JQuery](https://en.wikipedia.org/wiki/JQuery)/[Bootstrap](https://en.wikipedia.org/wiki/Bootstrap_(front-end_framework)) and [python 3](https://en.wikipedia.org/wiki/Python_(programming_language))/[Flask](http://flask.pocoo.org/) which persist annotations in a [MongoDB](https://www.mongodb.com/what-is-mongodb) database. 
+A image-labelling platform written in [JQuery](https://en.wikipedia.org/wiki/JQuery)/[Bootstrap](https://en.wikipedia.org/wiki/Bootstrap_(front-end_framework)) and [python 3](https://en.wikipedia.org/wiki/Python_(programming_language))/[Flask](http://flask.pocoo.org/) which persist annotations in a [MongoDB](https://www.mongodb.com/what-is-mongodb) database. 
 
-The idea is that you can clone, install and run this repo (and customize it if necessary) and have your own, *in-house* image-labelling tool.
+
+OpenMTurk helps you put together a supervised-learning image data-set. OpenMTurk provides you with your own *in-house* image-labelling platform. 
+
+- *Install* OpenMTurk
+- *Customize* the JSON config file to suit your classes/needs
+- *Build*
+- *Annotate*
 
 ## Screenshot:
 
@@ -10,26 +16,24 @@ The idea is that you can clone, install and run this repo (and customize it if n
 
 ## Getting started:
 
-You can build and run the app using make:
 
-```bash
-$ git clone https://github.com/HichameMoriceau/OpenMTurk.git
-$ make install
-$ make
-```
-
-Next:
-Go to [http://127.0.0.1:5000](http://127.0.0.1:5000) and label your data!
+- *Install* OpenMTurk
+  - `$ git clone https://github.com/HichameMoriceau/OpenMTurk.git && cd OpenMTurk/`
+  - `$ make install`
+- *Customize* the JSON config file to suit your classes/needs
+  - `$ gedit config.json`
+- *Build*
+  - `$ make`
+- *Start labelling*
+  - By default the tool runs here:[http://127.0.0.1:5000](http://127.0.0.1:5000)
 
 
 ## Built-in features:
 Out of the box, OpenTurk comes with the following labelling features:
 
-- **Image category**
+- **Image class**
 - **Image orientation**
-- **Bounding-boxes, text-bounding-boxes and lines**
-
-In case of an unexpected server crash, OpenTurk dumps all annotations into a `labels_backup.json` file every 10 annotations by default.
+- **Bounding-boxes, textboxes and lines**
 
 
 ## Frequently Asked Questions:
@@ -96,19 +100,34 @@ Note that OpenMTurk dumps a snapshot the database every 10 annotations into a fi
 
 We didn't want to close the potential for having your images annotated by a team of data entry specialists. With this tool, you can build, deploy this site and hire annotators to label your images.
 
+### What if something wrong happens in the middle of my annotation process?
+
+In case of an unexpected server or database crash, OpenTurk dumps all persisted annotations into a `labels_backup.json` file every 10 annotations by default.
+
+
+
+## I want to get involved!
+
+
+Available projects/to-do list:
+
+- add support for segmentation labels
+- add a "Getting your images labelled by external annotators" section to the `README.md`
+- deploy an example website
+- add an [Active Learning](https://en.wikipedia.org/wiki/Active_learning_(machine_learning)) strategy to improve labelling efficiency
+- add a random sampling strategy (instead of sorted return)
+
+Other ideas? [Let me know](http://hichamemoriceau.com/).
 
 ## Issues?
 
-A bug found is a bug fixed! Please raised an issue!
+You found a bug? You need an important feature? Please raise an issue!
+You need help getting started? Something isn't clear? [Let me know](http://hichamemoriceau.com/).
 
-## Available projects:
 
-- add a "Getting your images labelled by external annotators" section to the `README.md`
-- add a function which returns a random example to be labelled (instead of sorted return)
-- add an [Active Learning](https://en.wikipedia.org/wiki/Active_learning_(machine_learning)) strategy to improve labelling efficiency
-- deploy an example website
+## Other image annotation tools:
 
-## Other image annotation tools out there:
+OpenMTurk is not the only image-labelling tool out there:
 
 - [Sloth](https://cvhci.anthropomatik.kit.edu/~baeuml/projects/a-universal-labeling-tool-for-computer-vision-sloth/)
 - [Annotorious](http://annotorious.github.io/)
@@ -117,6 +136,8 @@ A bug found is a bug fixed! Please raised an issue!
 - [VGG Image Annotator](http://www.robots.ox.ac.uk/~vgg/software/via/)
 - [labelMe](http://labelme.csail.mit.edu/Release3.0/)
 
+
 ## License
 
-Copyright (c) 2017 Hichame Moriceau & Larissa Tijms, the content of this repository is bound by an MIT License.
+Copyright (c) 2017 Hichame Moriceau & Larissa Tijms, the content of this repository is bound by an MIT License. 
+Thus, you may use the content of this repository for *commercial* and *non-commercial* purposes.
