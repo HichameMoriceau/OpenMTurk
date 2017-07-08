@@ -1,6 +1,8 @@
 # OpenMTurk
 
-An image-labelling platform written in [JQuery](https://en.wikipedia.org/wiki/JQuery)/[Bootstrap](https://en.wikipedia.org/wiki/Bootstrap_(front-end_framework)) and [python 3](https://en.wikipedia.org/wiki/Python_(programming_language))/[Flask](http://flask.pocoo.org/) which persist annotations in a [MongoDB](https://www.mongodb.com/what-is-mongodb) database. The idea is that you can clone, install and run this repo (and customize it if necessary) and have your own, *in-house* image-labelling tool.
+An image-labelling platform written in [JQuery](https://en.wikipedia.org/wiki/JQuery)/[Bootstrap](https://en.wikipedia.org/wiki/Bootstrap_(front-end_framework)) and [python 3](https://en.wikipedia.org/wiki/Python_(programming_language))/[Flask](http://flask.pocoo.org/) which persist annotations in a [MongoDB](https://www.mongodb.com/what-is-mongodb) database. 
+
+The idea is that you can clone, install and run this repo (and customize it if necessary) and have your own, *in-house* image-labelling tool.
 
 ## Screenshot:
 
@@ -11,11 +13,8 @@ An image-labelling platform written in [JQuery](https://en.wikipedia.org/wiki/JQ
 You can build and run the app using make:
 
 ```bash
-$ clone the repository locally
 $ git clone https://github.com/HichameMoriceau/OpenMTurk.git
-$ # install Flask and pymongo
 $ make install
-$ # Run web-server
 $ make
 ```
 
