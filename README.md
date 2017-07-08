@@ -5,10 +5,6 @@ A image-labelling platform written in [JQuery](https://en.wikipedia.org/wiki/JQu
 
 OpenMTurk helps you put together a supervised-learning image data-set. OpenMTurk provides you with your own *in-house* image-labelling platform. 
 
-- *Install* OpenMTurk
-- *Customize* the JSON config file to suit your classes/needs
-- *Build*
-- *Annotate*
 
 ## Screenshot:
 
@@ -17,28 +13,28 @@ OpenMTurk helps you put together a supervised-learning image data-set. OpenMTurk
 ## Getting started:
 
 
-- *Install* OpenMTurk
+- **Install** OpenMTurk
   - `$ git clone https://github.com/HichameMoriceau/OpenMTurk.git && cd OpenMTurk/`
   - `$ make install`
-- *Customize* the JSON config file to suit your classes/needs
+- **Customize** the JSON config file to suit your classes/needs
   - `$ gedit config.json`
-- *Build*
+- **Build**
   - `$ make`
-- *Start labelling*
+- **Annotate**
   - By default the tool runs here:[http://127.0.0.1:5000](http://127.0.0.1:5000)
 
 
 ## Built-in features:
 Out of the box, OpenTurk comes with the following labelling features:
 
-- **Image class**
-- **Image orientation**
-- **Bounding-boxes, textboxes and lines**
+- *Image class*
+- *Image orientation*
+- *Bounding-boxes, textboxes and lines*
 
 
 ## Frequently Asked Questions:
 
-### Where do I put my images?
+### How do I specify the images which must be labelled?
 
 By default, the server expects images in the `static/notes_photos/` directory. However, you may change this by overriding the IMG_DIRECTORY variable in the `Makefile`. You will be interested in doing so if you have lots of images.
 
