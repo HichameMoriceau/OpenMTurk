@@ -38,7 +38,7 @@ Out of the box, OpenTurk comes with the following labelling features:
 
 By default, the server expects images in the `static/notes_photos/` directory. However, you may change this by overriding the IMG_DIRECTORY variable in the `Makefile`. You will be interested in doing so if you have lots of images.
 
-### How do I add more classes/change the config of the tool?
+### How do I define my classes?
 
 Update the `project/config.json` to *add*, *remove* or *rename* any button. This file defines the buttons for **categories**, **orientations** and **bbs** (bounding-boxes).
 
@@ -107,7 +107,7 @@ In case of an unexpected server or database crash, OpenTurk dumps all persisted 
 
 Available projects/to-do list:
 
-- add support for segmentation labels
+- add support for segmentation labels (masks or polygons)
 - add a "Getting your images labelled by external annotators" section to the `README.md`
 - deploy an example website
 - add an [Active Learning](https://en.wikipedia.org/wiki/Active_learning_(machine_learning)) strategy to improve labelling efficiency
@@ -136,4 +136,4 @@ OpenMTurk is not the only image-labelling tool out there:
 ## License
 
 Copyright (c) 2017 Hichame Moriceau & Larissa Tijms, the content of this repository is bound by an MIT License. 
-Thus, you may use the content of this repository for *commercial* and *non-commercial* purposes.
+Therefore, you may use the content of this repository for *commercial* and *non-commercial* purposes.
