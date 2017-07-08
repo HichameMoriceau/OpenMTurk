@@ -18,6 +18,9 @@ $ make install
 $ make
 ```
 
+Next:
+Go to [http://127.0.0.1:5000](http://127.0.0.1:5000) and label your data!
+
 
 ## Built-in features:
 Out of the box, OpenTurk comes with the following labelling features:
@@ -89,16 +92,30 @@ OpenMTurk persists all annotations to MongoDB. You can retrieve all of them by c
 Note that OpenMTurk dumps a snapshot the database every 10 annotations into a file named `labels_backup.json`.
 
 
+### Why using a web-interface?
+
+We didn't want to close the potential for having your images annotated by a team of data entry specialists. With this tool, you can build, deploy this site and hire annotators to label your images.
+
+
 ## Issues?
 
 A bug found is a bug fixed! Please raised an issue!
 
 ## Available projects:
 
-- deploy an example website
+- add a "Getting your images labelled by external annotators" section to the `README.md`
 - add a function which returns a random example to be labelled (instead of sorted return)
 - add an [Active Learning](https://en.wikipedia.org/wiki/Active_learning_(machine_learning)) strategy to improve labelling efficiency
-- add a "Getting your images labelled by external annotators" section to the `README.md`
+- deploy an example website
+
+## Other image annotation tools out there:
+
+- [Sloth](https://cvhci.anthropomatik.kit.edu/~baeuml/projects/a-universal-labeling-tool-for-computer-vision-sloth/)
+- [Annotorious](http://annotorious.github.io/)
+- [labelD](https://sweppner.github.io/labeld/)
+- [Ratsnake](http://is-innovation.eu/ratsnake/)
+- [VGG Image Annotator](http://www.robots.ox.ac.uk/~vgg/software/via/)
+- [labelMe](http://labelme.csail.mit.edu/Release3.0/)
 
 ## License
 
