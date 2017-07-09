@@ -16,3 +16,8 @@
 !static/images_to_be_labelled/example_img1.jpeg
 !static/images_to_be_labelled/example_img2.jpeg
 !static/images_to_be_labelled/example_img3.jpeg
+
+# Ignore heroku deployment files:
+requirements.txt
+runtime.txt
+Procfile
