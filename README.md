@@ -6,7 +6,7 @@ A image-labelling platform written in [JQuery](https://en.wikipedia.org/wiki/JQu
 OpenMTurk helps you put together a supervised-learning image data-set. OpenMTurk provides you with your own *in-house* image-labelling platform. 
 
 
-## Screenshot:
+## Preview:
 
 ![Screenshot of the OpenMTurk image-labelling platform](static/asset_images/openmturk_preview.gif?raw=true "Example set-up of the tool")
 
