@@ -132,7 +132,7 @@ def get_label():
 
 		return jsonify(dict(label))
 	except Exception as e:
-		print('ERROR (app.get_label): {}'.format(e))
+		print('{} - ERROR : {}'.format(log_prefix, e))
 		return jsonify(result=300)
 
 
