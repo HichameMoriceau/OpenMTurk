@@ -37,15 +37,17 @@ def get_style_version(dir_path):
 	return int(version)
 
 
-def load_labels(labels_filename):
-
-	with open(labels_filename, 'r') as f:
-		labels_dict = json.load(f)
-
+def load_labels(config_file_path):
+	try:
+		with open(config_file_path, 'r') as f:
+			labels_dict = json.load(f)
+	except Exception as e:
+		print('ERROR whilst parsing JSON config file. Is your JSON syntax correct? {}'.format(e))
+		
 	return labels_dict
 
 
-def generate_js(main_js_path, new_version, images_dir, labels_filename):
+def generate_js(main_js_path, new_version, images_dir, config_file_path):
 
 	html_index_path = 'static/js/main.{}.js'.format(new_version)
 
@@ -57,7 +59,7 @@ def generate_js(main_js_path, new_version, images_dir, labels_filename):
 
 	print('{} files found in {}'.format(len(images), images_dir))
 
-	labels = load_labels(labels_filename)
+	labels = load_labels(config_file_path)
 	labels['images'] = images
 
 	with open(html_index_path, "w") as f:
@@ -84,13 +86,13 @@ def main(images_dir='static/images_to_be_labelled/'):
 	main_css = 'static/css/style.css'
 
 	new_version_num = get_style_version('static/js/*')+1
-	labels_filename = 'config.json'
+	config_file_path = 'config.json'
 	
 	# images_dir = 'static/images_to_be_labelled/*'
 	images_dir = maybe_add_suffix(images_dir, '/')+'*'
 
 
-	generate_js(main_js_path, new_version_num, images_dir, labels_filename)
+	generate_js(main_js_path, new_version_num, images_dir, config_file_path)
 	generate_css(main_css, new_version_num)
 
 
