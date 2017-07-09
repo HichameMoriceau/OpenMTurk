@@ -117,8 +117,8 @@ Other ideas? [Let me know](http://hichamemoriceau.com/).
 
 ## Issues?
 
-You found a bug? You need an important feature? Please raise an issue!
-You need help getting started? Something isn't clear? [Let me know](http://hichamemoriceau.com/).
+- You found a bug? You need an important feature? Please raise an issue!
+- You need help getting started? Something isn't clear? [Let me know](http://hichamemoriceau.com/).
 
 
 ## Other image annotation tools:
