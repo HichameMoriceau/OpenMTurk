@@ -410,29 +410,6 @@ $(document).ready(function(){
 		})
 	}
 
-	function download_all_labels(){
-
-		var json_obj = {};
-
-		$.ajax({
-		    type : "POST",
-		    url : '/get_all_labels',
-		    data: JSON.stringify(json_obj, null, '\t'),
-		    contentType: 'application/json;charset=UTF-8',
-		    success: function(ret_dict) {
-		    	
-		    	all_labels = ret_dict;
-
-				var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(all_labels));
-				var dlAnchorElem = document.getElementById('download_labels');
-
-				dlAnchorElem.setAttribute("href",     dataStr     );
-				dlAnchorElem.setAttribute("download", "all_labels.json");
-				dlAnchorElem.click();
-		    }
-		});
-	};
-
 	function update_label_preview_section(){
 
         if (label['category'] == ''){
@@ -1239,11 +1216,27 @@ $(document).ready(function(){
 
 		dlAnchorElem.setAttribute("href",     dataStr     );
 		dlAnchorElem.setAttribute("download", "label.json");
-		dlAnchorElem.click();
 	});
 
 	$('#download_labels').mousedown(function (e){
-		download_all_labels();
-	});
 
+		var json_obj = {};
+
+		$.ajax({
+		    type : "POST",
+		    url : '/get_all_labels',
+		    data: JSON.stringify(json_obj, null, '\t'),
+		    contentType: 'application/json;charset=UTF-8',
+		    success: function(ret_dict) {
+		    	
+		    	all_labels = ret_dict;
+
+				var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(all_labels));
+				var dlAnchorElem = document.getElementById('download_labels');
+
+				dlAnchorElem.setAttribute("href",     dataStr     );
+				dlAnchorElem.setAttribute("download", "all_labels.json");
+		    }
+		});
+	});
 });
