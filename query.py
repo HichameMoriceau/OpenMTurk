@@ -1,5 +1,6 @@
 from pymongo import MongoClient
 import pymongo
+import inspect
 
 
 client = MongoClient()
@@ -36,15 +37,21 @@ def delete_label(data):
 
 def select_label(img_path):
 	label = []
+	log_prefix = 'Client request - {}'.format(inspect.stack()[0][3])
 
 	try:
 		label = db.labels_db.find({'img_path': img_path})[0]
 		
 		del label['_id'] # not json-friendly object
-		print('Client requests labels for image {}: existing labels found'.format(img_path))
+
+		print('{} - labels for image {}: existing labels found'.format(
+			log_prefix, 
+			img_path))
 
 	except Exception as e:
-		print('Client requests labels for image {}: None found.'.format(img_path))
+		print('{} - labels for image {}: None found.'.format(
+			log_prefix, 
+			img_path))
 
 	return label
 

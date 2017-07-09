@@ -23,6 +23,7 @@ from functools import wraps
 
 import glob
 import os
+import inspect
 import json
 import copy
 import query as MONGO
@@ -33,6 +34,7 @@ app.config.update(TEMPLATES_AUTO_RELOAD=True)
 
 # Dump the database to file every BACKUP_FREQUENCY inserts
 BACKUP_FREQUENCY = 10
+BACKUP_FILENAME = 'labels_backup.json'
 
 
 def check_auth(username, password):
@@ -101,7 +103,7 @@ def dump_all_labels(filename):
 	labels = MONGO.select_all()
 
 	for label in labels:
-		print(label)
+		
 		if '_id' in label.keys():
 			del label['_id']
 			serializable_labels+=[label]
@@ -122,80 +124,100 @@ style_version = get_style_version('static/js/*')
 
 @app.route('/get_label', methods=['POST'])
 def get_label():
+
+	log_prefix = 'Client request - {}'.format(inspect.stack()[0][3])
+
 	try:
 		label = MONGO.select_label(request.json['img_path'])
 
 		return jsonify(dict(label))
 	except Exception as e:
-		print('ERROR: {}'.format(e))
+		print('ERROR (app.get_label): {}'.format(e))
 		return jsonify(result=300)
 
 
 @app.route('/get_dataset_info', methods=['POST'])
 def get_dataset_info():
+
+	log_prefix = 'Client request - {}'.format(inspect.stack()[0][3])
+
 	try:
 		ajax_dict = copy.copy(request.json)
 		db_info = get_metrics()
-		print('Produced DB info: {}'.format(db_info))
+		print('{} - Produced DB info: {}'.format(log_prefix, db_info))
 		
 		return jsonify(result=db_info)
 	except Exception as e:
-		print('ERROR: {}'.format(e))
+		print('{} - ERROR: {}'.format(log_prefix, e))
 		return jsonify(result=300)
 
 
 @app.route('/insert_label', methods=['POST'])
 def insert_label():
-	print(insert_label.counter)
+	log_prefix = 'Client request - {}'.format(inspect.stack()[0][3])
+	global BACKUP_FILENAME
 
 	if insert_label.counter == BACKUP_FREQUENCY:
-		print('BACKUP triggered!')
-		dump_all_labels('labels_backup.json')
+		print('{} - dumping database in {}'.format(log_prefix, BACKUP_FILENAME))
+		dump_all_labels(BACKUP_FILENAME)
 		insert_label.counter = 0
 
 	try:
 		label = copy.copy(request.json)
 		MONGO.insert_label(label)
-		print('Received labels of image {}'.format(label['img_path']))
-		print(label)
-		insert_label.counter += 1		
+
+		insert_label.counter += 1
+
+		print('{} - Received labels of image {} - insert_label.counter = {}'.format(
+			log_prefix, 
+			label['img_path'], insert_label.counter))
+
 		return jsonify(result=200)
+
 	except Exception as e:
-		print('ERROR: {}'.format(e))
+		print('{} - ERROR: {}'.format(log_prefix, e))
 		return jsonify(result=300)
 insert_label.counter = 0
 
 
 @app.route('/reset', methods=['POST'])
 def reset():
+
+	log_prefix = 'Client request - {}'.format(inspect.stack()[0][3])
+
 	try:
 		label = copy.copy(request.json)
 		
 		MONGO.delete_label(label)
 
-		print('Removed labels from record')
+		print('{} - Removed labels from record'.format(log_prefix))
 		return jsonify(result=200)
 	
 	except Exception as e:
 
-		print('ERROR: {}'.format(e))
+		print('ERROR (app.reset): {}'.format(e))
 		return jsonify(result=300)
 
 
 @app.route('/get_all_labels', methods=['POST'])
 def get_all_labels():
+
+	log_prefix = 'Client request - {}'.format(inspect.stack()[0][3])
+	
 	try:
 		all_labels = MONGO.select_all({'is_labelled': True})
 		for label in all_labels:
 			del label['_id']
 			
+		print(' - Retrieved {} labels from database'.format(
+			log_prefix,
+			len(all_labels)))
 
-		print('Retrieved {} labels from database'.format(len(all_labels)))
 		return jsonify(all_labels)
 	
 	except Exception as e:
 
-		print('ERROR: {}'.format(e))
+		print('{} - ERROR: {}'.format(log_prefix, e))
 		return jsonify(result=300)
 
 
@@ -205,7 +227,10 @@ def about():
 	
 	main_js = 'static/js/main.{}.js'.format(style_version)
 	main_css = 'static/css/style.{}.css'.format(style_version)
-	print("Get guidelines file")
+
+	log_prefix = 'Client request - {}'.format(inspect.stack()[0][3])
+	print(log_prefix)
+
 	return render_template('guidelines.html', 
 						   main_js=main_js,
 						   main_css=main_css)
@@ -217,7 +242,9 @@ def documentation():
 	
 	main_js = 'static/js/main.{}.js'.format(style_version)
 	main_css = 'static/css/style.{}.css'.format(style_version)
-	print("Get documentation file")
+	
+	log_prefix = 'Client request - {}'.format(inspect.stack()[0][3])
+	print(log_prefix)
 
 	return render_template('documentation.html', 
 						   main_js=main_js,
@@ -227,20 +254,15 @@ def documentation():
 @app.route('/')
 @requires_auth
 def index():
-
 	main_js = 'static/js/main.{}.js'.format(style_version)
 	main_css = 'static/css/style.{}.css'.format(style_version)
-	
-	print('Using scripts: {}, {}'.format(
-		os.path.basename(main_css), 
-		os.path.basename(main_js))
-	)
 
-	# img_dir = 'static/images_to_be_labelled/*'
-	# img_paths = sorted(glob.glob(img_dir))
-	
-	# init_db()
-	# upsert_many_images(img_paths)
+	log_prefix = 'Client request - {}'.format(inspect.stack()[0][3])
+	log_content = 'Using script versions: {}, {}'.format(
+			os.path.basename(main_css), 
+			os.path.basename(main_js))
+
+	print(log_prefix + ' - ' + log_content)
 
 	return render_template('index.html', 
 						   main_js=main_js,
