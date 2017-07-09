@@ -7,4 +7,12 @@
 *.jpeg
 *.bnp
 
-!openmturk_screenshot.png
+#
+# GITIGNORE EXCEPTIONS:
+#
+
+!static/asset_images/*
+!static/images_to_be_labelled/example_img0.png
+!static/images_to_be_labelled/example_img1.jpeg
+!static/images_to_be_labelled/example_img2.jpeg
+!static/images_to_be_labelled/example_img3.jpeg

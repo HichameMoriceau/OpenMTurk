@@ -8,7 +8,7 @@ OpenMTurk helps you put together a supervised-learning image data-set. OpenMTurk
 
 ## Screenshot:
 
-![Screenshot of the OpenMTurk image-labelling platform](static/openmturk_screenshot.png?raw=true "Example set-up of the tool")
+![Screenshot of the OpenMTurk image-labelling platform](static/asset_images/openmturk_screenshot.png?raw=true "Example set-up of the tool")
 
 ## Getting started:
 

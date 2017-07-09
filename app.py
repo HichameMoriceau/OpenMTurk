@@ -139,7 +139,7 @@ def get_metrics():
 
 	num_labelled = db.labels_db.count({'is_labelled': True})
 
-	images_dir = 'static/notes_photos/*'
+	images_dir = 'static/images_to_be_labelled/*'
 	total = len(list(glob.glob(images_dir)))
 
 	print(total)
@@ -167,7 +167,7 @@ def dump_all_labels(filename):
 
 
 
-style_version = get_style_version('static/scripts/js/*')
+style_version = get_style_version('static/js/*')
 # style_version = 64
 
 
@@ -259,8 +259,8 @@ def get_all_labels():
 @app.route('/guidelines')
 def about():
 	
-	main_js = 'static/scripts/js/main.{}.js'.format(style_version)
-	main_css = 'static/scripts/css/style.{}.css'.format(style_version)
+	main_js = 'static/js/main.{}.js'.format(style_version)
+	main_css = 'static/css/style.{}.css'.format(style_version)
 	print("Get guidelines file")
 	return render_template('guidelines.html', 
 						   main_js=main_js,
@@ -271,8 +271,8 @@ def about():
 @app.route('/documentation')
 def documentation():
 	
-	main_js = 'static/scripts/js/main.{}.js'.format(style_version)
-	main_css = 'static/scripts/css/style.{}.css'.format(style_version)
+	main_js = 'static/js/main.{}.js'.format(style_version)
+	main_css = 'static/css/style.{}.css'.format(style_version)
 	print("Get documentation file")
 
 	return render_template('documentation.html', 
@@ -284,15 +284,15 @@ def documentation():
 @requires_auth
 def index():
 
-	main_js = 'static/scripts/js/main.{}.js'.format(style_version)
-	main_css = 'static/scripts/css/style.{}.css'.format(style_version)
+	main_js = 'static/js/main.{}.js'.format(style_version)
+	main_css = 'static/css/style.{}.css'.format(style_version)
 	
 	print('Using scripts: {}, {}'.format(
 		os.path.basename(main_css), 
 		os.path.basename(main_js))
 	)
 
-	# img_dir = 'static/notes_photos/*'
+	# img_dir = 'static/images_to_be_labelled/*'
 	# img_paths = sorted(glob.glob(img_dir))
 	
 	# init_db()

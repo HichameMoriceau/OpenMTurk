@@ -1,4 +1,4 @@
-IMG_DIRECTORY=static/notes_photos/
+IMG_DIRECTORY=static/images_to_be_labelled/
 
 
 build:
@@ -11,5 +11,5 @@ install:
 	
 
 clean:
-	rm static/scripts/css/style.*.css
-	rm static/scripts/js/main.*.js
+	rm static/css/style.*.css
+	rm static/js/main.*.js

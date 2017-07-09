@@ -47,7 +47,7 @@ def load_labels(labels_filename):
 
 def generate_js(main_js_path, new_version, images_dir, labels_filename):
 
-	html_index_path = 'static/scripts/js/main.{}.js'.format(new_version)
+	html_index_path = 'static/js/main.{}.js'.format(new_version)
 
 	with open(main_js_path, 'r') as f:
 	    html_template = f.read()
@@ -67,7 +67,7 @@ def generate_js(main_js_path, new_version, images_dir, labels_filename):
 
 def generate_css(main_css, new_version):
 
-	main_css_new_version = 'static/scripts/css/style.{}.css'.format(
+	main_css_new_version = 'static/css/style.{}.css'.format(
 															new_version)
 	copyfile(main_css, main_css_new_version)
 
@@ -79,14 +79,14 @@ def maybe_add_suffix(string, suffix):
 		return string + suffix
 
 
-def main(images_dir='static/notes_photos/'):
-	main_js_path = 'static/scripts/js/main_template.js'
-	main_css = 'static/scripts/css/style.css'
+def main(images_dir='static/images_to_be_labelled/'):
+	main_js_path = 'static/js/main_template.js'
+	main_css = 'static/css/style.css'
 
-	new_version_num = get_style_version('static/scripts/js/*')+1
+	new_version_num = get_style_version('static/js/*')+1
 	labels_filename = 'config.json'
 	
-	# images_dir = 'static/notes_photos/*'
+	# images_dir = 'static/images_to_be_labelled/*'
 	images_dir = maybe_add_suffix(images_dir, '/')+'*'
 
 
