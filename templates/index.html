@@ -106,14 +106,12 @@
 
 			<div class="row-fluid">
 
-				
+					
 				 	<div id="img_div" class="col-md-7">
 						<canvas id="img_canvas">
 					        Sorry. Your browser does not support HTML5 canvas element.
 					    </canvas>
 				 	</div>
-
-				 	<!-- <div class="col-md-1"></div> -->
 
 				 	<!-- Annotation tools: -->
 				    <div id="legend_div" class="col-md-4">
@@ -125,29 +123,26 @@
 						    	<div class="row-fluid">
 									<h4>Document category:</h4>
 									<ul id="category" class="tool_list_items">
+										<!-- category buttons are created here with JQUERY 
+										(if specified in the config.json) -->
 									</ul>
 						    	</div>
 				 
 						    	<div class="row-fluid">
-									<h4>Document orientation: </h4>
-									<ul id="orientation" class="tool_list_items">
-									</ul>
+						    		<div id="orientation_div">
+										<!-- orientation buttons are created here with JQUERY 
+										(if specified in the config.json) -->
+						    		</div>
 								</div>
 
 						    	<div class="row-fluid">
 						    		<h4>Bounding boxes:</h4>
 						    		<ul id="bounding_boxes" class="tool_list_items">
+										<!-- bounding box buttons are created here with JQUERY 
+										(if specified in the config.json) -->
 						    		</ul>
 						    	</div>
 								
-<!-- 
-						    	<div class="row-fluid">
-							    	<h4>Text extraction: <span id="bb_small_text">(Use after selecting a "textbox")</span>:</h4>
-							    	<div id="word_textarea" class="col-md-12 tool_list_items">
-							    	</div>
-						    	</div>
- -->
-
 						    		
 						    	<!-- Submit/remove buttons: -->
 						    	<div class="row-fluid">
@@ -167,7 +162,6 @@
 									    	</div>
 							    		</div>
 										
-							    		<!-- <div class="col-md-6"></div> -->
 							    	</div>
 						    	</div>
 

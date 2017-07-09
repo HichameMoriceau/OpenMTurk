@@ -235,6 +235,33 @@ function get_dataset_info(){
 }
 
 
+function init_empty_label(){
+	l = {
+		'img_path': '',
+		'category': '',
+		'orientation': '',
+		'bbs': [],
+		'username': '',
+		'timestamp': ''
+	}
+
+	return l;
+}
+
+function create_orientation_html(){
+	// <h4>Document orientation: </h4>
+	// <ul id="orientation" class="tool_list_items">
+	// </ul>
+
+	var header = $('<h4/>').text('Document orientation: ')
+						   .appendTo($('#orientation_div'));
+
+	var ul = $('<ul/>').attr('id', 'orientation')
+					   .attr('class', 'tool_list_items')
+					   .appendTo($('#orientation_div'));
+}
+
+
 //
 // main:
 //
@@ -245,10 +272,23 @@ $(document).ready(function(){
 
 	var images = config.images;
 	var categories = config.categories;
-	var orientations = config.orientations;
 	var bbs = config.bbs;
+	
+	var usingOrientation = true;
+	var orientations;
 
-	var labelled;
+	if (config.orientations.length != 0){
+		orientations = config.orientations;
+		usingOrientation = true;
+
+		create_orientation_html();
+
+	}else{
+		orientations = ["up", "left", "down", "right"];
+		usingOrientation = false;
+	}
+
+
 	
 	var image_idx = 0;
 	var bounding_boxes = [];
@@ -269,7 +309,7 @@ $(document).ready(function(){
 	var isLine = false;
 	var isTyping = false;
 	
-	var label = {};
+	var label = init_empty_label();
 
 	var startX;
 	var startY;
@@ -507,8 +547,13 @@ $(document).ready(function(){
 		    data: JSON.stringify(json_obj, null, '\t'),
 		    contentType: 'application/json;charset=UTF-8',
 		    success: function(label_dict) {
-		    	
+		    	console.log('label_dict');
+		    	console.log(label_dict);
 		    	label = label_dict;
+
+		    	if (label.hasOwnProperty('bbs') == false){
+		    		label['bbs'] = [];
+		    	}
 
 		    	//
 		    	// restore labels if they exists:
@@ -591,7 +636,7 @@ $(document).ready(function(){
 
 
 	function previous_image(){
-	    label = {};
+	    label = init_empty_label();
 	    
 	    if (image_idx != 0){
 			image_idx--;
@@ -603,7 +648,7 @@ $(document).ready(function(){
 	}
 
 	function next_image(){
-	    label = {};
+	    label = init_empty_label();
 	    
 	    if (image_idx < images.length){
 			image_idx++;
@@ -687,7 +732,10 @@ $(document).ready(function(){
 	//
 
 	create_category_buttons(categories);
-	create_orientation_buttons(orientations);
+	if (usingOrientation == true){
+		create_orientation_buttons(orientations);
+	}
+
 	create_bb_buttons(bbs);
 
 	var prev_button = create_previous_button();
@@ -724,6 +772,7 @@ $(document).ready(function(){
 			console.log(user_id);
 			
 			label['username'] = user_id;
+
 			$('#user_id').text(user_id);
 
 		});
@@ -763,7 +812,7 @@ $(document).ready(function(){
 				orientation = orientations[0];
 				select_orientation(orientations, orientation);
 				
-				label = {};
+				label = init_empty_label();
 				bounding_boxes = [];
 				select_bb(bbs, 0);
 
@@ -797,7 +846,7 @@ $(document).ready(function(){
 		//
 
 		// clear current image and label
-		label = {};
+		label = init_empty_label();
 		get_label(image_idx);
     	ctx.clearRect(0, 0, canvas.width, canvas.height);
     	// load new image
@@ -1089,7 +1138,6 @@ $(document).ready(function(){
 
 		ctx.lineWidth = ctx_linewidth;
 		draw_labels(ctx, label);
-		get_dataset_info();
 
 		ctx.strokeStyle = colours[selected_bb];
 	    ctx.beginPath();
@@ -1130,7 +1178,6 @@ $(document).ready(function(){
 
 		ctx.lineWidth = ctx_linewidth;
 		draw_labels(ctx, label);
-		get_dataset_info();
 
 		ctx.strokeStyle = colours[selected_bb];
 		
