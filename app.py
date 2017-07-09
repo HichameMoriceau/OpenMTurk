@@ -26,7 +26,7 @@ import os
 import inspect
 import json
 import copy
-import query as MONGO
+import mongodb_query.py as MONGO
 
 app = Flask(__name__)
 app.config.update(TEMPLATES_AUTO_RELOAD=True)
