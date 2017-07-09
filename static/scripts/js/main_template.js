@@ -130,6 +130,12 @@ function create_reset_button(){
 
 function create_undo_button(){
 
+	var span = $('<span/>')
+		.text('(key : Ctrl+z)')
+		.css('line-height', '17%')
+		.css("font-size", "10px")
+		.css("font-weight", "normal");
+
 	var undo_button = $('<div/>')
 			.attr("class", "btn btn-a btn-sm smooth")
 			.css("background-color", 'rgb(20, 45, 110)')
@@ -140,6 +146,8 @@ function create_undo_button(){
 			.css("font-size", "21px")
 			.css("background", "linear-gradient(#BC0404, #D44B4B)")
 			.text('Undo')
+			.append($('<br/>'))
+			.append(span)
 			.appendTo($("#undo_div"));
 
 	return undo_button;
@@ -324,11 +332,21 @@ $(document).ready(function(){
 		$.each(categories , function(i){
 
 			var key_value = i+1;
+
+			if (key_value <= 9){
+				var span = $('<span/>')
+					.text(' (key : ' + key_value + ')')
+					.css("font-size", "10px")
+					.css("font-weight", "normal");
+			} else if (key_value == 10){
+				var span = $('<span/>')
+					.text(' (key : 0)')
+					.css("font-size", "10px")
+					.css("font-weight", "normal");
+			} else {
+				var span = $('<span/>');
+			}
 			
-			var span = $('<span/>')
-				.text(' (key : ' + key_value + ')')
-				.css("font-size", "10px")
-				.css("font-weight", "normal");
 
 			var div = $('<div/>').text(categories[i])
 
@@ -787,7 +805,13 @@ $(document).ready(function(){
 	}
 
 	function handleKeyDown(e){
-		
+		if (e.keyCode == 90 && e.ctrlKey){
+			handleUndoEvent(e);
+			update_label_preview_section();
+			return;
+		} 
+			// alert("Ctrl+z");
+
 	    switch(e.which) {
 			//
 			// ARROWS:
@@ -852,6 +876,11 @@ $(document).ready(function(){
 
 			case 57: // 9
 				category = categories[8];
+				select_category(categories, category);
+	        break;
+
+			case 48: // 0
+				category = categories[9];
 				select_category(categories, category);
 	        break;
 
@@ -947,20 +976,12 @@ $(document).ready(function(){
 					
 					// disable keydown events while user is typing
 		        	isTyping = true;
-					// bootbox.prompt("Textbox content: ", function(result){ 
-						
-						// // remember username:
-						// bb["text"] = result;
-						// // update current label
-						// label["bbs"].push(bb);
-					 //   	update_label_preview_section();
-					 //   	isTyping = false;
-					// });	
 
 					bootbox.prompt({ 
 					  size: "small",
 					  className: "user_modal",
 					  title: "Textbox content: ", 
+					
 					  callback: function(result){
 					  	console.log('success') 
 						// remember username:
@@ -971,21 +992,6 @@ $(document).ready(function(){
 					   	isTyping = false;
 					  }
 					})
-
-					// bootbox.dialog({
-					//     "message" : "Click me!",
-					//     "class" : "textbox_class",   // or btn-primary, or btn-danger, or nothing at all
-					//     "callback": function(result){ 
-						
-					// 		// remember username:
-					// 		bb["text"] = result;
-					// 		// update current label
-					// 		label["bbs"].push(bb);
-					// 	   	update_label_preview_section();
-					// 	   	isTyping = false;
-					// 	}
-					// });
-					
 
 		        }else{
 		        	label["bbs"].push(bb);
