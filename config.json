@@ -1,4 +1,12 @@
 {
+  "env_vars": 
+  {
+    "IMG_DIRECTORY":"static/images_to_be_labelled/",
+    "OPENMTURK_TABLE_NAME": "default_labels",
+    "OPENMTURK_BACKUP_FILENAME": "labels_backup.json",
+    "OPENMTURK_BACKUP_FREQUENCY": "10"
+  },
+
   "categories": [
     "Hand-written page", 
     "Letter",
@@ -48,7 +56,8 @@
       "Baseline", 
       "line"
     ]
-  ], 
+  ],
+
   "orientations": [
     "up", 
     "left", 

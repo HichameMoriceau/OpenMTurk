@@ -26,15 +26,16 @@ import os
 import inspect
 import json
 import copy
+import util as UTIL
 import mongodb_query as MONGO
 
+env_vars = UTIL.load_json_config(os.environ['OPENMTURK_CONFIG'])[1]
 app = Flask(__name__)
-app.config.update(TEMPLATES_AUTO_RELOAD=True)
-
+# app.config.update(TEMPLATES_AUTO_RELOAD=True)
 
 # Dump the database to file every BACKUP_FREQUENCY inserts
-BACKUP_FREQUENCY = 10
-BACKUP_FILENAME = 'labels_backup.json'
+BACKUP_FREQUENCY = env_vars['OPENMTURK_BACKUP_FREQUENCY']
+BACKUP_FILENAME = env_vars['OPENMTURK_BACKUP_FILENAME']
 
 
 def check_auth(username, password):
@@ -268,6 +269,6 @@ def index():
 						   main_js=main_js,
 						   main_css=main_css)
 
-	
-if __name__ == "__main__":
+
+if __name__ == '__main__':
     app.run()

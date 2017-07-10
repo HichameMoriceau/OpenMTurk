@@ -1,10 +1,13 @@
 from pymongo import MongoClient
 import pymongo
 import inspect
+import os
+import util as UTIL
 
+env_vars = UTIL.load_json_config(os.environ['OPENMTURK_CONFIG'])[1]
 
 client = MongoClient()
-db = client['labels_db'] # use existing database
+db = client[env_vars['OPENMTURK_TABLE_NAME']]
 
 
 def select_all(query_dict={}):

@@ -1,10 +1,11 @@
-IMG_DIRECTORY=static/images_to_be_labelled/
-
+LABEL_CONFIG=config.json
 
 build:
-	export FLASK_APP="app.py"
-	python3 render_js_css_template.py $(IMG_DIRECTORY) 
-	flask run
+	# env var must be set in the same shell
+	export FLASK_APP="app.py" \
+		&& export OPENMTURK_CONFIG=$(LABEL_CONFIG) \
+		&& python3 render_js_css_template.py \
+		&& flask run
 
 install:
 	pip3 install Flask pymongo

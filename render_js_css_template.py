@@ -10,9 +10,10 @@ from jinja2 import Template
 from shutil import copyfile
 import glob
 import time
-import json
-import sys
+import util as UTIL
+import os
 
+env_vars = UTIL.load_json_config(os.environ['OPENMTURK_CONFIG'])[1]
 
 def get_style_version(dir_path):
 
@@ -35,17 +36,7 @@ def get_style_version(dir_path):
 			version = f.split('.')[1]
 
 	return int(version)
-
-
-def load_labels(config_file_path):
-	try:
-		with open(config_file_path, 'r') as f:
-			labels_dict = json.load(f)
-	except Exception as e:
-		print('ERROR whilst parsing JSON config file. Is your JSON syntax correct? {}'.format(e))
-		
-	return labels_dict
-
+	
 
 def generate_js(main_js_path, new_version, images_dir, config_file_path):
 
@@ -59,18 +50,19 @@ def generate_js(main_js_path, new_version, images_dir, config_file_path):
 
 	print('{} files found in {}'.format(len(images), images_dir))
 
-	labels = load_labels(config_file_path)
-	labels['images'] = images
+	label_config, _ = UTIL.load_json_config(config_file_path)
+	# set_environment_variables(_)
+	
+	label_config['images'] = images
 
 	with open(html_index_path, "w") as f:
-	    f.write(template.render(config=labels))
+	    f.write(template.render(config=label_config))
 
 	print('{} HTML was generated from template'.format(html_index_path))
 
 def generate_css(main_css, new_version):
 
-	main_css_new_version = 'static/css/style.{}.css'.format(
-															new_version)
+	main_css_new_version = 'static/css/style.{}.css'.format(new_version)
 	copyfile(main_css, main_css_new_version)
 
 
@@ -81,20 +73,20 @@ def maybe_add_suffix(string, suffix):
 		return string + suffix
 
 
-def main(images_dir='static/images_to_be_labelled/'):
+def main():
+
 	main_js_path = 'static/js/main_template.js'
 	main_css = 'static/css/style.css'
 
-	new_version_num = get_style_version('static/js/*')+1
-	config_file_path = 'config.json'
-	
-	# images_dir = 'static/images_to_be_labelled/*'
-	images_dir = maybe_add_suffix(images_dir, '/')+'*'
+	config_file_path = os.environ['OPENMTURK_CONFIG']
+	images_dir = env_vars['IMG_DIRECTORY']
 
+	new_version_num = get_style_version('static/js/*')+1
+	images_dir = maybe_add_suffix(images_dir, '/')+'*'
 
 	generate_js(main_js_path, new_version_num, images_dir, config_file_path)
 	generate_css(main_css, new_version_num)
 
 
 if __name__ == "__main__":
-	main(sys.argv[1])
+	main()
