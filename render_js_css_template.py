@@ -66,11 +66,6 @@ def generate_css(main_css, new_version):
 	copyfile(main_css, main_css_new_version)
 
 
-def maybe_add_suffix(string, suffix):
-	if string.endswith(suffix):
-		return string
-	else:
-		return string + suffix
 
 
 def main():
@@ -82,7 +77,7 @@ def main():
 	images_dir = env_vars['IMG_DIRECTORY']
 
 	new_version_num = get_style_version('static/js/*')+1
-	images_dir = maybe_add_suffix(images_dir, '/')+'*'
+	images_dir = UTIL.maybe_add_suffix(images_dir, '/')+'*'
 
 	generate_js(main_js_path, new_version_num, images_dir, config_file_path)
 	generate_css(main_css, new_version_num)

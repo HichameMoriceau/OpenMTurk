@@ -13,3 +13,10 @@ def load_json_config(config_file_path):
 	del json_config['env_vars']
 
 	return json_config, env_vars
+
+
+def maybe_add_suffix(string, suffix):
+	if string.endswith(suffix):
+		return string
+	else:
+		return string + suffix

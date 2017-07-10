@@ -88,7 +88,7 @@ def get_metrics():
 
 	num_labelled = MONGO.count_labels()
 
-	images_dir = 'static/images_to_be_labelled/*'
+	images_dir = UTIL.maybe_add_suffix(env_vars['IMG_DIRECTORY'], '/')+'*'
 	total = len(list(glob.glob(images_dir)))
 	
 	info_dict = {
