@@ -28,6 +28,9 @@ import json
 import copy
 import util as UTIL
 import mongodb_query as MONGO
+import pandas as pd
+import numpy as np
+
 
 env_vars = UTIL.load_json_config(os.environ['OPENMTURK_CONFIG'])[1]
 app = Flask(__name__)
@@ -121,6 +124,33 @@ style_version = get_style_version('static/js/*')
 #
 # Server webpages: 
 #
+
+
+@app.route('/get_random_image', methods=['POST'])
+def get_random_image():
+
+	log_prefix = 'Client request - {}'.format(inspect.stack()[0][3])
+
+	try:
+
+		images_dir = UTIL.maybe_add_suffix(env_vars['IMG_DIRECTORY'], '/')+'*'
+		all_img_paths = list(glob.glob(images_dir))
+		labelled_objs = MONGO.select_all({'is_labelled': True}, {'img_path':1})
+
+		labelled_img_paths = [obj['img_path'] for obj in labelled_objs]
+		labelled_img_paths = list(filter(lambda x: x in all_img_paths, labelled_img_paths))
+		
+		labelled_df = pd.DataFrame({'paths': labelled_img_paths})
+		all_df = pd.DataFrame({'paths': all_img_paths})
+
+		df = all_df.join(labelled_df, lsuffix="_left", rsuffix="_right")
+		unlabelled_df = df[df['paths_right'].isnull()]['paths_left']
+		rand_path = str(unlabelled_df.sample(1).iloc[0])
+
+		return jsonify(dict(img_path=rand_path))
+	except Exception as e:
+		print('{} - ERROR : {}'.format(log_prefix, e))
+		return jsonify(result=300)
 
 
 @app.route('/get_label', methods=['POST'])

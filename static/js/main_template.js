@@ -704,6 +704,68 @@ $(document).ready(function(){
 		return next_button;
 	}
 
+	function create_random_button(){
+		var img_navigation_div = document.getElementById('img_navigation');
+
+		// var span = $('<span/>')
+		// 		.text(' (key : right-arrow)')
+		// 		.css("font-size", "10px")
+		// 		.css("font-weight", "normal");
+
+		var div = $('<div/>')
+				.text("Random")
+				.css("font-weight", "bold")
+				.css("font-size", "20px");
+
+		var rand_button = $('<div/>')
+				.attr("class", "btn btn-a btn-sm smooth")
+				.css("background-color", 'white')
+				.css("border", "1px solid black")
+				.css("box-shadow", "2px 2px 1px #000000")
+				.css("color", "black")
+				.css('margin-bottom', '1%')
+				.css("margin-left", "1%")
+				.append(div)
+				.appendTo(img_navigation_div);
+
+		rand_button.mousedown(function (e) {
+			
+			var json_obj = {
+				"img_path": images[image_idx]
+			};
+
+			$.ajax({
+			    type : "POST",
+			    url : '/get_random_image',
+			    data: JSON.stringify(json_obj, null, '\t'),
+			    contentType: 'application/json;charset=UTF-8',
+			    success: function(response_dict) {
+
+					// set default label values:
+
+					category = categories[0];
+					select_category(categories, category);
+
+					orientation = orientations[0];
+					select_orientation(orientations, orientation);
+					
+					label = init_empty_label();
+					bounding_boxes = [];
+					select_bb(bbs, 0);
+
+					// clear image from bounding boxes
+					ctx.clearRect(0, 0, canvas.width, canvas.height);
+					img.src = response_dict['img_path'];
+
+			    }
+			});
+
+
+		});
+
+		return rand_button;
+	}
+
 	//	
 	// Create additional HTML elements:
 	//
@@ -717,6 +779,7 @@ $(document).ready(function(){
 
 	var prev_button = create_previous_button();
 	var next_button = create_next_button();
+	var rand_button = create_random_button();
 	
 	var reset_button = create_reset_button();
 	var undo_button = create_undo_button();
