@@ -270,7 +270,9 @@ $(document).ready(function(){
 
 	var config = {{ config }};
 
-	var images = config.images;
+	//var images = config.images;
+	var img_path;
+	next_image();
 	var categories = config.categories;
 	var bbs = config.bbs;
 	
@@ -290,7 +292,7 @@ $(document).ready(function(){
 
 
 	
-	var image_idx = 0;
+	// var image_idx = 0;
 	var bounding_boxes = [];
 	var category = categories[0];
 	var orientation = orientations[0];
@@ -480,7 +482,7 @@ $(document).ready(function(){
 		})
 	}
 
-	function insert_label(image_idx, category, orientation, bounding_boxes, username){
+	function insert_label(category, orientation, bounding_boxes, username){
 		var currentdate = new Date(); 
 		var timestamp = currentdate.getDate() + "/"
 		                + (currentdate.getMonth()+1)  + "/" 
@@ -490,7 +492,7 @@ $(document).ready(function(){
 		                + currentdate.getSeconds();
 		           
 		var json_obj = {
-    		"img_path": images[image_idx],
+    		"img_path": img_path,
     		"category": category,
     		"orientation": orientation,
     		"bbs": bounding_boxes,
@@ -511,12 +513,12 @@ $(document).ready(function(){
 	}
 
 
-	function get_label(image_idx){
+	function get_label(){
 
 
 		var json_obj = {
-			"img_path": images[image_idx]
-		}
+			"img_path": img_path
+		};
 
 		$.ajax({
 		    type : "POST",
@@ -581,8 +583,7 @@ $(document).ready(function(){
 
 	img.onload = function () {
 
-		// get_label(image_idx);
-		$('#img_name').text(images[image_idx]);
+		$('#img_name').text(img_path);
 
 		// resize image but maintain original ratio
 	 	var img_ratio = img.width / img.height;
@@ -614,26 +615,73 @@ $(document).ready(function(){
 
 	function previous_image(){
 	    label = init_empty_label();
-	    
-	    if (image_idx != 0){
-			image_idx--;
-		}
 
-		img.src = images[image_idx]+"?t="+ new Date().getTime();
+	    var json_obj = {
+			"img_path": img_path
+		};
 
-		get_label(image_idx);
+		$.ajax({
+		    type : "POST",
+		    url : '/get_prev',
+		    data: JSON.stringify(json_obj, null, '\t'),
+		    contentType: 'application/json;charset=UTF-8',
+		    success: function(response_dict) {
+
+				// set default label values:
+				category = categories[0];
+				select_category(categories, category);
+
+				orientation = orientations[0];
+				select_orientation(orientations, orientation);
+				
+				label = init_empty_label();
+				bounding_boxes = [];
+				select_bb(bbs, 0);
+
+				// clear image from bounding boxes
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+				img_path = response_dict['img_path']
+				img.src = img_path+"?t="+ new Date().getTime();
+				get_label();
+		    }
+		});
 	}
+
 
 	function next_image(){
 	    label = init_empty_label();
 	    
-	    if (image_idx < images.length){
-			image_idx++;
-		}
+		var json_obj = {
+			"img_path": img_path
+		};
 
-		img.src = images[image_idx]+"?t="+ new Date().getTime();
-		
-		get_label(image_idx);
+		$.ajax({
+		    type : "POST",
+		    url : '/get_next',
+		    data: JSON.stringify(json_obj, null, '\t'),
+		    contentType: 'application/json;charset=UTF-8',
+		    success: function(response_dict) {
+
+				// set default label values:
+				category = categories[0];
+				select_category(categories, category);
+
+				orientation = orientations[0];
+				select_orientation(orientations, orientation);
+				
+				label = init_empty_label();
+				bounding_boxes = [];
+				select_bb(bbs, 0);
+
+				// clear image from bounding boxes
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+				
+				img_path = response_dict['img_path']
+				img.src = img_path+"?t="+ new Date().getTime();
+				get_label();
+		    }
+		});
 	}
 
 
@@ -704,13 +752,46 @@ $(document).ready(function(){
 		return next_button;
 	}
 
+	function select_random_img(){
+
+
+		var json_obj = {
+			"img_path": img_path
+		};
+
+		$.ajax({
+		    type : "POST",
+		    url : '/get_random_image',
+		    data: JSON.stringify(json_obj, null, '\t'),
+		    contentType: 'application/json;charset=UTF-8',
+		    success: function(response_dict) {
+
+				// set default label values:
+				category = categories[0];
+				select_category(categories, category);
+
+				orientation = orientations[0];
+				select_orientation(orientations, orientation);
+				
+				label = init_empty_label();
+				bounding_boxes = [];
+				select_bb(bbs, 0);
+
+				// clear image from bounding boxes
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+				img.src = response_dict['img_path'];
+		    }
+		});
+
+	}
+
 	function create_random_button(){
 		var img_navigation_div = document.getElementById('img_navigation');
 
-		// var span = $('<span/>')
-		// 		.text(' (key : right-arrow)')
-		// 		.css("font-size", "10px")
-		// 		.css("font-weight", "normal");
+		var span = $('<span/>')
+				.text(' (key : N)')
+				.css("font-size", "10px")
+				.css("font-weight", "normal");
 
 		var div = $('<div/>')
 				.text("Random")
@@ -726,41 +807,11 @@ $(document).ready(function(){
 				.css('margin-bottom', '1%')
 				.css("margin-left", "1%")
 				.append(div)
+				.append(span)
 				.appendTo(img_navigation_div);
 
 		rand_button.mousedown(function (e) {
-			
-			var json_obj = {
-				"img_path": images[image_idx]
-			};
-
-			$.ajax({
-			    type : "POST",
-			    url : '/get_random_image',
-			    data: JSON.stringify(json_obj, null, '\t'),
-			    contentType: 'application/json;charset=UTF-8',
-			    success: function(response_dict) {
-
-					// set default label values:
-
-					category = categories[0];
-					select_category(categories, category);
-
-					orientation = orientations[0];
-					select_orientation(orientations, orientation);
-					
-					label = init_empty_label();
-					bounding_boxes = [];
-					select_bb(bbs, 0);
-
-					// clear image from bounding boxes
-					ctx.clearRect(0, 0, canvas.width, canvas.height);
-					img.src = response_dict['img_path'];
-
-			    }
-			});
-
-
+			select_random_img();
 		});
 
 		return rand_button;
@@ -791,8 +842,8 @@ $(document).ready(function(){
 	var download_button = create_download_button();
 	var download_all_button = create_download_all_button();
 
-	img.src = images[0]+"?t="+ new Date().getTime();
-	get_label(0);
+	img.src = img_path+"?t="+ new Date().getTime();
+	get_label();
 
 	var mouseIsDown = 0;
 
@@ -833,7 +884,7 @@ $(document).ready(function(){
 	function handleResetEvent(e){
 
 		var json_obj = {
-			"img_path": images[image_idx]
+			"img_path": img_path
 		}
 
 		$.ajax({
@@ -870,16 +921,19 @@ $(document).ready(function(){
 		// bounding_boxes.pop();
 		label['bbs'].pop();
 		// reload image (see img.onLoad())
-		img.src = images[image_idx]+"?t="+ new Date().getTime();
+		img.src = img_path+"?t="+ new Date().getTime();
+		update_label_preview_section();
 	}
 
 	function submit_label(){
 		// get_user_id()
-    	insert_label(image_idx, category, orientation, label['bbs'], user_id);
+    	insert_label(category, orientation, label['bbs'], user_id);
 
-		if (image_idx < images.length){
-			image_idx++;
-		}
+		// if (image_idx < images.length){
+		// 	image_idx++;
+		// }
+
+		next_image();
 
 		//
 		// RESET image:
@@ -887,19 +941,18 @@ $(document).ready(function(){
 
 		// clear current image and label
 		label = init_empty_label();
-		get_label(image_idx);
+		get_label();
     	ctx.clearRect(0, 0, canvas.width, canvas.height);
     	// load new image
-		img.src = images[image_idx]+'?#'+new Date().getTime();
+		img.src = img_path+'?#'+new Date().getTime();
 	}
 
 	function handleKeyDown(e){
+		// CTRL+Z
 		if (e.keyCode == 90 && e.ctrlKey){
 			handleUndoEvent(e);
-			update_label_preview_section();
 			return;
 		} 
-			// alert("Ctrl+z");
 
 	    switch(e.which) {
 			//
@@ -998,6 +1051,9 @@ $(document).ready(function(){
 				select_orientation(orientations, orientation);
 			break;
 
+			case 78: // N
+				select_random_img();
+			break;
 
 	        //
 	        // ENTER: sends annotations to back-end
@@ -1260,7 +1316,6 @@ $(document).ready(function(){
 
 	undo_button.mousedown(function (e) {
 		handleUndoEvent(e);
-		update_label_preview_section();
 	});
 
 	submit_button.mousedown(function (e) {

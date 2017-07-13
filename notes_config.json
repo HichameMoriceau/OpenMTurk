@@ -1,0 +1,135 @@
+{
+  "env_vars": 
+  {
+    "IMG_DIRECTORY":"static/notes_imgs/",
+    "OPENMTURK_TABLE_NAME": "notes_labels",
+    "OPENMTURK_BACKUP_FILENAME": "notes_labels_backup.json",
+    "OPENMTURK_BACKUP_FREQUENCY": "10"
+  },
+
+  "categories": [
+    "Hand-written page",
+    "Agenda", 
+    "Letter",
+    "Publication",
+    "Form",
+    "CV",
+    "Receipt",
+    "Invoice",
+    "Messy hand-written note"
+  ],
+  
+  "bbs": [
+    [
+      "PAGE", 
+      "box"
+    ], 
+    [
+      "HEADER", 
+      "box"
+    ], 
+    [
+      "Image", 
+      "box"
+    ], 
+    [
+      "Table", 
+      "box"
+    ], 
+    [
+      "List title", 
+      "box"
+    ], 
+    [
+      "List items", 
+      "box"
+    ], 
+    [
+      "Math", 
+      "box"
+    ], 
+    [
+      "Total", 
+      "box"
+    ], 
+    [
+      "FORM: FILLED Text-input", 
+      "box"
+    ], 
+    [
+      "FORM: EMPTY Text-input", 
+      "box"
+    ], 
+    [
+      "FORM: Ticked box", 
+      "box"
+    ], 
+    [
+      "FORM: Unticked box", 
+      "box"
+    ], 
+    [
+      "Contact box", 
+      "box"
+    ], 
+    [
+      "Text in a box", 
+      "box"
+    ], 
+    [
+      "Numbers column", 
+      "box"
+    ], 
+    [
+      "Words column", 
+      "box"
+    ], 
+    [
+      "Checkbox column", 
+      "box"
+    ], 
+    [
+      "Striked-out text", 
+      "box"
+    ], 
+    [
+      "Hand-written text", 
+      "box"
+    ], 
+    [
+      "Typed text", 
+      "box"
+    ],
+    [
+      "Post-it note", 
+      "box"
+    ],
+    [
+      "Record Hand-written text", 
+      "textbox"
+    ], 
+    [
+      "Record Typed text", 
+      "textbox"
+    ], 
+    [
+      "Separation line", 
+      "line"
+    ], 
+    [
+      "Structure line", 
+      "line"
+    ], 
+    [
+      "Structure box", 
+      "line"
+    ]
+  ],
+
+  "orientations": [
+    "up", 
+    "left", 
+    "down", 
+    "right"
+  ]
+}

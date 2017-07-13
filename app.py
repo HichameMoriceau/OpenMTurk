@@ -125,6 +125,52 @@ style_version = get_style_version('static/js/*')
 # Server webpages: 
 #
 
+img_index = 0
+
+
+@app.route('/get_prev', methods=['POST'])
+def get_prev_image():
+	global img_index
+	log_prefix = 'Client request - {}'.format(inspect.stack()[0][3])
+
+	try:
+
+		images_dir = UTIL.maybe_add_suffix(env_vars['IMG_DIRECTORY'], '/')+'*'
+		all_img_paths = list(glob.glob(images_dir))
+
+		if img_index > 0:
+			img_index -= 1
+		img_path = all_img_paths[img_index]
+		print('img_path => {}'.format(img_path))
+
+		return jsonify(dict(img_path=img_path))
+	except Exception as e:
+		print('{} - ERROR : {}'.format(log_prefix, e))
+		return jsonify(result=300)
+
+
+@app.route('/get_next', methods=['POST'])
+def get_next_image():
+	global img_index
+
+	log_prefix = 'Client request - {}'.format(inspect.stack()[0][3])
+
+	try:
+
+		images_dir = UTIL.maybe_add_suffix(env_vars['IMG_DIRECTORY'], '/')+'*'
+		all_img_paths = list(glob.glob(images_dir))
+
+		if img_index < len(all_img_paths):
+			img_index += 1
+		img_path = all_img_paths[img_index]
+
+		print('img_path => {}'.format(img_path))
+		return jsonify(dict(img_path=img_path))
+	except Exception as e:
+		print('{} - ERROR : {}'.format(log_prefix, e))
+		return jsonify(result=300)
+
+
 
 @app.route('/get_random_image', methods=['POST'])
 def get_random_image():
