@@ -181,7 +181,7 @@ def get_random_image():
 
 		images_dir = UTIL.maybe_add_suffix(env_vars['IMG_DIRECTORY'], '/')+'*'
 		all_img_paths = list(glob.glob(images_dir))
-		labelled_objs = MONGO.select_all({'is_labelled': True}, {'img_path':1})
+		labelled_objs = MONGO.select_attr({'is_labelled': True}, {'img_path':1})
 
 		labelled_img_paths = [obj['img_path'] for obj in labelled_objs]
 		labelled_img_paths = list(filter(lambda x: x in all_img_paths, labelled_img_paths))
@@ -286,10 +286,10 @@ def get_all_labels():
 		for label in all_labels:
 			del label['_id']
 			
-		print(' - Retrieved {} labels from database'.format(
+		print('{} - Retrieved {} labels from database'.format(
 			log_prefix,
 			len(all_labels)))
-
+		
 		return jsonify(all_labels)
 	
 	except Exception as e:

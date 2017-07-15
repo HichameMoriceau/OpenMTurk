@@ -10,7 +10,11 @@ client = MongoClient()
 db = client[env_vars['OPENMTURK_TABLE_NAME']]
 
 
-def select_all(query_dict={}, filter_dict={}):
+def select_all(query_dict={}):
+	return list(db.labels_db.find(query_dict))
+
+
+def select_attr(query_dict, filter_dict):
 	return list(db.labels_db.find(query_dict, filter_dict))
 
 
